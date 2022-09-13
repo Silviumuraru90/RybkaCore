@@ -24,6 +24,7 @@ from binance.enums import *
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from os.path import exists
+from sys import platform
 
 
 
@@ -450,7 +451,7 @@ def bot_uptime():
 
 def email_sender(email_message):
 
-    message_template = Template('''Dear ${PERSON_NAME}, 
+    message_template_win = Template('''Dear ${PERSON_NAME}, 
 
 ${MESSAGE}
 
@@ -467,13 +468,30 @@ mac-address         ${MAC_ADDR}
 processor              ${PROCESSOR}
 ================================================================''')
 
+    message_template_linux = Template('''Dear ${PERSON_NAME}, 
+
+${MESSAGE}
+
+
+
+================================================================
+Email sent by RYBKA bot from machine having the following specs:
+
+hostname              ${HOSTNAME}
+mac-address         ${MAC_ADDR}
+================================================================''')
+
     s = smtplib.SMTP(host='smtp.gmail.com', port=587)
     s.starttls()
     s.login(RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_SENDER_DEVICE_PASSWORD)
         
     msg = MIMEMultipart()
 
-    message = message_template.substitute(PERSON_NAME = RYBKA_EMAIL_RECIPIENT_NAME.title(), MESSAGE = email_message, PLATFORM = platform.system(), PLATFORM_VERSION = platform.version(), ARCHITECTURE = platform.machine(), HOSTNAME = socket.gethostname(), MAC_ADDR = ':'.join(re.findall('..', '%012x' % uuid.getnode())), PROCESSOR = platform.processor())
+    if platform == "linux" or platform == "linux2":
+        pass
+        message = message_template_linux.substitute(PERSON_NAME = RYBKA_EMAIL_RECIPIENT_NAME.title(), MESSAGE = email_message, HOSTNAME = socket.gethostname(), MAC_ADDR = ':'.join(re.findall('..', '%012x' % uuid.getnode())))
+    elif platform == "win32":
+        message = message_template_win.substitute(PERSON_NAME = RYBKA_EMAIL_RECIPIENT_NAME.title(), MESSAGE = email_message, PLATFORM = platform.system(), PLATFORM_VERSION = platform.version(), ARCHITECTURE = platform.machine(), HOSTNAME = socket.gethostname(), MAC_ADDR = ':'.join(re.findall('..', '%012x' % uuid.getnode())), PROCESSOR = platform.processor())
 
     msg['From'] = RYBKA_EMAIL_SENDER_EMAIL
     msg['To'] = RYBKA_EMAIL_RECIPIENT_EMAIL
@@ -497,15 +515,22 @@ def logging_time():
 
 
 def clear_terminal():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    if platform == "linux" or platform == "linux2":
+        os.system('clear')
+    elif platform == "win32":
+        os.system('cls')
 
 
 def re_sync_time():
     try:
-        subprocess.call(['net', 'start', 'w32time'])
-        subprocess.call(['w32tm', '/config', '/syncfromflags:manual', '/manualpeerlist:time.nist.gov'])
-        subprocess.call(['w32TM', '/resync'])
-        print("\n ✅ Time SYNC cmd completed successfully OR time is already synced")
+        if platform == "linux" or platform == "linux2":
+            # TODO sync time cmd for linux
+            pass
+        elif platform == "win32":
+            subprocess.call(['net', 'start', 'w32time'])
+            subprocess.call(['w32tm', '/config', '/syncfromflags:manual', '/manualpeerlist:time.nist.gov'])
+            subprocess.call(['w32TM', '/resync'])
+            print("\n ✅ Time SYNC cmd completed successfully OR time is already synced")
     except Exception as e:
         print(f"\n ❌ Time SYNC cmd DID NOT complete successfully:\n{e}")
 
@@ -1034,9 +1059,14 @@ def main():
 
     clear_terminal()
 
-    if isAdmin() != True:
-        print("\n\nPlease run the script with admin privileges as bot needs access to auto-update HOST's time with NIST servers!")
-        exit(7)
+    if platform == "linux" or platform == "linux2":
+        # TODO cmd of checing elevation privileges
+        pass
+    elif platform == "win32":
+        if isAdmin() != True:
+            print(
+                "\n\nPlease run the script with admin privileges as bot needs access to auto-update HOST's time with NIST servers!")
+            exit(7)
     
     if RYBKA_MODE == "LIVE":
         print("\n\n====================================================================================================")
