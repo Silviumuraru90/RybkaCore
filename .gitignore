@@ -1,0 +1,11 @@
+# PyCharm
+.idea/
+
+# VS
+.vs/
+
+# Software's output
+archived_logs/
+LIVE/
+DEMO/
+*_*_*_*_*_*_*
