@@ -41,7 +41,6 @@ uptime = ""
 ###############################################
 
 RYBKA_MODE = os.environ.get("RYBKA_MODE", "DEMO")
-RYBKA_MODE = "LIVE"
 
 TRADE_SYMBOL = os.environ.get("RYBKA_TRADE_SYMBOL", "EGLDUSDT")
 SOCKET = os.environ.get("RYBKA_SOCKET", f"wss://stream.binance.com:9443/ws/{TRADE_SYMBOL.lower()}@kline_1m")
