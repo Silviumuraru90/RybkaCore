@@ -1,0 +1,143 @@
+include:
+  - template: 'Workflows/Branch-Pipelines.gitlab-ci.yml'
+
+stages:
+  - 💿 build docker image
+  - ✔️❌ code checks
+  - 🔬 unit testing
+  - ☢️ functional testing
+  - 🗂 binaries creation
+
+variables:
+  DOCKER_IMG_TAG:
+    value: "main"
+    description: "'main' would be constant, but all jobs should be switched to 'dev_branch' tag via this var in case of debug / Dockerfile modif."
+  GIT_STRATEGY: clone
+
+default:
+  image: registry.gitlab.com/silviu_space/rybka:${DOCKER_IMG_TAG}
+  interruptible: true
+
+
+###################################
+#######  Templates Section  #######
+###################################
+
+#TODO to add a '|| $CI_COMMIT_BRANCH == "master"' reference once the 'master_shadow' branch updates are automatized
+.dev_branches_and_master_shadow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "v.[0-9]+.[0-9]+.*"'
+      when: never
+    - when: always
+
+
+###################################
+#######     Jobs Section    #######
+###################################
+
+docker-build:
+  image: docker:latest
+  stage: 💿 build docker image
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build --pull -t "${CI_REGISTRY_IMAGE}:${DOCKER_IMG_TAG}" .
+    - docker push "${CI_REGISTRY_IMAGE}:${DOCKER_IMG_TAG}"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master_shadow" || $CI_COMMIT_BRANCH == "v.[0-9]+.[0-9]+.*"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+
+.code_checks:
+  extends: .dev_branches_and_master_shadow
+  stage: ✔️❌ code checks
+  needs: []
+  script:
+    - echo "(TO BE DONE) Code Checks"
+
+
+###################################
+#######     Unit Testing    #######
+###################################
+
+.testing_template:
+  extends: .dev_branches_and_master_shadow
+  stage: 🔬 unit testing
+  script:
+    - echo "(TO BE DONE) Unit Tests"
+
+
+###################################
+#######  Functional Testing #######
+###################################
+
+DEMO_rybka_run:
+  extends: .testing_template
+  stage: ☢️ functional testing
+  script:
+    - sudo chmod +x rybka.py
+    - ./rybka.py
+  after_script:
+    - ls -alH
+  artifacts:
+    paths:
+      - archived_logs/*
+      - DEMO/*
+    when: always
+  timeout: 1h
+
+DEMO_restarter_run:
+  extends: DEMO_rybka_run
+  script:
+    - sudo chmod +x restarter.py
+    - ./restarter.py
+
+
+###################################
+#######  Scheduled Testing  #######
+###################################
+
+DEMO_rybka_daily_24h_run:
+  extends: DEMO_rybka_run
+  timeout: 1d
+  rules:
+    - if: $DAILY_RUN
+      when: always
+    - when: never
+
+DEMO_restarter_daily_24h_run:
+  extends: DEMO_rybka_daily_24h_run
+
+DEMO_rybka_weekly_7d_run:
+  extends: DEMO_rybka_run
+  timeout: 7d
+  rules:
+    - if: $WEEKLY_RUN
+      when: always
+    - when: never
+
+DEMO_restarter_weekly_7d_run:
+  extends: DEMO_rybka_weekly_7d_run
+
+
+###################################
+#######  Binaries Creation  #######
+###################################
+
+.linux_package:
+  stage: 🗂 binaries creation
+  script:
+    - echo "(TO BE DONE) Packaged module for Linux"
+
+.win_binary:
+  stage: 🗂 binaries creation
+  script:
+    - echo "(TO BE DONE) Binary Creation for Windows"
+
+.mac_binary:
+  stage: 🗂 binaries creation
+  script:
+    - echo "(TO BE DONE) Binary Creation for Mac"
