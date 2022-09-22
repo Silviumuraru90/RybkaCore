@@ -357,6 +357,24 @@ def full_order_history_file():
     print("=====================================================================================================================================")
 
 
+def ktbr_integrity():
+    ktbr_config_check={}
+    sum_of_ktbr_cryptocurrency = 0
+    
+    with open(f"{RYBKA_MODE}/ktbr", 'r', encoding="utf8") as f:
+        ktbr_config_check = json.loads(f.read())
+
+        for v in ktbr_config_check.values():
+            sum_of_ktbr_cryptocurrency+=v[0]
+
+        if sum_of_ktbr_cryptocurrency < balance_egld:
+            print("\n ✅ KTBR integrity status  - VALID\n")
+        else:
+            print("\n ❌ KTBR integrity status  - INVALID\n")
+            print("This means that the amount of EGLD you have in cloud is actually less now, than what you retain in the 'ktbr' file. Probably you've spent a part of it in the meantime.")
+            exit(7)
+
+
 
 ###############################################
 ##############   AUX FUNCTIONS   ##############
@@ -813,6 +831,8 @@ def on_message(ws, message):
                                         print(f"{logging_time()} EGLD balance is [{balance_egld}]")
                                         print(f"{logging_time()} BNB  balance is [{balance_bnb}]")
 
+                                        ktbr_integrity()
+
                                         print("==============================\n\n\n\n")
                                         with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_order_history", 'a', encoding="utf8") as f:
                                             f.write(f'{logging_time()} Buy order done now at [{str(order_time)}]\n')
@@ -983,6 +1003,8 @@ def on_message(ws, message):
                                         print(f"{logging_time()} EGLD balance is [{balance_egld}]")
                                         print(f"{logging_time()} BNB  balance is [{balance_bnb}]")
 
+                                        ktbr_integrity()
+                                        
                                         print("==============================\n\n\n\n")
                                         with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_order_history", 'a', encoding="utf8") as f:
                                             f.write(f'{logging_time()} Sell order done now at [{str(order_time)}]\n')
@@ -1097,6 +1119,7 @@ def main():
                 binance_account_status()
                 binance_api_account_status()
                 account_balance_update()
+                ktbr_integrity()
                 break
             except Exception as e:
                 print(f"\nAccount-related functions failed to proceed successfully. Error:\n{e}")
