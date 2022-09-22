@@ -54,6 +54,7 @@ TRADE_QUANTITY = os.environ.get("RYBKA_TRADE_QUANTITY", 0.25)
 AUX_TRADE_QUANTITY = TRADE_QUANTITY
 MIN_PROFIT = os.environ.get("RYBKA_MIN_PROFIT", 0.25)
 
+RYBKA_EMAIL_SWITCH = os.environ.get("RYBKA_EMAIL_SWITCH", False)
 RYBKA_EMAIL_SENDER_EMAIL = os.environ.get("RYBKA_EMAIL_SENDER_EMAIL")
 RYBKA_EMAIL_SENDER_DEVICE_PASSWORD = os.environ.get("RYBKA_EMAIL_SENDER_DEVICE_PASSWORD")
 RYBKA_EMAIL_RECIPIENT_EMAIL = os.environ.get("RYBKA_EMAIL_RECIPIENT_EMAIL")
@@ -448,13 +449,17 @@ def disclaimer():
 
 
 def email_engine_params():
-    if RYBKA_EMAIL_RECIPIENT_NAME == "User":
-        print("\n[RYBKA_EMAIL_RECIPIENT_NAME] was NOT provided in the HOST MACHINE ENV., but will default to value [User]")
-    if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_SENDER_DEVICE_PASSWORD and RYBKA_EMAIL_RECIPIENT_EMAIL:
-        print("\n ✅ Email params in ENV    -  SET")
+    if RYBKA_EMAIL_SWITCH:
+        if RYBKA_EMAIL_RECIPIENT_NAME == "User":
+            print("\n[RYBKA_EMAIL_RECIPIENT_NAME] was NOT provided in the HOST MACHINE ENV., but will default to value [User]")
+        if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_SENDER_DEVICE_PASSWORD and RYBKA_EMAIL_RECIPIENT_EMAIL:
+            print("\n ✅ Email params in ENV    -  SET")
+        else:
+            print("\n ❌ Email params in ENV    -  NOT SET")
+            print("\nAs long as you have [RYBKA_EMAIL_SWITCH] set as [True], make sure you also set up the [RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_SENDER_DEVICE_PASSWORD, RYBKA_EMAIL_RECIPIENT_EMAIL] vars in your ENV!")
+            exit(7)
     else:
-        print("\n ❌ Email params in ENV    -  NOT SET")
-        exit(7)
+        print("\n ⚠️  Emails are turned [OFF]. Set [RYBKA_EMAIL_SWITCH] var as 'True' in env. if you want email notifications enabled!")
 
 
 def bot_uptime():
@@ -472,43 +477,45 @@ def bot_uptime():
 
 
 def email_sender(email_message):
+    global RYBKA_EMAIL_SWITCH
 
-    message_template = Template('''Dear ${PERSON_NAME}, 
+    if RYBKA_EMAIL_SWITCH:
+        message_template = Template('''Dear ${PERSON_NAME}, 
 
-        ${MESSAGE}
+            ${MESSAGE}
 
 
 
-    ================================================================
-    Email sent by RYBKA bot from machine having the following specs:
+        ================================================================
+        Email sent by RYBKA bot from machine having the following specs:
 
-    hostname              ${HOSTNAME}
-    mac-address         ${MAC_ADDR}
-    ================================================================''')
+        hostname              ${HOSTNAME}
+        mac-address         ${MAC_ADDR}
+        ================================================================''')
 
-    s = smtplib.SMTP(host='smtp.gmail.com', port=587)
-    s.starttls()
-    s.login(RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_SENDER_DEVICE_PASSWORD)
-        
-    msg = MIMEMultipart()
+        s = smtplib.SMTP(host='smtp.gmail.com', port=587)
+        s.starttls()
+        s.login(RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_SENDER_DEVICE_PASSWORD)
+            
+        msg = MIMEMultipart()
 
-    message = message_template.substitute(PERSON_NAME = RYBKA_EMAIL_RECIPIENT_NAME.title(), MESSAGE = email_message, HOSTNAME = socket.gethostname(), MAC_ADDR = ':'.join(re.findall('..', '%012x' % uuid.getnode())))
+        message = message_template.substitute(PERSON_NAME = RYBKA_EMAIL_RECIPIENT_NAME.title(), MESSAGE = email_message, HOSTNAME = socket.gethostname(), MAC_ADDR = ':'.join(re.findall('..', '%012x' % uuid.getnode())))
 
-    msg['From'] = RYBKA_EMAIL_SENDER_EMAIL
-    msg['To'] = RYBKA_EMAIL_RECIPIENT_EMAIL
-    msg['Subject'] = "RYBKA notification"
+        msg['From'] = RYBKA_EMAIL_SENDER_EMAIL
+        msg['To'] = RYBKA_EMAIL_RECIPIENT_EMAIL
+        msg['Subject'] = "RYBKA notification"
 
-    msg.attach(MIMEText(message, 'plain'))
+        msg.attach(MIMEText(message, 'plain'))
 
-    try:
-        s.send_message(msg)
-    except Exception as e:
-        print(f"{logging_time()} Sending email notification failed with error:\n{e}\n\n")
-        print(f"{logging_time()} If it's an authentication issue and you did set the correct password for your gmail account, you have the know that the actual required one is the DEVICE password for your gmail.\n")
-        print(f"{logging_time()} If you haven't got one configured yet, please set one up right here (connect with your sender address and then replace the password in the ENV with the newly created device password:\n       https://myaccount.google.com/apppasswords")
-    del msg
+        try:
+            s.send_message(msg)
+        except Exception as e:
+            print(f"{logging_time()} Sending email notification failed with error:\n{e}\n\n")
+            print(f"{logging_time()} If it's an authentication issue and you did set the correct password for your gmail account, you have the know that the actual required one is the DEVICE password for your gmail.\n")
+            print(f"{logging_time()} If you haven't got one configured yet, please set one up right here (connect with your sender address and then replace the password in the ENV with the newly created device password:\n       https://myaccount.google.com/apppasswords")
+        del msg
 
-    s.quit()
+        s.quit()
 
 
 def clear_terminal():
@@ -1129,11 +1136,11 @@ def main():
 
     if RYBKA_MODE == "DEMO":
         if balance_usdt == 500:
-            print(f"\nIn [DEMO] mode -> ⚠️ USDT Balance of [{balance_usdt:7}] $      --->  is set by default, by the bot. You can modify it by setting in ENV the var [RYBKA_BALANCE_USDT] and restart the terminal / bot.")
+            print(f"\nIn [DEMO] mode -> ⚠️  USDT Balance of [{balance_usdt:7}] $      --->  is set by default, by the bot. You can modify it by setting in ENV the var [RYBKA_BALANCE_USDT] and restart the terminal / bot.")
         if balance_egld == 100:
-            print(f"\nIn [DEMO] mode -> ⚠️ EGLD Balance of [{balance_egld:7}] coins  --->  is set by default, by the bot. You can modify it by setting in ENV the var [RYBKA_BALANCE_EGLD] and restart the terminal / bot.")
+            print(f"\nIn [DEMO] mode -> ⚠️  EGLD Balance of [{balance_egld:7}] coins  --->  is set by default, by the bot. You can modify it by setting in ENV the var [RYBKA_BALANCE_EGLD] and restart the terminal / bot.")
         if balance_bnb == 0.02:
-            print(f"\nIn [DEMO] mode -> ⚠️ BNB  Balance of [{balance_bnb:7}] coins  --->  is set by default, by the bot. You can modify it by setting in ENV the var [RYBKA_BALANCE_BNB] and restart the terminal / bot.")
+            print(f"\nIn [DEMO] mode -> ⚠️  BNB  Balance of [{balance_bnb:7}] coins  --->  is set by default, by the bot. You can modify it by setting in ENV the var [RYBKA_BALANCE_BNB] and restart the terminal / bot.")
 
     print("\n=====================================================================================================================================")
     print("=====================================================================================================================================")
