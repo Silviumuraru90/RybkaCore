@@ -361,6 +361,8 @@ def full_order_history_file():
 
 
 def ktbr_integrity():
+    global balance_egld
+    global RYBKA_MODE
     ktbr_config_check={}
     sum_of_ktbr_cryptocurrency = 0
     
@@ -370,7 +372,7 @@ def ktbr_integrity():
         for v in ktbr_config_check.values():
             sum_of_ktbr_cryptocurrency+=v[0]
 
-        if sum_of_ktbr_cryptocurrency < balance_egld:
+        if sum_of_ktbr_cryptocurrency <= balance_egld:
             print("\n ✅ KTBR integrity status  - VALID\n")
         else:
             print("\n ❌ KTBR integrity status  - INVALID\n")
