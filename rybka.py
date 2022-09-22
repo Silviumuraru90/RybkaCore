@@ -363,6 +363,10 @@ def full_order_history_file():
 ###############################################
 
 
+def logging_time():
+    return(f'[ {datetime.now().strftime("%d/%m/%Y %H:%M:%S"):20}] ===')
+
+
 def back_up():
     global RYBKA_MODE
 
@@ -445,41 +449,24 @@ def bot_uptime():
     uptime_weeks = round(uptime_days / 7, 1)
     uptime_months = round(uptime_days / 30, 1)
     
-    uptime = f"\nRybka bot uptime is {uptime_seconds:11} in seconds | {uptime_minutes:9} in minutes | {uptime_hours:7} in hours | {uptime_days:5} in days | {uptime_weeks:4} in weeks | {uptime_months:4} in months\n"
+    uptime = f"\n{logging_time()} Rybka bot uptime is {uptime_seconds:11} in seconds | {uptime_minutes:9} in minutes | {uptime_hours:7} in hours | {uptime_days:5} in days | {uptime_weeks:4} in weeks | {uptime_months:4} in months\n"
     print(uptime)
 
 
 def email_sender(email_message):
 
-    message_template_win = Template('''Dear ${PERSON_NAME}, 
+    message_template = Template('''Dear ${PERSON_NAME}, 
 
-${MESSAGE}
-
-
-
-================================================================
-Email sent by RYBKA bot from machine having the following specs:
-
-platform                 ${PLATFORM}
-platform-version    ${PLATFORM_VERSION}
-architecture           ${ARCHITECTURE}
-hostname              ${HOSTNAME}
-mac-address         ${MAC_ADDR}
-processor              ${PROCESSOR}
-================================================================''')
-
-    message_template_linux = Template('''Dear ${PERSON_NAME}, 
-
-${MESSAGE}
+        ${MESSAGE}
 
 
 
-================================================================
-Email sent by RYBKA bot from machine having the following specs:
+    ================================================================
+    Email sent by RYBKA bot from machine having the following specs:
 
-hostname              ${HOSTNAME}
-mac-address         ${MAC_ADDR}
-================================================================''')
+    hostname              ${HOSTNAME}
+    mac-address         ${MAC_ADDR}
+    ================================================================''')
 
     s = smtplib.SMTP(host='smtp.gmail.com', port=587)
     s.starttls()
@@ -487,11 +474,7 @@ mac-address         ${MAC_ADDR}
         
     msg = MIMEMultipart()
 
-    if platform == "linux" or platform == "linux2":
-        pass
-        message = message_template_linux.substitute(PERSON_NAME = RYBKA_EMAIL_RECIPIENT_NAME.title(), MESSAGE = email_message, HOSTNAME = socket.gethostname(), MAC_ADDR = ':'.join(re.findall('..', '%012x' % uuid.getnode())))
-    elif platform == "win32":
-        message = message_template_win.substitute(PERSON_NAME = RYBKA_EMAIL_RECIPIENT_NAME.title(), MESSAGE = email_message, PLATFORM = platform.system(), PLATFORM_VERSION = platform.version(), ARCHITECTURE = platform.machine(), HOSTNAME = socket.gethostname(), MAC_ADDR = ':'.join(re.findall('..', '%012x' % uuid.getnode())), PROCESSOR = platform.processor())
+    message = message_template.substitute(PERSON_NAME = RYBKA_EMAIL_RECIPIENT_NAME.title(), MESSAGE = email_message, HOSTNAME = socket.gethostname(), MAC_ADDR = ':'.join(re.findall('..', '%012x' % uuid.getnode())))
 
     msg['From'] = RYBKA_EMAIL_SENDER_EMAIL
     msg['To'] = RYBKA_EMAIL_RECIPIENT_EMAIL
@@ -502,16 +485,12 @@ mac-address         ${MAC_ADDR}
     try:
         s.send_message(msg)
     except Exception as e:
-        print(f"Sending email notification failed with error:\n{e}\n\n")
-        print("If it's an authentication issue and you did set the correct password for your gmail account, you have the know that the actual required one is the DEVICE password for your gmail.\n")
-        print("If you haven't got one configured yet, please set one up right here (connect with your sender address and then replace the password in the ENV with the newly created device password:\n       https://myaccount.google.com/apppasswords")
+        print(f"{logging_time()} Sending email notification failed with error:\n{e}\n\n")
+        print(f"{logging_time()} If it's an authentication issue and you did set the correct password for your gmail account, you have the know that the actual required one is the DEVICE password for your gmail.\n")
+        print(f"{logging_time()} If you haven't got one configured yet, please set one up right here (connect with your sender address and then replace the password in the ENV with the newly created device password:\n       https://myaccount.google.com/apppasswords")
     del msg
 
     s.quit()
-
-
-def logging_time():
-    return(f'[ {datetime.now().strftime("%d/%m/%Y %H:%M:%S"):20}] ===')
 
 
 def clear_terminal():
@@ -530,9 +509,9 @@ def re_sync_time():
             subprocess.call(['net', 'start', 'w32time'])
             subprocess.call(['w32tm', '/config', '/syncfromflags:manual', '/manualpeerlist:time.nist.gov'])
             subprocess.call(['w32TM', '/resync'])
-            print("\n ✅ Time SYNC cmd completed successfully OR time is already synced")
+            print(f"\n{logging_time()} ✅ Time SYNC cmd completed successfully OR time is already synced")
     except Exception as e:
-        print(f"\n ❌ Time SYNC cmd DID NOT complete successfully:\n{e}")
+        print(f"\n{logging_time()} ❌ Time SYNC cmd DID NOT complete successfully:\n{e}")
 
 
 def isAdmin():
@@ -551,15 +530,15 @@ def isAdmin():
 
 def on_open(ws):
     print("\n\n\n=====================================================================================================================================")
-    print(f' Connection to Binance servers established, listening to [{TRADE_SYMBOL}] data')
+    print(f'{logging_time()} Connection to Binance servers established, listening to [{TRADE_SYMBOL}] data')
     print("=====================================================================================================================================")
     print("\n=====================================================================================================================================")
-    print(" Initiating a one-time 10-min info gathering timeframe. Please wait...")
+    print(f"{logging_time()} Initiating a one-time 10-min info gathering timeframe. Please wait...")
     print("=====================================================================================================================================\n\n\n\n\n")
     
 
 def on_close(ws, close_status_code, close_msg):
-    print('\nClosed connection, something went wrong. Please consult logs and restart the bot.')
+    print(f'\n{logging_time()} Closed connection, something went wrong. Please consult logs and restart the bot.')
     
     archive_folder = 'archived_logs'
     if not os.path.isdir(archive_folder):
@@ -567,16 +546,16 @@ def on_close(ws, close_status_code, close_msg):
     shutil.move(os.environ.get('CURRENT_EXPORT_DIR'), archive_folder)
 
     if close_status_code or close_msg:
-        print("\nClose status code: " + str(close_status_code))
-        print("\nClose message: " + str(close_msg))
-        email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working.\n\n Close Status Code: {str(close_status_code)}\n Close Message: {str(close_msg)}")
+        print(f"\n{logging_time()} Close status code: " + str(close_status_code))
+        print(f"\n{logging_time()} Close message: " + str(close_msg))
+        email_sender(f"{logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working.\n\n Close Status Code: {str(close_status_code)}\n Close Message: {str(close_msg)}")
     else:
         pass
-        email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working. No DEBUG close message or status code provided")
+        email_sender(f"{logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working. No DEBUG close message or status code provided")
 
 
 def on_error(ws, message):
-    print(f'\n\n\nSoftware encountered an error:\n{message}\n')
+    print(f'\n\n\n{logging_time()} Software encountered an error:\n{message}\n')
 
 
 def on_message(ws, message):
@@ -614,10 +593,10 @@ def on_message(ws, message):
         for i in range(0,10):
             try:
                 client.ping()
-                print(f"Pinged Binance server to maintain connection.")
+                print(f"{logging_time()} Pinged Binance server to maintain connection.")
                 break
             except Exception as e:
-                print(f"Binance server ping failed with error:\n{e}")
+                print(f"{logging_time()} Binance server ping failed with error:\n{e}")
                 time.sleep(3)
 
         with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_historical_prices", 'a', encoding="utf8") as f:
@@ -627,7 +606,7 @@ def on_message(ws, message):
             print(f"\n#####################################################################################################################################")
             print(f"#####################  Bot is gathering data for technical analysis. Currently at min [{len(closed_candles):2} of 10] of processing  #####################")
             print(f"#####################################################################################################################################\n")
-        print(f"\nHistory of target prices is {closed_candles}")
+        print(f"\n{logging_time()} History of target prices is {closed_candles}")
 
         if len(closed_candles) > 30:
             closed_candles = closed_candles[10:]
@@ -638,16 +617,16 @@ def on_message(ws, message):
 
             latest_rsi = round(rsi[-1], 2)
 
-            print(f"\n\nLatest RSI indicates {latest_rsi}")
+            print(f"\n\n{logging_time()} Latest RSI indicates {latest_rsi}")
 
             if subsequent_valid_rsi_counter == 1:
-                print("\n\nInvalidating one RSI period, as a buy / sell action just occured.\n")
+                print(f"\n\n{logging_time()} Invalidating one RSI period, as a buy / sell action just occured.\n")
                 subsequent_valid_rsi_counter = 0
             else:
                 if latest_rsi < RSI_FOR_BUY:
                     print("\n\n\n==============================")
                     print("==============================")
-                    print("BUY SIGNAL!")
+                    print(f"{logging_time()} BUY SIGNAL!")
                     print("==============================")
                     print("==============================\n")
 
@@ -655,10 +634,10 @@ def on_message(ws, message):
                         for i in range(0,10):
                             try:
                                 account_balance_update()
-                                print("\nAccount Balance Sync. - Successful")
+                                print(f"\n{logging_time()} Account Balance Sync. - Successful")
                                 break
                             except Exception as e:
-                                print(f"\nAccount Balance Sync. - Failed as:\n{e}")
+                                print(f"\n{logging_time()} Account Balance Sync. - Failed as:\n{e}")
                                 time.sleep(3)
 
                     with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
@@ -675,7 +654,7 @@ def on_message(ws, message):
                         f.write(f"\n{logging_time()} {'KTBR config (BEFORE processing) (str(json.dumps(ktbr_config))) is':90} \n {str(json.dumps(ktbr_config))}\n\n")
 
                     if balance_bnb / bnb_commission >= 100:
-                        print(f"BNB balance [{balance_bnb}] is enough for transactions.")
+                        print(f"{logging_time()} BNB balance [{balance_bnb}] is enough for transactions.")
 
                         if balance_usdt / 12 > 1:
 
@@ -685,13 +664,13 @@ def on_message(ws, message):
                             TRADE_QUANTITY = AUX_TRADE_QUANTITY
 
                             if min_order_quantity > TRADE_QUANTITY:
-                                print(f"We can NOT trade at this quantity: [{TRADE_QUANTITY}]. Enforcing min quantity, per buy action, of {min_order_quantity} EGLD coins.")
+                                print(f"{logging_time()} We can NOT trade at this quantity: [{TRADE_QUANTITY}]. Enforcing min quantity, per buy action, of {min_order_quantity} EGLD coins.")
                                 TRADE_QUANTITY = min_order_quantity
                             else:
-                                print(f"We CAN trade at this quantity: [{TRADE_QUANTITY}]. No need to enforce a higher min trading limit.")
+                                print(f"{logging_time()} We CAN trade at this quantity: [{TRADE_QUANTITY}]. No need to enforce a higher min trading limit.")
                             
                             possible_nr_of_trades = math.floor(balance_usdt / (TRADE_QUANTITY * candle_close_price))
-                            print(f"Remaining possible nr. of buy orders: {possible_nr_of_trades}\n\n\n")
+                            print(f"{logging_time()} Remaining possible nr. of buy orders: {possible_nr_of_trades}\n\n\n")
 
                             if len(ktbr_config) > 5:
                                 if possible_nr_of_trades < len(ktbr_config) * 0.7:
@@ -722,9 +701,9 @@ def on_message(ws, message):
 
                             # TO BE RE-ADDED only for DEMO version
                             #if RYBKA_MODE == "DEMO":
-                            print(f"heatmap_actions is {heatmap_actions}")
-                            print(f"heatmap_size is {heatmap_size}")
-                            print(f"heatmap_limit is {heatmap_limit}")
+                            print(f"{logging_time()} heatmap_actions is {heatmap_actions}")
+                            print(f"{logging_time()} heatmap_size is {heatmap_size}")
+                            print(f"{logging_time()} heatmap_limit is {heatmap_limit}")
 
                             current_price_rounded_down = math.floor(round(float(candle_close_price), 4))
 
@@ -755,14 +734,14 @@ def on_message(ws, message):
                                 f.write(f"{logging_time()} KTBR array of prices (str(ktbr_config_array_of_prices)) is {str(ktbr_config_array_of_prices)}\n\n\n")
 
                             if heatmap_center_coin_counter >= heatmap_limit or heatmap_counter >= heatmap_actions:
-                                print("\n\nHEATMAP DOES NOT ALLOW BUYING!")
-                                print(f"heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]\n\n\n\n")
+                                print(f"\n\n{logging_time()} HEATMAP DOES NOT ALLOW BUYING!")
+                                print(f"{logging_time()} heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]\n\n\n\n")
                                 with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                     f.write(f'\n\n{logging_time()} Within BUY (part IV):\n')
                                     f.write(f"{logging_time()} HEATMAP DOES NOT ALLOW BUYING!")
                                     f.write(f"{logging_time()} heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]")
                             else:
-                                print("\n\nHEATMAP ALLOWS BUYING!\n")
+                                print(f"\n\n{logging_time()} HEATMAP ALLOWS BUYING!\n")
                                 try:
                                     back_up()
                                     if RYBKA_MODE == "LIVE":
@@ -780,7 +759,7 @@ def on_message(ws, message):
                                         balance_bnb -= bnb_commission
 
                                     order_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                                    print(f'BUY Order placed now at [{order_time}]\n')
+                                    print(f'{logging_time()} BUY Order placed now at [{order_time}]\n')
                                     print("==============================")
                                     time.sleep(3)
                                     
@@ -791,9 +770,9 @@ def on_message(ws, message):
                                         order_status['orderId'] = order_id_tmp
                                         
                                     if order_status['status'] == "FILLED":
-                                        print(" ✅ BUY Order filled successfully!\n")
+                                        print(f"{logging_time()} ✅ BUY Order filled successfully!\n")
                                         # avoid rounding up on quantity & price bought
-                                        print(f"Transaction ID [{order['orderId']}] - Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] $")
+                                        print(f"{logging_time()} Transaction ID [{order['orderId']}] - Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] $")
 
                                         bnb_commission = float(order['fills'][0]['commission'])
                                         with open(f"{RYBKA_MODE}/most_recent_commission", 'w', encoding="utf8") as f:
@@ -824,15 +803,15 @@ def on_message(ws, message):
                                             for i in range(0,10):
                                                 try:
                                                     account_balance_update()
-                                                    print("\nAccount Balance Sync. - Successful")
+                                                    print(f"\n{logging_time()} Account Balance Sync. - Successful")
                                                     break
                                                 except Exception as e:
-                                                    print(f"\nAccount Balance Sync. - Failed as:\n{e}")
+                                                    print(f"\n{logging_time()} Account Balance Sync. - Failed as:\n{e}")
                                                     time.sleep(3)
 
-                                        print(f"\n\nUSDT balance is [{balance_usdt}]")
-                                        print(f"EGLD balance is [{balance_egld}]")
-                                        print(f"BNB  balance is [{balance_bnb}]")
+                                        print(f"\n\n{logging_time()} USDT balance is [{balance_usdt}]")
+                                        print(f"{logging_time()} EGLD balance is [{balance_egld}]")
+                                        print(f"{logging_time()} BNB  balance is [{balance_bnb}]")
 
                                         print("==============================\n\n\n\n")
                                         with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_order_history", 'a', encoding="utf8") as f:
@@ -846,7 +825,7 @@ def on_message(ws, message):
 
                                         re_sync_time()
                                     else:
-                                        print(" ❌ Buy order was NOT filled successfully! Please check the cause!")
+                                        print(f"{logging_time()} ❌ Buy order was NOT filled successfully! Please check the cause!")
                                         print("==============================")
                                         with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                             f.write(f'\n\n{logging_time()} Within BUY (part VI):\n')
@@ -855,22 +834,22 @@ def on_message(ws, message):
                                             f.write(f"{logging_time()} Order status (order_status) is {str(json.dumps(order_status))}\n")
                                         exit(7)
                                 except Exception as e:
-                                    print("\n\nMake sure the API_KEY and API_SECRET have valid values and time server is synced with NIST's!")
-                                    print(f"Order could NOT be placed due to an error:\n{e}")
+                                    print(f"\n\n{logging_time()} Make sure the API_KEY and API_SECRET have valid values and time server is synced with NIST's!")
+                                    print(f"{logging_time()} Order could NOT be placed due to an error:\n{e}")
                                     with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                         f.write(f'\n\n{logging_time()} Within BUY (part VII):\n')
                                         f.write(f'{logging_time()} Order could NOT be placed due to an error:\n{e}\n')
                                     exit(7)
                         else:
-                            print('Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].')
-                            print("\nNotifying user (via email) that bot might need more money for buy actions, if possible.")
+                            print(f'{logging_time()} Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].')
+                            print(f"\n{logging_time()} Notifying user (via email) that bot might need more money for buy actions, if possible.")
                             email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot might be able to buy more, but doesn't have enought USDT in balance [{balance_usdt}]$\n\nTOP UP if possible!")
                             with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                 f.write(f'\n\n{logging_time()} Within BUY (part VIII):\n')
                                 f.write(f'{logging_time()} Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].\n')
                     else:
-                        print(f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. Please TOP UP!")
-                        email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enought BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, it will stop at this point. Please TOP UP!")
+                        print(f"{logging_time()} BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. Please TOP UP!")
+                        email_sender(f"{logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enought BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, it will stop at this point. Please TOP UP!")
                         with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                             f.write(f'\n\n{logging_time()} Within BUY (part IX):\n')
                             f.write(f'{logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Please TOP UP!\n')
@@ -880,7 +859,7 @@ def on_message(ws, message):
 
                     print("\n\n\n==============================")
                     print("==============================")
-                    print("SELL SIGNAL!")
+                    print(f"{logging_time()} SELL SIGNAL!")
                     print("==============================")
                     print("==============================\n")
 
@@ -888,10 +867,10 @@ def on_message(ws, message):
                         for i in range(0,10):
                             try:
                                 account_balance_update()
-                                print("\nAccount Balance Sync. - Successful")
+                                print(f"\n{logging_time()} Account Balance Sync. - Successful")
                                 break
                             except Exception as e:
-                                print(f"\nAccount Balance Sync. - Failed as:\n{e}")
+                                print(f"\n{logging_time()} Account Balance Sync. - Failed as:\n{e}")
                                 time.sleep(3)
 
                     with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
@@ -907,13 +886,13 @@ def on_message(ws, message):
                         f.write(f"\n{logging_time()} KTBR config (BEFORE processing) (str(json.dumps(ktbr_config))) is \n {str(json.dumps(ktbr_config))}\n\n")
 
                     if balance_bnb / bnb_commission >= 100:
-                        print(f"BNB balance [{balance_bnb}] is enough for transactions.")
+                        print(f"{logging_time()} BNB balance [{balance_bnb}] is enough for transactions.")
                         
                         eligible_sells = []
 
                         for k, v in ktbr_config.items():
                             if v[1] + MIN_PROFIT < candle_close_price:
-                                print(f"Identified buy ID [{k:11}], qtty [{v[0]:5}] bought at price of [{v[1]:5}] as being eligible for sell. Multiple sells set as [{multiple_sells}]")
+                                print(f"{logging_time()} Identified buy ID [{k:11}], qtty [{v[0]:5}] bought at price of [{v[1]:5}] as being eligible for sell. Multiple sells set as [{multiple_sells}]")
                                 eligible_sells.append(k)
                                 if multiple_sells == "disabled":
                                     break
@@ -924,7 +903,7 @@ def on_message(ws, message):
 
                         if eligible_sells:
                             for sell in eligible_sells:
-                                print(f"Selling buy [{sell:11}] of qtty [{ktbr_config[sell][0]:5}]")
+                                print(f"{logging_time()} Selling buy [{sell:11}] of qtty [{ktbr_config[sell][0]:5}]")
 
                                 try:
                                     back_up()
@@ -943,7 +922,7 @@ def on_message(ws, message):
                                         balance_bnb -= bnb_commission
 
                                     order_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                                    print(f'SELL Order placed now at [{order_time}]\n')
+                                    print(f'{logging_time()} SELL Order placed now at [{order_time}]\n')
                                     print("==============================")
                                     time.sleep(3)
                                     
@@ -954,12 +933,12 @@ def on_message(ws, message):
                                         order_status['orderId'] = str(sell)
                                     
                                     if order_status['status'] == "FILLED":
-                                        print(" ✅ SELL Order filled successfully!\n")
+                                        print(f"{logging_time()} ✅ SELL Order filled successfully!\n")
                                         # avoid rounding up on quantity & price sold
                                         qtty_aux = int(float(order['executedQty']) * 10 ** 4) / 10 ** 4
                                         price_aux = int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4
 
-                                        print(f"Transaction ID [{order['orderId']}] - Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] $")
+                                        print(f"{logging_time()} Transaction ID [{order['orderId']}] - Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] $")
 
                                         total_usdt_profit = int((total_usdt_profit + (price_aux - ktbr_config[sell][1]) * ktbr_config[sell][0]) * 10 ** 4) / 10 ** 4
                                         with open(f"{RYBKA_MODE}/usdt_profit", 'w', encoding="utf8") as f:
@@ -994,15 +973,15 @@ def on_message(ws, message):
                                             for i in range(0,10):
                                                 try:
                                                     account_balance_update()
-                                                    print("\nAccount Balance Sync. - Successful")
+                                                    print(f"\n{logging_time()} Account Balance Sync. - Successful")
                                                     break
                                                 except Exception as e:
-                                                    print(f"\nAccount Balance Sync. - Failed as:\n{e}")
+                                                    print(f"\n{logging_time()} Account Balance Sync. - Failed as:\n{e}")
                                                     time.sleep(3)
                                         
-                                        print(f"\n\nUSDT balance is [{balance_usdt}]")
-                                        print(f"EGLD balance is [{balance_egld}]")
-                                        print(f"BNB  balance is [{balance_bnb}]")
+                                        print(f"\n\n{logging_time()} USDT balance is [{balance_usdt}]")
+                                        print(f"{logging_time()} EGLD balance is [{balance_egld}]")
+                                        print(f"{logging_time()} BNB  balance is [{balance_bnb}]")
 
                                         print("==============================\n\n\n\n")
                                         with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_order_history", 'a', encoding="utf8") as f:
@@ -1016,7 +995,7 @@ def on_message(ws, message):
 
                                         subsequent_valid_rsi_counter = 1
                                     else:
-                                        print(" ❌ Sell order was NOT filled successfully! Please check the cause!")
+                                        print(f"{logging_time()} ❌ Sell order was NOT filled successfully! Please check the cause!")
                                         print("==============================")
                                         with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                             f.write(f'\n\n{logging_time()} Within SELL (part V):\n')
@@ -1025,20 +1004,20 @@ def on_message(ws, message):
                                             f.write(f"{logging_time()} {'Order status (order_status) is':90} {str(json.dumps(order_status))}\n")
                                         exit(7)
                                 except Exception as e:
-                                    print("\n\nMake sure the API_KEY and API_SECRET have valid values and time server is synced with NIST's!")
-                                    print(f"Order could NOT be placed due to an error:\n{e}")
+                                    print(f"\n\n{logging_time()} Make sure the API_KEY and API_SECRET have valid values and time server is synced with NIST's!")
+                                    print(f"{logging_time()} Order could NOT be placed due to an error:\n{e}")
                                     with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                         f.write(f'\n\n{logging_time()} Within SELL (part VI):\n')
                                         f.write(f'{logging_time()} Order could NOT be placed due to an error:\n{e}\n')
                                     exit(7)
                             re_sync_time()
                         else:
-                            print("No buy transactions are eligible to be sold at this moment!")
+                            print(f"{logging_time()} No buy transactions are eligible to be sold at this moment!")
                             with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                 f.write(f'\n\n{logging_time()} Within SELL (part VII):\n')
                                 f.write(f'{logging_time()} No buy transactions are eligible to be sold at this moment!\n')
                     else:
-                        print(f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. Please TOP UP!")
+                        print(f"{logging_time()} BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. Please TOP UP!")
                         email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enought BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, it will stop at this point. Please TOP UP!")
                         with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                             f.write(f'\n\n{logging_time()} Within SELL (part VIII):\n')
@@ -1064,8 +1043,7 @@ def main():
         pass
     elif platform == "win32":
         if isAdmin() != True:
-            print(
-                "\n\nPlease run the script with admin privileges as bot needs access to auto-update HOST's time with NIST servers!")
+            print("\n\n Please run the script with admin privileges as bot needs access to auto-update HOST's time with NIST servers!")
             exit(7)
     
     if RYBKA_MODE == "LIVE":
@@ -1090,7 +1068,7 @@ def main():
         time.sleep(3)
         clear_terminal()
     else:
-        print(f"PLEASE be clear about the mode you want the bot to operate in! RYBKA MODE set to [{RYBKA_MODE}]!")
+        print(f" PLEASE be clear about the mode you want the bot to operate in! RYBKA MODE set to [{RYBKA_MODE}]!")
         exit(7)
     
     if RSI_PERIOD < 10:
@@ -1148,7 +1126,7 @@ def main():
 
 
     print("\nNotifying user (via email) that bot is starting up.")
-    email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot is starting up. Find logs into the local folder: \n\t[{os.environ.get('CURRENT_EXPORT_DIR')}]")
+    email_sender(f"{logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot is starting up. Find logs into the local folder: \n\t[{os.environ.get('CURRENT_EXPORT_DIR')}]")
     bot_uptime()
     
     ws = websocket.WebSocketApp(SOCKET, on_open=on_open, on_close=on_close, on_message=on_message, on_error = on_error)
