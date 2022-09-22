@@ -26,7 +26,7 @@ default:
 #TODO to add a '|| $CI_COMMIT_BRANCH == "master"' reference once the 'master_shadow' branch updates are automatized
 .dev_branches_and_master_shadow:
   rules:
-    - if: '$CI_COMMIT_BRANCH == "v.[0-9]+.[0-9]+.*"'
+    - if: '$CI_COMMIT_BRANCH == "v.[0-9]+.[0-9]+.*" || $CI_PIPELINE_SOURCE == "schedule"'
       when: never
     - when: always
 
@@ -46,7 +46,7 @@ docker-build:
     - docker build --pull -t "${CI_REGISTRY_IMAGE}:${DOCKER_IMG_TAG}" .
     - docker push "${CI_REGISTRY_IMAGE}:${DOCKER_IMG_TAG}"
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master_shadow" || $CI_COMMIT_BRANCH == "v.[0-9]+.[0-9]+.*"'
+    - if: '$CI_COMMIT_BRANCH == "master_shadow" || $CI_COMMIT_BRANCH == "v.[0-9]+.[0-9]+.*" || $CI_PIPELINE_SOURCE == "schedule"'
       when: never
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: manual
@@ -104,7 +104,7 @@ DEMO_rybka_daily_24h_run:
   extends: DEMO_rybka_run
   timeout: 1d
   rules:
-    - if: $DAILY_RUN
+    - if: '$DAILY_RUN && $CI_PIPELINE_SOURCE == "schedule"'
       when: always
     - when: never
 
@@ -115,7 +115,7 @@ DEMO_rybka_weekly_7d_run:
   extends: DEMO_rybka_run
   timeout: 7d
   rules:
-    - if: $WEEKLY_RUN
+    - if: '$WEEKLY_RUN && $CI_PIPELINE_SOURCE == "schedule"'
       when: always
     - when: never
 
