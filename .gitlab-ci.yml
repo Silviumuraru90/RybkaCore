@@ -7,6 +7,7 @@ stages:
   - 🔬 unit testing
   - ☢️ functional testing
   - 🗂 binaries creation
+  - 🟪.🟪.🟩 patch versioning
 
 variables:
   DOCKER_IMG_TAG:
@@ -87,6 +88,7 @@ DEMO_rybka_run:
       - archived_logs/*
       - DEMO/*
     when: always
+  allow_failure: true
   timeout: 1h
 
 DEMO_restarter_run:
@@ -141,3 +143,39 @@ DEMO_restarter_weekly_7d_run:
   stage: 🗂 binaries creation
   script:
     - echo "(TO BE DONE) Binary Creation for Mac"
+
+
+##############################################
+#######  Versioning and shadow branch  #######
+##############################################
+
+patch_versioning:
+  stage: 🟪.🟪.🟩 patch versioning
+  needs: []
+  script:
+    - git config --global user.email silviumuraru90@gmail.com
+    - git config --global user.name "RYBKA Software CI"
+    - git clone https://gitlab.com/Silviu_space/rybka.git RYBKA
+    - pushd RYBKA
+    - git checkout master
+    - |
+      if [[ ! $(git log -1 --pretty=%B) =~ "new patch version" ]]; then
+        project_version=$(head -n 1 project_version)
+        project_version=${project_version%-*}
+        patch_version=${project_version//*.}
+        patch_version=$((patch_version+1))
+        project_version=${project_version%.*}
+        project_version="${project_version}.${patch_version}-${RELEASE_LIFE_CYCLE}"
+        echo "$project_version" > project_version
+        git add project_version
+        git commit -m "[Versioning] Pushing a new patch version [${project_version}]"
+        git push "https://git_bot:${GIT_BOT_TOKEN}@gitlab.com/Silviu_space/rybka.git/" master
+        popd
+        rm -rf RYBKA
+      else
+        echo "Previous commit already contains a patch versioning process. Nothing to do!"
+      fi
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+    - when: never
