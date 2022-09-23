@@ -49,6 +49,10 @@ docker-build:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master_shadow" || $CI_COMMIT_BRANCH == "v.[0-9]+.[0-9]+.*" || $CI_PIPELINE_SOURCE == "schedule"'
       when: never
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - Dockerfile
+      when: always
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: manual
 

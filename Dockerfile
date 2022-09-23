@@ -9,6 +9,8 @@ RUN     apt-get update && \
     
 RUN     sudo apt-get install -y apt-utils
 
+RUN     sudo apt-get install -y git
+
 RUN     apt-get install python3.8 -y
 RUN     sudo apt-get install python3.8-dev -y
 RUN     apt install python3-pip -y
