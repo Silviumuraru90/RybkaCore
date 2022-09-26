@@ -16,7 +16,8 @@ while True:
         print(f"\nRybka bot errored out with code {status}.\n\nExit code '7' is a custom-set exit code within bot's mechanics. Manual action is required, both Rybka and restarter module are stopped.")
         break
     else:
-        print(f"\nRybka bot errored out with code {status}. Checking internet availability...")
+        print(f"\nRybka bot errored out with code {status}, which is not a custom-hard-coded one. Proceeding to check internet availability...")
+        internet_down = False
         for i in range(1, 11):
             print(f"\nTesting internet. Attempt {i}/10")
             try:
@@ -25,13 +26,17 @@ while True:
                 time.sleep(5)
                 break
             except Exception as e:
+                internet_down = True
                 print("Internet seems to not be available")
                 print("Waiting 15 seconds and trying again")
                 time.sleep(15)
-        print("\n\nBot might be able to be restarted at this point.")
-        print("\n\nWill restart Rybka bot in 1 minute")
-        time.sleep(60)
+        if not internet_down:
+            print("\nRybka did not catch the internet connection as being down. Hence it might've been a different cause of failure")
+            print("\nApplying a 1-minute break and will restart Rybka bot afterwards!")
+            time.sleep(60)
+        else:
+            print("\nRestart action sent.")
     runs+=1
     if running_in_ci and runs == 3:
-        print("\nThis is a CI run. Breaking process after 3 attempts.")
+        print("\nThis is a CI run. Breaking the process now after the 3 attempts.")
         break
