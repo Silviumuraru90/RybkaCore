@@ -128,6 +128,7 @@ def user_initial_config():
     except Exception as e:
         print("\n ❌ Client initial config  -  FAILED")
         print(f"Error encountered at setting user config. via API KEY and API SECRET. Please check error below:\n{e}")
+        all_errors_file_update(f"Error encountered at setting user config. via API KEY and API SECRET. Please check error below:\n{e}")
         exit(7)
 
 
@@ -219,6 +220,7 @@ def log_files_creation():
         print("=====================================================================================================================================")
     except Exception as e:
         print(f"Attempt to create local folder [{current_export_dir}] and inner files for output analysis - [❌] FAILED - with error:\n{e}")
+        all_errors_file_update(f"Attempt to create local folder [{current_export_dir}] and inner files for output analysis - [❌] FAILED - with error:\n{e}")
         print("\n ❌ Files creation status  -  DONE\n")
         exit(7)
 
@@ -246,6 +248,7 @@ def ktbr_configuration():
                         print(f" ✅ Transaction [{k:11}]  ---  [{v[0]:4}] EGLD bought at price of [{v[1]:5}]$ per EGLD")
                 except Exception as e:
                     print(f"\n ❌ [{RYBKA_MODE}/ktbr] file contains wrong formatted content!\nFailing with error:\n\n{e}")
+                    all_errors_file_update(f" ❌ [{RYBKA_MODE}/ktbr] file contains wrong formatted content!\nFailing with error:\n\n{e}")
                     exit(7)
     else:
         try:
@@ -253,6 +256,7 @@ def ktbr_configuration():
             print(f" ✅ [{RYBKA_MODE}/ktbr] file created!")
         except Exception as e:
             print(f"\n ❌ [{RYBKA_MODE}/ktbr] file could NOT be created!\nFailing with error:\n\n{e}")
+            all_errors_file_update(f" ❌ [{RYBKA_MODE}/ktbr] file could NOT be created!\nFailing with error:\n\n{e}")
             exit(7)
     print("=====================================================================================================================================")
     print("=====================================================================================================================================")
@@ -273,6 +277,7 @@ def profit_file():
                     print(f"\n ✅ [{RYBKA_MODE}/usdt_profit] file contains the following already done profit: [{total_usdt_profit}]$\n")
                 except Exception as e:
                     print(f"\n ❌ [{RYBKA_MODE}/usdt_profit] file contains wrong formatted content!\nFailing with error:\n\n{e}")
+                    all_errors_file_update(f" ❌ [{RYBKA_MODE}/usdt_profit] file contains wrong formatted content!\nFailing with error:\n\n{e}")
                     exit(7)
     else:
         try:
@@ -280,6 +285,7 @@ def profit_file():
             print(f" ✅ [{RYBKA_MODE}/usdt_profit] file created!")
         except Exception as e:
             print(f"\n ❌ [{RYBKA_MODE}/usdt_profit] file could NOT be created!\nFailing with error:\n\n{e}")
+            all_errors_file_update(f" ❌ [{RYBKA_MODE}/usdt_profit] file could NOT be created!\nFailing with error:\n\n{e}")
             exit(7)
     print("=====================================================================================================================================")
     print("=====================================================================================================================================")
@@ -300,6 +306,7 @@ def commission_file():
                     print(f"\n ✅ [{RYBKA_MODE}/most_recent_commission] file contains the following most recent paid fee: [{bnb_commission}] BNB\n")
                 except Exception as e:
                     print(f"\n ❌ [{RYBKA_MODE}/most_recent_commission] file contains wrong formatted content!\nFailing with error:\n\n{e}")
+                    all_errors_file_update(f" ❌ [{RYBKA_MODE}/most_recent_commission] file contains wrong formatted content!\nFailing with error:\n\n{e}")
                     exit(7)
     else:
         try:
@@ -307,6 +314,7 @@ def commission_file():
             print(f" ✅ [{RYBKA_MODE}/most_recent_commission] file created!")
         except Exception as e:
             print(f"\n ❌ [{RYBKA_MODE}/most_recent_commission] file could NOT be created!\nFailing with error:\n\n{e}")
+            all_errors_file_update(f" ❌ [{RYBKA_MODE}/most_recent_commission] file could NOT be created!\nFailing with error:\n\n{e}")
             exit(7)
     print("=====================================================================================================================================")
     print("=====================================================================================================================================")
@@ -327,6 +335,7 @@ def nr_of_trades_file():
                     print(f"\n ✅ [{RYBKA_MODE}/number_of_buy_trades] file contains the following already done nr. of buy trades: [{nr_of_trades}]\n")
                 except Exception as e:
                     print(f"\n ❌ [{RYBKA_MODE}/number_of_buy_trades] file contains wrong formatted content!\nFailing with error:\n\n{e}")
+                    all_errors_file_update(f" ❌ [{RYBKA_MODE}/number_of_buy_trades] file contains wrong formatted content!\nFailing with error:\n\n{e}")
                     exit(7)
     else:
         try:
@@ -334,6 +343,7 @@ def nr_of_trades_file():
             print(f" ✅ [{RYBKA_MODE}/number_of_buy_trades] file created!")
         except Exception as e:
             print(f"\n ❌ [{RYBKA_MODE}/number_of_buy_trades] file could NOT be created!\nFailing with error:\n\n{e}")
+            all_errors_file_update(f" ❌ [{RYBKA_MODE}/number_of_buy_trades] file could NOT be created!\nFailing with error:\n\n{e}")
             exit(7)
     print("=====================================================================================================================================")
     print("=====================================================================================================================================")
@@ -355,6 +365,7 @@ def full_order_history_file():
             print(f" ✅ [{RYBKA_MODE}/full_order_history] file created!")
         except Exception as e:
             print(f"\n ❌ [{RYBKA_MODE}/full_order_history] file could NOT be created!\nFailing with error:\n\n{e}")
+            all_errors_file_update(f" ❌ [{RYBKA_MODE}/full_order_history] file could NOT be created!\nFailing with error:\n\n{e}")
             exit(7)
     print("=====================================================================================================================================")
     print("=====================================================================================================================================")
@@ -380,6 +391,22 @@ def ktbr_integrity():
             exit(7)
 
 
+def all_errors_file():
+    global RYBKA_MODE
+    print("\n=====================================================================================================================================")
+    print("=====================================================================================================================================")
+    if exists(f"{RYBKA_MODE}/errors_thrown"):
+        print(f"\n ✅ [{RYBKA_MODE}/errors_thrown] file already exists!\n")
+    else:
+        try:
+            open(f"{RYBKA_MODE}/errors_thrown", 'w', encoding="utf8").close()
+            print(f" ✅ [{RYBKA_MODE}/errors_thrown] file created!")
+        except Exception as e:
+            print(f"\n ❌ [{RYBKA_MODE}/errors_thrown] file could NOT be created!\nFailing with error:\n\n{e}")
+            exit(7)
+    print("=====================================================================================================================================")
+    print("=====================================================================================================================================")
+
 
 ###############################################
 ##############   AUX FUNCTIONS   ##############
@@ -387,7 +414,7 @@ def ktbr_integrity():
 
 
 def logging_time():
-    return(f'[ {datetime.now().strftime("%d/%m/%Y %H:%M:%S"):20}] ===')
+    return(f'[{datetime.now().strftime("%d/%m/%Y %H:%M:%S")}] ===')
 
 
 def back_up():
@@ -515,6 +542,7 @@ def email_sender(email_message):
             s.send_message(msg)
         except Exception as e:
             print(f"{logging_time()} Sending email notification failed with error:\n{e}\n\n")
+            all_errors_file_update(f"Sending email notification failed with error:\n{e}")
             print(f"{logging_time()} If it's an authentication issue and you did set the correct password for your gmail account, you have the know that the actual required one is the DEVICE password for your gmail.\n")
             print(f"{logging_time()} If you haven't got one configured yet, please set one up right here (connect with your sender address and then replace the password in the ENV with the newly created device password:\n       https://myaccount.google.com/apppasswords")
         del msg
@@ -541,6 +569,7 @@ def re_sync_time():
             print(f"\n{logging_time()} ✅ Time SYNC cmd completed successfully OR time is already synced")
     except Exception as e:
         print(f"\n{logging_time()} ❌ Time SYNC cmd DID NOT complete successfully:\n{e}")
+        all_errors_file_update(f" ❌ Time SYNC cmd DID NOT complete successfully:\n{e}")
 
 
 def isAdmin():
@@ -549,6 +578,16 @@ def isAdmin():
     except AttributeError:
         is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
     return is_admin
+
+
+
+def all_errors_file_update(error):
+    global RYBKA_MODE
+    try:
+        with open(f"{RYBKA_MODE}/errors_thrown", 'a', encoding="utf8") as f:
+            f.write(f"\nError thrown at {logging_time()} was: \n{error}\n")
+    except Exception as e:
+        print(f"Could not update 'errors_thrown' file due to error: \n{e}")
 
 
 
@@ -575,8 +614,10 @@ def on_close(ws, close_status_code, close_msg):
     shutil.move(os.environ.get('CURRENT_EXPORT_DIR'), archive_folder)
 
     if close_status_code or close_msg:
-        print(f"\n{logging_time()} Close status code: " + str(close_status_code))
-        print(f"\n{logging_time()} Close message: " + str(close_msg))
+        print(f"\n{logging_time()} Close status code: {str(close_status_code)}")
+        print(f"\n{logging_time()} Close message: {str(close_msg)}")
+        all_errors_file_update(f"Close status code: {str(close_status_code)}")
+        all_errors_file_update(f"Close message: {str(close_msg)}")
         email_sender(f"{logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working.\n\n Close Status Code: {str(close_status_code)}\n Close Message: {str(close_msg)}")
     else:
         pass
@@ -584,7 +625,13 @@ def on_close(ws, close_status_code, close_msg):
 
 
 def on_error(ws, message):
-    print(f'\n\n\n{logging_time()} Software encountered an error:\n{message}\n')
+    print(f'\n\n\n{logging_time()} Software encountered an error and got shutdown!\n')
+    if str(message).strip():
+        print(f'\n{logging_time()} Additional error message:\n{message}\n')
+        all_errors_file_update(f"Software encountered an error and got shutdown!\nAdditional error message:\n{message}\n")
+    else:
+        print(f'\n{logging_time()} No additional error message provided\n')
+        all_errors_file_update(f"Software encountered an error and got shutdown!\nNo additional error message provided\n")
 
 
 def on_message(ws, message):
@@ -626,6 +673,7 @@ def on_message(ws, message):
                 break
             except Exception as e:
                 print(f"{logging_time()} Binance server ping failed with error:\n{e}")
+                all_errors_file_update(f"Binance server ping failed with error:\n{e}")
                 time.sleep(3)
 
         with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_historical_prices", 'a', encoding="utf8") as f:
@@ -667,6 +715,7 @@ def on_message(ws, message):
                                 break
                             except Exception as e:
                                 print(f"\n{logging_time()} Account Balance Sync. - Failed as:\n{e}")
+                                all_errors_file_update(f"Account Balance Sync. - Failed as:\n{e}")
                                 time.sleep(3)
 
                     with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
@@ -836,6 +885,7 @@ def on_message(ws, message):
                                                     break
                                                 except Exception as e:
                                                     print(f"\n{logging_time()} Account Balance Sync. - Failed as:\n{e}")
+                                                    all_errors_file_update(f"Account Balance Sync. - Failed as:\n{e}")
                                                     time.sleep(3)
 
                                         print(f"\n\n{logging_time()} USDT balance is [{balance_usdt}]")
@@ -867,6 +917,7 @@ def on_message(ws, message):
                                 except Exception as e:
                                     print(f"\n\n{logging_time()} Make sure the API_KEY and API_SECRET have valid values and time server is synced with NIST's!")
                                     print(f"{logging_time()} Order could NOT be placed due to an error:\n{e}")
+                                    all_errors_file_update(f"Order could NOT be placed due to an error:\n{e}")
                                     with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                         f.write(f'\n\n{logging_time()} Within BUY (part VII):\n')
                                         f.write(f'{logging_time()} Order could NOT be placed due to an error:\n{e}\n')
@@ -902,6 +953,7 @@ def on_message(ws, message):
                                 break
                             except Exception as e:
                                 print(f"\n{logging_time()} Account Balance Sync. - Failed as:\n{e}")
+                                all_errors_file_update(f"Account Balance Sync. - Failed as:\n{e}")
                                 time.sleep(3)
 
                     with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
@@ -1008,6 +1060,7 @@ def on_message(ws, message):
                                                     break
                                                 except Exception as e:
                                                     print(f"\n{logging_time()} Account Balance Sync. - Failed as:\n{e}")
+                                                    all_errors_file_update(f"Account Balance Sync. - Failed as:\n{e}")
                                                     time.sleep(3)
                                         
                                         print(f"\n\n{logging_time()} USDT balance is [{balance_usdt}]")
@@ -1039,6 +1092,7 @@ def on_message(ws, message):
                                 except Exception as e:
                                     print(f"\n\n{logging_time()} Make sure the API_KEY and API_SECRET have valid values and time server is synced with NIST's!")
                                     print(f"{logging_time()} Order could NOT be placed due to an error:\n{e}")
+                                    all_errors_file_update(f"Order could NOT be placed due to an error:\n{e}")
                                     with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                         f.write(f'\n\n{logging_time()} Within SELL (part VI):\n')
                                         f.write(f'{logging_time()} Order could NOT be placed due to an error:\n{e}\n')
@@ -1069,10 +1123,13 @@ def main():
     global RYBKA_MODE
     global RSI_PERIOD
 
+    rybka_mode_folder_creation()
+    all_errors_file()
+
     clear_terminal()
 
     if platform == "linux" or platform == "linux2":
-        # TODO cmd of checing elevation privileges
+        # TODO cmd of checking elevation privileges
         pass
     elif platform == "win32":
         if isAdmin() != True:
@@ -1109,7 +1166,6 @@ def main():
         RSI_PERIOD = 10
 
     def main_files():
-        rybka_mode_folder_creation()
         ktbr_configuration()
         profit_file()
         commission_file()
@@ -1125,7 +1181,7 @@ def main():
     binance_system_status()
 
     if RYBKA_MODE == "LIVE":
-        for i in range(0,10):
+        for i in range(0,5):
             try:
                 binance_account_status()
                 binance_api_account_status()
@@ -1134,7 +1190,8 @@ def main():
                 break
             except Exception as e:
                 print(f"\nAccount-related functions failed to proceed successfully. Error:\n{e}")
-                time.sleep(3)
+                all_errors_file_update(f"Account-related functions failed to proceed successfully. Error:\n{e}")
+                time.sleep(5)
     
     main_files()
 
@@ -1158,8 +1215,6 @@ def main():
     print("=====================================================================================================================================")
     print("=====================================================================================================================================")
 
-
-    print("\nNotifying user (via email) that bot is starting up.")
     email_sender(f"{logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot is starting up. Find logs into the local folder: \n\t[{os.environ.get('CURRENT_EXPORT_DIR')}]")
     bot_uptime()
     
