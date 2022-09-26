@@ -175,7 +175,7 @@ patch_versioning:
     - pushd RYBKA
     - git checkout master
     - |
-      if [[ ! $(git log -1 --pretty=%B) =~ "new patch version" ]]; then
+      if [[ ! $(git log -1 --pretty=%B) =~ new.*version ]]; then
         project_version=$(head -n 1 project_version)
         project_version=${project_version%-*}
         patch_version=${project_version//*.}
