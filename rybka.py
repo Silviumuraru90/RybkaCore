@@ -107,6 +107,20 @@ subsequent_valid_rsi_counter = 0
 
 
 ###############################################
+########            LOGGING           #########
+###############################################
+
+def all_errors_file_update(error):
+    global RYBKA_MODE
+    try:
+        with open(f"{RYBKA_MODE}/errors_thrown", 'a', encoding="utf8") as f:
+            f.write(f"\nError thrown at {logging_time()} was: \n{error}\n")
+    except Exception as e:
+        print(f"Could not update 'errors_thrown' file due to error: \n{e}")
+
+
+
+###############################################
 ########      UNIQUE ID FUNCTION      #########
 ###############################################
 
@@ -371,6 +385,24 @@ def full_order_history_file():
     print("=====================================================================================================================================")
 
 
+def real_time_balances():
+    global RYBKA_MODE
+    print("\n=====================================================================================================================================")
+    print("=====================================================================================================================================")
+    if exists(f"{RYBKA_MODE}/real_time_balances"):
+        print(f"\n ✅ [{RYBKA_MODE}/real_time_balances] file already exists!\n")
+    else:
+        try:
+            open(f"{RYBKA_MODE}/real_time_balances", 'w', encoding="utf8").close()
+            print(f" ✅ [{RYBKA_MODE}/real_time_balances] file created!")
+        except Exception as e:
+            print(f"\n ❌ [{RYBKA_MODE}/real_time_balances] file could NOT be created!\nFailing with error:\n\n{e}")
+            all_errors_file_update(f" ❌ [{RYBKA_MODE}/real_time_balances] file could NOT be created!\nFailing with error:\n\n{e}")
+            exit(7)
+    print("=====================================================================================================================================")
+    print("=====================================================================================================================================")
+
+
 def ktbr_integrity():
     global balance_egld
     global RYBKA_MODE
@@ -388,6 +420,7 @@ def ktbr_integrity():
         else:
             print("\n ❌ KTBR integrity status  - INVALID\n")
             print("This means that the amount of EGLD you have in cloud is actually less now, than what you retain in the 'ktbr' file. Probably you've spent a part of it in the meantime.")
+            all_errors_file_update(f" ❌ KTBR integrity status  - INVALID\nThis means that the amount of EGLD you have in cloud is actually less now, than what you retain in the 'ktbr' file. Probably you've spent a part of it in the meantime.")
             exit(7)
 
 
@@ -580,14 +613,21 @@ def isAdmin():
     return is_admin
 
 
-
-def all_errors_file_update(error):
+def real_time_balances_update():
     global RYBKA_MODE
+    global balance_usdt
+    global balance_egld
+    global balance_bnb
+
     try:
-        with open(f"{RYBKA_MODE}/errors_thrown", 'a', encoding="utf8") as f:
-            f.write(f"\nError thrown at {logging_time()} was: \n{error}\n")
+        with open(f"{RYBKA_MODE}/real_time_balances", 'w', encoding="utf8") as f:
+            f.write("Most recent balances update shows:\n")
+            f.write(f"\n{logging_time()} EGLD balance is: {balance_egld}")
+            f.write(f"\n{logging_time()} USDT balance is: {balance_usdt}")
+            f.write(f"\n{logging_time()} BNB  balance is: {balance_bnb}")
     except Exception as e:
-        print(f"Could not update 'errors_thrown' file due to error: \n{e}")
+        print(f"Could not update balance file due to error: \n{e}")
+        all_errors_file_update(f"Could not update balance file due to error: \n{e}")
 
 
 
@@ -711,6 +751,7 @@ def on_message(ws, message):
                         for i in range(0,10):
                             try:
                                 account_balance_update()
+                                real_time_balances_update()
                                 print(f"\n{logging_time()} Account Balance Sync. - Successful")
                                 break
                             except Exception as e:
@@ -883,6 +924,7 @@ def on_message(ws, message):
                                                 for i in range(0,10):
                                                     try:
                                                         account_balance_update()
+                                                        real_time_balances_update()
                                                         print(f"\n{logging_time()} Account Balance Sync. - Successful")
                                                         break
                                                     except Exception as e:
@@ -956,6 +998,7 @@ def on_message(ws, message):
                         for i in range(0,10):
                             try:
                                 account_balance_update()
+                                real_time_balances_update()
                                 print(f"\n{logging_time()} Account Balance Sync. - Successful")
                                 break
                             except Exception as e:
@@ -1063,6 +1106,7 @@ def on_message(ws, message):
                                             for i in range(0,10):
                                                 try:
                                                     account_balance_update()
+                                                    real_time_balances_update()
                                                     print(f"\n{logging_time()} Account Balance Sync. - Successful")
                                                     break
                                                 except Exception as e:
@@ -1178,6 +1222,7 @@ def main():
         commission_file()
         nr_of_trades_file()
         full_order_history_file()
+        real_time_balances()
         back_up()
 
     re_sync_time()
@@ -1200,6 +1245,7 @@ def main():
                 all_errors_file_update(f"Account-related functions failed to proceed successfully. Error:\n{e}")
                 time.sleep(5)
     
+    real_time_balances_update()
     main_files()
 
     if RYBKA_MODE == "DEMO":
