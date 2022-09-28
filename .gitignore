@@ -9,3 +9,6 @@ archived_logs/
 LIVE/
 DEMO/
 *_*_*_*_*_*_*
+
+# py
+__pycache__
