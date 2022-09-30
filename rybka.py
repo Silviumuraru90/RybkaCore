@@ -224,7 +224,7 @@ def log_files_creation():
         log.INFO_BOLD(" ✅ Files creation status  -  DONE")
         log.INFO(" ")
         log.INFO("=====================================================================================================================================")
-        log.INFO(f" Check files created for this run, under the newly created local folder [{current_export_dir}]")
+        log.INFO(f" Check files created for this run, under the newly created local folder {bcolors.BOLD}[{current_export_dir}]{bcolors.ENDC}")
         log.INFO("=====================================================================================================================================")
         log.INFO(" ")
     except Exception as e:
@@ -251,7 +251,7 @@ def ktbr_configuration():
                     ktbr_config = json.loads(f.read())
                     log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/ktbr] file contains the following past transactions:\n")
                     for k, v in ktbr_config.items():
-                        log.INFO(f" 💎 Transaction [{k}]  ---  [{v[0]}] EGLD bought at price of [{v[1]}] USDT per EGLD")
+                        log.INFO(f" 💎 Transaction [{k}]  ---  [{bcolors.BOLD}{v[0]}{bcolors.ENDC}{bcolors.OKGREEN}] \t EGLD bought at price of [{bcolors.BOLD}{v[1]}{bcolors.ENDC}{bcolors.OKGREEN}] \t USDT per EGLD{bcolors.ENDC}")
                 except Exception as e:
                     log.FATAL_7(f"[{RYBKA_MODE}/ktbr] file contains wrong formatted content!\nFailing with error:\n{e}")
     else:
@@ -425,20 +425,22 @@ def software_config_params():
     log.INFO_BOLD(f"\t\t\t\t             - MODE: {RYBKA_MODE} -           \n\n")
                     
     log.INFO(f"Rybka software started with the following parameters:\n")
-    log.INFO_BOLD(f"RYBKA_MODE      set to: {RYBKA_MODE:>50}")
+    log.INFO_BOLD(f" 🔘 RYBKA_MODE      set to: {RYBKA_MODE:>50}")
     if DEBUG_LVL:
         log.INFO_BOLD(f"{bcolors.OKCYAN}DEBUG_LVL       set to: {DEBUG_LVL:>50}{bcolors.ENDC}")
-    log.INFO_BOLD(f"SOCKET          set to: {SOCKET:>50}")
-    log.INFO_BOLD(f"TRADE SYMBOL    set to: {TRADE_SYMBOL:>50}")
-    log.INFO_BOLD(f"TRADE QUANTITY  set to: {TRADE_QUANTITY:>50} coins per transaction")
-    log.INFO_BOLD(f"MIN PROFIT      set to: {MIN_PROFIT:>50} USDT per transaction")
-    log.INFO_BOLD(f"RSI PERIOD      set to: {RSI_PERIOD:>50} minutes")
-    log.INFO_BOLD(f"RSI FOR BUY     set to: {RSI_FOR_BUY:>50} threshold")
-    log.INFO_BOLD(f"RSI FORSELL     set to: {RSI_FOR_SELL:>50} threshold")
-    log.INFO_BOLD(f"EMAIL SWITCH    set to: {str(RYBKA_EMAIL_SWITCH):>50}")
+    log.INFO_BOLD(f" 🔘 SOCKET          set to: {SOCKET:>50}")
+    log.INFO_BOLD(f" 🔘 TRADE SYMBOL    set to: {TRADE_SYMBOL:>50}")
+    log.INFO_BOLD(f" 🔘 TRADE QUANTITY  set to: {TRADE_QUANTITY:>50} coins per transaction")
+    log.INFO_BOLD(f" 🔘 MIN PROFIT      set to: {MIN_PROFIT:>50} USDT per transaction")
+    log.INFO_BOLD(f" 🔘 RSI PERIOD      set to: {RSI_PERIOD:>50} minutes")
+    log.INFO_BOLD(f" 🔘 RSI FOR BUY     set to: {RSI_FOR_BUY:>50} threshold")
+    log.INFO_BOLD(f" 🔘 RSI FORSELL     set to: {RSI_FOR_SELL:>50} threshold")
+    log.INFO_BOLD(f" 🔘 EMAIL SWITCH    set to: {str(RYBKA_EMAIL_SWITCH):>50}")
     if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_RECIPIENT_EMAIL:
-        log.INFO_BOLD(f"SENDER EMAIL    set to: {RYBKA_EMAIL_SENDER_EMAIL:>50}")
-        log.INFO_BOLD(f"RECIPIENT EMAIL set to: {RYBKA_EMAIL_RECIPIENT_EMAIL:>50}")
+        log.INFO_BOLD(f" 🔘 SENDER EMAIL    set to: {RYBKA_EMAIL_SENDER_EMAIL:>50}")
+        log.INFO_BOLD(f" 🔘 RECIPIENT EMAIL set to: {RYBKA_EMAIL_RECIPIENT_EMAIL:>50}")
+    log.INFO(" ")
+    log.INFO(" ")
     log.INFO(" ")
     log.INFO_BOLD(" ✅ Initial params config  -  DONE")
 
@@ -1197,11 +1199,10 @@ def main():
         log.INFO(" ")
 
     log.INFO("=====================================================================================================================================")
-    log.INFO("=====================================================================================================================================")
-    log.INFO_BOLD(f"Account's AVAILABLE balance is:\n\t\t\t\t\t💵 USDT  ---  [{balance_usdt}]\n\t\t\t\t\t💸 EGLD  ---  [{balance_egld}]\n\n\t\t\t\t\t💸 BNB   ---  [{balance_bnb}] (for transaction fees)")
+    log.INFO_BOLD(f"Account's AVAILABLE balance is:\n\t\t\t\t\t⚖️  USDT  ---  [{balance_usdt}]\n\t\t\t\t\t⚖️  EGLD  ---  [{balance_egld}]\n\n\t\t\t\t\t⚖️  BNB   ---  [{balance_bnb}] (for transaction fees)")
     log.INFO("=====================================================================================================================================")
     if RYBKA_MODE == "LIVE":
-        log.INFO_BOLD(f"Account's LOCKED balance in limit orders is:\n\t\t\t\t\tLOCKED USDT  ---  [{locked_balance_usdt}]\n\t\t\t\t\tLOCKED EGLD  ---  [{locked_balance_egld}]\n\n\t\t\t\t\tLOCKED BNB   ---  [{locked_balance_bnb}]")
+        log.INFO_BOLD(f"Account's LOCKED balance in limit orders is:\n\t\t\t\t\t⚖️  LOCKED USDT  ---  [{locked_balance_usdt}]\n\t\t\t\t\t⚖️  LOCKED EGLD  ---  [{locked_balance_egld}]\n\n\t\t\t\t\t⚖️  LOCKED BNB   ---  [{locked_balance_bnb}]")
         log.INFO("=====================================================================================================================================")
     log.INFO("=====================================================================================================================================")
     log.INFO_BOLD(f"Rybka's historical registered PROFIT is:\n\t\t\t\t\t💰 [{total_usdt_profit}] USDT")
@@ -1209,8 +1210,7 @@ def main():
     log.INFO("=====================================================================================================================================")
 
     email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot is starting up. Find logs into the local folder: \n\t[{current_export_dir}]")
-    bot_uptime()
-    
+
     ws = websocket.WebSocketApp(SOCKET, on_open=on_open, on_close=on_close, on_message=on_message, on_error = on_error)
     ws.run_forever()
 
