@@ -103,8 +103,8 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 |:-------------------------------------------|:------:|:------:|:----------------------------------------------------------------------------------:| :--------:|
 |`RYBKA_DEBUG_LVL`                      | integer | Values ➡️ `1`, `2` or `3` <br>1️⃣ ➜ <b>Debug</b> &emsp; &emsp; &emsp;&nbsp;<br> 2️⃣ ➜ <b>Verbose</b> &emsp; &emsp; &nbsp;&nbsp; <br> 3️⃣ ➜ <b>&nbsp;High Verbosity</b><br> (Get from environment)                           | ❌        | ❌ | 
 |`RYBKA_MODE `                           | string | Values ➡️ `DEMO` or `LIVE` <br> (Get from environment)                           | ❌        | `DEMO` | 
-|`BIN_KEY`                              | string | Binance <b>Auth</b>orization <b>KEY</b> <br> (Get from environment)                            | ✅ <br> if `RYBKA_MODE` is `LIVE`        | ❌ | 
-|`BIN_SECRET`                           | string | Binance <b>Auth</b>orization <b>SECRET</b> <br> (Get from environment)                           | ✅ <br> if `RYBKA_MODE` is `LIVE`       | ❌ | 
+|`BIN_KEY`                              | string | Binance <b>Auth</b>orization <b>KEY</b> <br> (Get from environment)                            | ✅ <br> if `RYBKA_MODE` is either `LIVE` or `DEMO`        | ❌ | 
+|`BIN_SECRET`                           | string | Binance <b>Auth</b>orization <b>SECRET</b> <br> (Get from environment)                           | ✅ <br> if `RYBKA_MODE` is either `LIVE` or `DEMO`      | ❌ | 
 |`RYBKA_RSI_FOR_BUY`                     | integer | <b>RSI threshold for BUY</b> actions <br> Values ➡️ (`0` ↔️ `50`) <br> The higher the value, the more sensitive the bot on buy actions <br> (Get from environment)                           | ❌        | `30` | 
 |`RYBKA_RSI_FOR_SELL`                    | integer | <b>RSI threshold for SELL</b> actions <br> Values ➡️ (`50` ↔️ `100`) <br> The lower the value, the more sensitive the bot on sell actions <br> (Get from environment)                           | ❌        | `70` | 
 |`RYBKA_TRADE_QUANTITY`                  | integer | The <b>crypto-coin amount</b> to buy on each transaction <br> (Get from environment)                           | ❌        | `0.4` | 
@@ -115,6 +115,9 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 |`RYBKA_EMAIL_RECIPIENT_EMAIL`           | string | <b>Email</b> for the account receiving the email <br> (Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
 |`RYBKA_EMAIL_RECIPIENT_NAME`            | string | <b>Name</b> of the person receiving the email <br> (Get from environment)                           | ❌        | `User` | 
 |`RYBKA_DISCLAIMER`                      | boolean | Values ➡️ `True` or `False` <br> (Get from environment)                           | ❌        | `True` | 
+|`RYBKA_DEMO_BALANCE_USDT`                      | integer | Amount of `USDT` the bot is provided with, in `DEMO` mode <br> (Get from environment)                           | ❌        | `1500` | 
+|`RYBKA_DEMO_BALANCE_EGLD`                      | integer | Amount of `EGLD` the bot is provided with, in `DEMO` mode <br> (Get from environment)                           | ❌        | `100` | 
+|`RYBKA_DEMO_BALANCE_BNB`                      | integer | Amount of `BNB` the bot is provided with, in `DEMO` mode <br> (Get from environment)                           | ❌        | `0.2` | 
 
 <br>
 

@@ -6,6 +6,8 @@ import os
 # Rybka proj. specific prerequisites
 class Rybka_py_env_bootstrap():
     def __init__(self):
+        self.BIN_KEY = os.environ.get("BIN_KEY")
+        self.BIN_SECRET = os.environ.get("BIN_SECRET")
         self.DEBUG_LVL = os.environ.get("RYBKA_DEBUG_LVL")
         self.RYBKA_MODE = os.environ.get("RYBKA_MODE", "DEMO")
         self.TRADE_SYMBOL = os.environ.get("RYBKA_TRADE_SYMBOL", "EGLDUSDT")
@@ -21,6 +23,9 @@ class Rybka_py_env_bootstrap():
         self.RYBKA_EMAIL_RECIPIENT_EMAIL = os.environ.get("RYBKA_EMAIL_RECIPIENT_EMAIL")
         self.RYBKA_EMAIL_RECIPIENT_NAME = os.environ.get("RYBKA_EMAIL_RECIPIENT_NAME", "User")
         self.SET_DISCLAIMER = os.environ.get("RYBKA_DISCLAIMER", "True")
-
+        if self.RYBKA_MODE == "DEMO":
+            self.RYBKA_DEMO_BALANCE_USDT = os.environ.get("RYBKA_DEMO_BALANCE_USDT", 1500)
+            self.RYBKA_DEMO_BALANCE_EGLD = os.environ.get("RYBKA_DEMO_BALANCE_EGLD", 100)
+            self.RYBKA_DEMO_BALANCE_BNB = os.environ.get("RYBKA_DEMO_BALANCE_BNB", 0.2)
 
 bootstrap = Rybka_py_env_bootstrap()

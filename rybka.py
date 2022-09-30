@@ -79,9 +79,9 @@ SET_DISCLAIMER = bootstrap.SET_DISCLAIMER
 ###############################################
 
 if RYBKA_MODE == "DEMO":
-    balance_usdt = os.environ.get("RYBKA_DEMO_BALANCE_USDT", 1500)
-    balance_egld = os.environ.get("RYBKA_DEMO_BALANCE_EGLD", 100)
-    balance_bnb = os.environ.get("RYBKA_DEMO_BALANCE_BNB", 0.2)
+    balance_usdt = bootstrap.RYBKA_DEMO_BALANCE_USDT
+    balance_egld = bootstrap.RYBKA_DEMO_BALANCE_EGLD
+    balance_bnb = bootstrap.RYBKA_DEMO_BALANCE_BNB
 
 
 
@@ -126,12 +126,12 @@ def id_generator(size=10, chars=string_str.ascii_uppercase + string_str.digits):
 ###############################################
 #########      ACCOUNT FUNCTIONS      #########
 ###############################################
-        
-        
+
+
 def user_initial_config():
     global client
     try:
-        client = Client(os.environ.get('BIN_KEY'), os.environ.get('BIN_SECRET'))
+        client = Client(bootstrap.BIN_KEY, bootstrap.BIN_SECRET)
         log.INFO_BOLD(" ✅ Client initial config  -  DONE")
     except Exception as e:
         log.FATAL_7(f"Client initial config  -  FAILED\nError encountered at setting user config. via API KEY and API SECRET. Please check error below:\n{e}")
@@ -213,7 +213,7 @@ def log_files_creation():
             f.write(f"SOCKET          set to: {SOCKET:>50}\n")
             f.write(f"TRADE SYMBOL    set to: {TRADE_SYMBOL:>50}\n")
             f.write(f"TRADE QUANTITY  set to: {TRADE_QUANTITY:>50} coins per transaction\n")
-            f.write(f"MIN PROFIT      set to: {MIN_PROFIT:>50} $ per transaction\n")
+            f.write(f"MIN PROFIT      set to: {MIN_PROFIT:>50} USDT per transaction\n")
             f.write(f"RSI PERIOD      set to: {RSI_PERIOD:>50} minutes\n")
             f.write(f"RSI FOR BUY     set to: {RSI_FOR_BUY:>50} threshold\n")
             f.write(f"RSI FOR SELL    set to: {RSI_FOR_SELL:>50} threshold\n")
@@ -431,7 +431,7 @@ def software_config_params():
     log.INFO_BOLD(f"SOCKET          set to: {SOCKET:>50}")
     log.INFO_BOLD(f"TRADE SYMBOL    set to: {TRADE_SYMBOL:>50}")
     log.INFO_BOLD(f"TRADE QUANTITY  set to: {TRADE_QUANTITY:>50} coins per transaction")
-    log.INFO_BOLD(f"MIN PROFIT      set to: {MIN_PROFIT:>50} $ per transaction")
+    log.INFO_BOLD(f"MIN PROFIT      set to: {MIN_PROFIT:>50} USDT per transaction")
     log.INFO_BOLD(f"RSI PERIOD      set to: {RSI_PERIOD:>50} minutes")
     log.INFO_BOLD(f"RSI FOR BUY     set to: {RSI_FOR_BUY:>50} threshold")
     log.INFO_BOLD(f"RSI FORSELL     set to: {RSI_FOR_SELL:>50} threshold")
@@ -672,7 +672,7 @@ def on_message(ws, message):
                 time.sleep(3)
 
         with open(f"{current_export_dir}/{TRADE_SYMBOL}_historical_prices", 'a', encoding="utf8") as f:
-            f.write(f'{log.logging_time()} {TRADE_SYMBOL} price at [{datetime.now().strftime("%d/%m/%Y %H:%M:%S")}] is [{candle_close_price}]\n')
+            f.write(f'{log.logging_time()} Price of [EGLD] is [{candle_close_price} USDT]\n')
 
         if len(closed_candles) < 11:
             log.INFO(f"#####################################################################################################################################")
@@ -704,13 +704,14 @@ def on_message(ws, message):
                         for i in range(1,11):
                             try:
                                 account_balance_update()
-                                real_time_balances_update()
                                 log.INFO_BOLD(f"Account Balance Sync. - Successful")
                                 break
                             except Exception as e:
                                 if i == 10:
                                     log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
                                 time.sleep(3)
+
+                    real_time_balances_update()
 
                     with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                         f.write(f'\n\n\n{log.logging_time()} Within BUY (part I):\n')
@@ -843,7 +844,7 @@ def on_message(ws, message):
                                         if order_status['status'] == "FILLED":
                                             log.INFO_BOLD_UNDERLINE(" ✅ BUY Order filled successfully!\n")
                                             # avoid rounding up on quantity & price bought
-                                            log.INFO_BOLD(f"Transaction ID [{order['orderId']}] - Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] $")
+                                            log.INFO_BOLD(f"Transaction ID [{order['orderId']}] - Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT")
 
                                             bnb_commission = float(order['fills'][0]['commission'])
                                             with open(f"{RYBKA_MODE}/most_recent_commission", 'w', encoding="utf8") as f:
@@ -862,7 +863,7 @@ def on_message(ws, message):
                                                 f.write(f'\n\n{log.logging_time()} Within BUY (part V):\n')
                                                 f.write(f"{log.logging_time()} HEATMAP ALLOWS BUYING!\n")
                                                 f.write(f"{log.logging_time()} {'Order time (order_time) is':90} {str(order_time):40}")
-                                                f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] $\n")
+                                                f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n")
                                                 f.write(f"{log.logging_time()} {'Order (order) is':90} {str(json.dumps(order))}\n")
                                                 f.write(f"{log.logging_time()} {'Order status (order_status) is':90} {str(json.dumps(order_status))}\n")
                                                 f.write(f"{log.logging_time()} {'Order commision is':90} {str(order['fills'][0]['commission']):40}\n")
@@ -874,13 +875,14 @@ def on_message(ws, message):
                                                 for i in range(1,11):
                                                     try:
                                                         account_balance_update()
-                                                        real_time_balances_update()
                                                         log.INFO_BOLD(f"Account Balance Sync. - Successful")
                                                         break
                                                     except Exception as e:
                                                         if i == 10:
                                                             log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
                                                         time.sleep(3)
+
+                                            real_time_balances_update()
 
                                             log.DEBUG(f"USDT balance is [{balance_usdt}]")
                                             log.DEBUG(f"EGLD balance is [{balance_egld}]")
@@ -890,10 +892,10 @@ def on_message(ws, message):
 
                                             with open(f"{current_export_dir}/{TRADE_SYMBOL}_order_history", 'a', encoding="utf8") as f:
                                                 f.write(f'{log.logging_time()} Buy order done now at [{str(order_time)}]\n')
-                                                f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] $\n\n\n")
+                                                f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n\n\n")
                                             with open(f"{RYBKA_MODE}/full_order_history", 'a', encoding="utf8") as f:
                                                 f.write(f'{log.logging_time()} Buy order done now at [{str(order_time)}]\n')
-                                                f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] $\n\n\n")
+                                                f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n\n\n")
                                             
                                             subsequent_valid_rsi_counter = 1
 
@@ -919,7 +921,7 @@ def on_message(ws, message):
                             log.WARN(f"Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].")
                             #TODO add log.WARN message and email func within the same 'if' clause for enabling / disabling such emails
                             log.WARN(f"Notifying user (via email) that bot might need more money for buy actions, if possible.")
-                            email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot might be able to buy more, but doesn't have enought USDT in balance [{balance_usdt}]$\n\nTOP UP if possible!")
+                            email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot might be able to buy more, but doesn't have enought USDT in balance [{balance_usdt}]\n\nTOP UP if possible!")
                             with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                 f.write(f'\n\n{log.logging_time()} Within BUY (part IX):\n')
                                 f.write(f'{log.logging_time()} Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].\n')
@@ -940,13 +942,14 @@ def on_message(ws, message):
                         for i in range(1,11):
                             try:
                                 account_balance_update()
-                                real_time_balances_update()
                                 log.INFO_BOLD(f"Account Balance Sync. - Successful")
                                 break
                             except Exception as e:
                                 if i == 10:
                                     log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
                                 time.sleep(3)
+
+                    real_time_balances_update()
 
                     with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                         f.write(f'\n\n\n{log.logging_time()} Within SELL (part I):\n')
@@ -1013,7 +1016,7 @@ def on_message(ws, message):
                                         qtty_aux = int(float(order['executedQty']) * 10 ** 4) / 10 ** 4
                                         price_aux = int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4
 
-                                        log.INFO_BOLD(f"Transaction ID [{order['orderId']}] - Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] $")
+                                        log.INFO_BOLD(f"Transaction ID [{order['orderId']}] - Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT")
 
                                         total_usdt_profit = int((total_usdt_profit + (price_aux - ktbr_config[sell][1]) * ktbr_config[sell][0]) * 10 ** 4) / 10 ** 4
                                         with open(f"{RYBKA_MODE}/usdt_profit", 'w', encoding="utf8") as f:
@@ -1027,7 +1030,7 @@ def on_message(ws, message):
                                             f.write(f'\n\n{log.logging_time()} Within SELL (part III):\n')
                                             f.write(f"{log.logging_time()} Selling buy [{str(sell):11}] {'of qtty':90} [{str(ktbr_config[sell][0]):5}]\n")
                                         
-                                        previous_buy_info = f"What got sold: BUY ID [{str(sell):11}] of QTTY [{str(ktbr_config[sell][0]):5}] at bought PRICE of [{str(ktbr_config[sell][1]):5}] $"
+                                        previous_buy_info = f"What got sold: BUY ID [{str(sell)}] of QTTY [{str(ktbr_config[sell][0]):5}] at bought PRICE of [{str(ktbr_config[sell][1]):5}] USDT"
 
                                         del ktbr_config[sell]
                                         with open(f"{RYBKA_MODE}/ktbr", 'w', encoding="utf8") as f:
@@ -1036,7 +1039,7 @@ def on_message(ws, message):
                                         with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                             f.write(f'\n\n{log.logging_time()} Within SELL (part IV):\n')
                                             f.write(f"{log.logging_time()} {'Order time (order_time) is':90} {str(order_time):40}")
-                                            f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{str(price_aux)}] $\n")
+                                            f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{str(price_aux)}] USDT\n")
                                             f.write(f"{log.logging_time()} {'Order (order) is':90} {str(json.dumps(order))}\n")
                                             f.write(f"{log.logging_time()} {'Order status (order_status) is':90} {str(json.dumps(order_status))}\n")
                                             f.write(f"{log.logging_time()} {'Order commission is':90} {str(order['fills'][0]['commission']):40}\n")
@@ -1048,7 +1051,6 @@ def on_message(ws, message):
                                             for i in range(1,11):
                                                 try:
                                                     account_balance_update()
-                                                    real_time_balances_update()
                                                     log.INFO_BOLD(f"Account Balance Sync. - Successful")
                                                     break
                                                 except Exception as e:
@@ -1056,6 +1058,8 @@ def on_message(ws, message):
                                                         log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
                                                     time.sleep(3)
                                         
+                                        real_time_balances_update()
+
                                         log.DEBUG(f"USDT balance is [{balance_usdt}]")
                                         log.DEBUG(f"EGLD balance is [{balance_egld}]")
                                         log.DEBUG(f"BNB  balance is [{balance_bnb}]")
@@ -1064,11 +1068,11 @@ def on_message(ws, message):
                                         
                                         with open(f"{current_export_dir}/{TRADE_SYMBOL}_order_history", 'a', encoding="utf8") as f:
                                             f.write(f'{log.logging_time()} Sell order done now at [{str(order_time)}]\n')
-                                            f.write(f"{log.logging_time()} Transaction ID [{order['orderId']}] - Sold [{str(qtty_aux)}] EGLD at price per 1 EGLD of [{str(price_aux)}] $\n")
+                                            f.write(f"{log.logging_time()} Transaction ID [{order['orderId']}] - Sold [{str(qtty_aux)}] EGLD at price per 1 EGLD of [{str(price_aux)}] USDT\n")
                                             f.write(f"{log.logging_time()} {previous_buy_info} \n\n\n")
                                         with open(f"{RYBKA_MODE}/full_order_history", 'a', encoding="utf8") as f:
                                             f.write(f'{log.logging_time()} Sell order done now at [{str(order_time)}]\n')
-                                            f.write(f"{log.logging_time()} Transaction ID [{order['orderId']}] - Sold [{str(qtty_aux)}] EGLD at price per 1 EGLD of [{str(price_aux)}] $\n")
+                                            f.write(f"{log.logging_time()} Transaction ID [{order['orderId']}] - Sold [{str(qtty_aux)}] EGLD at price per 1 EGLD of [{str(price_aux)}] USDT\n")
                                             f.write(f"{log.logging_time()} {previous_buy_info} \n\n\n")
 
                                         subsequent_valid_rsi_counter = 1
