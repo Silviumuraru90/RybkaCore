@@ -194,7 +194,7 @@ def account_balance_update():
 
 def log_files_creation():
     
-    current_export_dir = f'{TRADE_SYMBOL}_{datetime.now().strftime("%d_%m_%Y")}_AT_{datetime.now().strftime("%H_%M_%S")}_{id_generator()}'
+    current_export_dir = f'{RYBKA_MODE}_{TRADE_SYMBOL}_{datetime.now().strftime("%d_%m_%Y")}_AT_{datetime.now().strftime("%H_%M_%S")}_{id_generator()}'
     os.environ["CURRENT_EXPORT_DIR"] = current_export_dir
     os.mkdir(current_export_dir)
     
@@ -251,7 +251,7 @@ def ktbr_configuration():
                     ktbr_config = json.loads(f.read())
                     log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/ktbr] file contains the following past transactions:\n")
                     for k, v in ktbr_config.items():
-                        log.INFO(f" 💎 Transaction [{k:11}]  ---  [{v[0]:4}] EGLD bought at price of [{v[1]:5}] USDT per EGLD")
+                        log.INFO(f" 💎 Transaction [{k}]  ---  [{v[0]}] EGLD bought at price of [{v[1]}] USDT per EGLD")
                 except Exception as e:
                     log.FATAL_7(f"[{RYBKA_MODE}/ktbr] file contains wrong formatted content!\nFailing with error:\n{e}")
     else:
