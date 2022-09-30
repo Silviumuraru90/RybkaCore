@@ -185,7 +185,7 @@ patch_versioning:
         echo "$project_version" > project_version
         git add project_version
         git commit -m "[Versioning] Pushing a new patch version [${project_version}]"
-        git push "https://git_bot:${GIT_BOT_TOKEN}@gitlab.com/Silviu_space/rybka.git/" master
+        git push -o ci.skip "https://git_bot:${GIT_BOT_TOKEN}@gitlab.com/Silviu_space/rybka.git/" master
         popd
         rm -rf RYBKA
       else
