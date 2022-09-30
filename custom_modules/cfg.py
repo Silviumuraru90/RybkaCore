@@ -20,7 +20,7 @@ class Rybka_py_env_bootstrap():
         self.RYBKA_EMAIL_SENDER_DEVICE_PASSWORD = os.environ.get("RYBKA_EMAIL_SENDER_DEVICE_PASSWORD")
         self.RYBKA_EMAIL_RECIPIENT_EMAIL = os.environ.get("RYBKA_EMAIL_RECIPIENT_EMAIL")
         self.RYBKA_EMAIL_RECIPIENT_NAME = os.environ.get("RYBKA_EMAIL_RECIPIENT_NAME", "User")
-        self.SET_DISCLAIMER = os.environ.get("RYBKA_DISCLAIMER", "enabled")
+        self.SET_DISCLAIMER = os.environ.get("RYBKA_DISCLAIMER", "True")
 
 
 bootstrap = Rybka_py_env_bootstrap()

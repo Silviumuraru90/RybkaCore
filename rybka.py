@@ -1120,7 +1120,7 @@ def main():
         time.sleep(3)
         clear_terminal()
 
-        if not SET_DISCLAIMER == "disabled":
+        if not SET_DISCLAIMER == "False":
             disclaimer()
             clear_terminal()
     elif RYBKA_MODE == "DEMO":
