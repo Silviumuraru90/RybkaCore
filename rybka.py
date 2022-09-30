@@ -112,7 +112,7 @@ multiple_sells = "disabled"
 nr_of_trades = 0
 subsequent_valid_rsi_counter = 0
 
-
+current_export_dir = ""
 
 ###############################################
 ########      UNIQUE ID FUNCTION      #########
@@ -193,9 +193,9 @@ def account_balance_update():
 
 
 def log_files_creation():
-    
+    global current_export_dir
+
     current_export_dir = f'{RYBKA_MODE}_{TRADE_SYMBOL}_{datetime.now().strftime("%d_%m_%Y")}_AT_{datetime.now().strftime("%H_%M_%S")}_{id_generator()}'
-    os.environ["CURRENT_EXPORT_DIR"] = current_export_dir
     os.mkdir(current_export_dir)
     
     try:
@@ -219,8 +219,8 @@ def log_files_creation():
             f.write(f"RSI FOR SELL    set to: {RSI_FOR_SELL:>50} threshold\n")
             f.write(f"EMAIL SWITCH    set to: {str(RYBKA_EMAIL_SWITCH):>50}\n")
             if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_RECIPIENT_EMAIL:
-                f.write(f"SENDER EMAIL    set to: {RYBKA_EMAIL_SENDER_EMAIL:>50}")
-                f.write(f"RECIPIENT EMAIL set to: {RYBKA_EMAIL_RECIPIENT_EMAIL:>50}")
+                f.write(f"SENDER EMAIL    set to: {RYBKA_EMAIL_SENDER_EMAIL:>50}\n")
+                f.write(f"RECIPIENT EMAIL set to: {RYBKA_EMAIL_RECIPIENT_EMAIL:>50}\n")
         log.INFO_BOLD(" ✅ Files creation status  -  DONE")
         log.INFO(" ")
         log.INFO("=====================================================================================================================================")
@@ -404,7 +404,7 @@ def all_errors_file():
 def back_up():
     global RYBKA_MODE
 
-    back_up_dir = f'{os.environ.get("CURRENT_EXPORT_DIR")}/{RYBKA_MODE}_BACK_UPS/LOGS_AT_{datetime.now().strftime("%d_%m_%Y")}_{datetime.now().strftime("%H_%M_%S")}'
+    back_up_dir = f'{current_export_dir}/{RYBKA_MODE}_BACK_UPS/LOGS_AT_{datetime.now().strftime("%d_%m_%Y")}_{datetime.now().strftime("%H_%M_%S")}'
     if os.path.isdir(back_up_dir) is False:
         os.makedirs(back_up_dir)
 
@@ -610,7 +610,7 @@ def on_close(ws, close_status_code, close_msg):
     archive_folder = 'archived_logs'
     if not os.path.isdir(archive_folder):
         os.makedirs(archive_folder)
-    shutil.move(os.environ.get('CURRENT_EXPORT_DIR'), archive_folder)
+    shutil.move(current_export_dir, archive_folder)
 
     if close_status_code or close_msg:
         print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}> Close status code: {str(close_status_code)}{bcolors.ENDC}")
@@ -671,7 +671,7 @@ def on_message(ws, message):
                 log.WARN(f"Binance server ping failed with error:\n{e}")
                 time.sleep(3)
 
-        with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_historical_prices", 'a', encoding="utf8") as f:
+        with open(f"{current_export_dir}/{TRADE_SYMBOL}_historical_prices", 'a', encoding="utf8") as f:
             f.write(f'{log.logging_time()} {TRADE_SYMBOL} price at [{datetime.now().strftime("%d/%m/%Y %H:%M:%S")}] is [{candle_close_price}]\n')
 
         if len(closed_candles) < 11:
@@ -712,7 +712,7 @@ def on_message(ws, message):
                                     log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
                                 time.sleep(3)
 
-                    with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                    with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                         f.write(f'\n\n\n{log.logging_time()} Within BUY (part I):\n')
                         f.write(f'{log.logging_time()} {"Latest RSI (latest_rsi) is":90} {latest_rsi:40}\n')
                         f.write(f"{log.logging_time()} {'BNB balance (balance_bnb) is':90} {balance_bnb:40}\n")
@@ -758,7 +758,7 @@ def on_message(ws, message):
                                 heatmap_size = round(float(heatmap_actions * 0.4))
                                 heatmap_limit = round(float((heatmap_actions - heatmap_size) / 1.2))
 
-                                with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                     f.write(f'\n\n{log.logging_time()} Within BUY (part II):\n')
                                     f.write(f"{log.logging_time()} {'HEATMAP actions (BEFORE processing) (heatmap_actions) is':90} {heatmap_actions:40}\n")
                                     f.write(f"{log.logging_time()} {'HEATMAP size (BEFORE processing) (heatmap_size) is':90} {heatmap_size:40}\n")
@@ -791,7 +791,7 @@ def on_message(ws, message):
 
                                 heatmap_center_coin_counter = ktbr_config_array_of_prices.count(current_price_rounded_down)  
 
-                                with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                     f.write(f'\n\n{log.logging_time()} Within BUY (part III):\n')
                                     f.write(f"{log.logging_time()} {'HEATMAP actions (AFTER processing) (heatmap_actions) is':90} {heatmap_actions:40}\n")
                                     f.write(f"{log.logging_time()} {'HEATMAP size (AFTER processing) (heatmap_size) is':90} {heatmap_size:40}\n")
@@ -808,7 +808,7 @@ def on_message(ws, message):
                                 if heatmap_center_coin_counter >= heatmap_limit or heatmap_counter >= heatmap_actions:
                                     log.INFO(f"HEATMAP DOES NOT ALLOW BUYING!")
                                     log.INFO(f"heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]\n\n\n\n")
-                                    with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                    with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                         f.write(f'\n\n{log.logging_time()} Within BUY (part IV):\n')
                                         f.write(f"{log.logging_time()} HEATMAP DOES NOT ALLOW BUYING!")
                                         f.write(f"{log.logging_time()} heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]")
@@ -858,7 +858,7 @@ def on_message(ws, message):
                                             with open(f"{RYBKA_MODE}/number_of_buy_trades", 'w', encoding="utf8") as f:
                                                 f.write(str(nr_of_trades))
 
-                                            with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                            with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                                 f.write(f'\n\n{log.logging_time()} Within BUY (part V):\n')
                                                 f.write(f"{log.logging_time()} HEATMAP ALLOWS BUYING!\n")
                                                 f.write(f"{log.logging_time()} {'Order time (order_time) is':90} {str(order_time):40}")
@@ -888,7 +888,7 @@ def on_message(ws, message):
 
                                             ktbr_integrity()
 
-                                            with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_order_history", 'a', encoding="utf8") as f:
+                                            with open(f"{current_export_dir}/{TRADE_SYMBOL}_order_history", 'a', encoding="utf8") as f:
                                                 f.write(f'{log.logging_time()} Buy order done now at [{str(order_time)}]\n')
                                                 f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] $\n\n\n")
                                             with open(f"{RYBKA_MODE}/full_order_history", 'a', encoding="utf8") as f:
@@ -899,20 +899,20 @@ def on_message(ws, message):
 
                                             re_sync_time()
                                         else:
-                                            with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                            with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                                 f.write(f'\n\n{log.logging_time()} Within BUY (part VI):\n')
                                                 f.write(f'{log.logging_time()} Buy order was NOT filled successfully! Please check the cause!\n')
                                                 f.write(f"{log.logging_time()} Order (order) is {str(json.dumps(order))}\n")
                                                 f.write(f"{log.logging_time()} Order status (order_status) is {str(json.dumps(order_status))}\n")
                                             log.FATAL_7(f"Buy order was NOT filled successfully! Please check the cause!")
                                     except Exception as e:
-                                        with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                        with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                             f.write(f'\n\n{log.logging_time()} Within BUY (part VII):\n')
                                             f.write(f'{log.logging_time()} Order could NOT be placed due to an error:\n{e}\n')
                                         log.FATAL_7(f"Make sure the API_KEY and API_SECRET have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}")
                             else:
                                 log.WARN(f"Bot might still be able to buy some crypto, but only at a [{min_order_quantity}] EGLD trading quantity, not at the current one set of [{TRADE_QUANTITY}] EGLD per transaction!\n")
-                                with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                     f.write(f'\n\n{log.logging_time()} Within BUY (part VIII):\n')
                                     f.write(f'{log.logging_time()} Bot might still be able to buy some crypto, but only at a [{min_order_quantity}] EGLD trading quantity, not at the current one set of [{TRADE_QUANTITY}] EGLD per transaction!\n')
                         else:
@@ -920,12 +920,12 @@ def on_message(ws, message):
                             #TODO add log.WARN message and email func within the same 'if' clause for enabling / disabling such emails
                             log.WARN(f"Notifying user (via email) that bot might need more money for buy actions, if possible.")
                             email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot might be able to buy more, but doesn't have enought USDT in balance [{balance_usdt}]$\n\nTOP UP if possible!")
-                            with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                            with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                 f.write(f'\n\n{log.logging_time()} Within BUY (part IX):\n')
                                 f.write(f'{log.logging_time()} Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].\n')
                     else:
                         email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enought BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, it will stop at this point. Please TOP UP!")
-                        with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                        with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                             f.write(f'\n\n{log.logging_time()} Within BUY (part X):\n')
                             f.write(f'{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Please TOP UP!\n')
                         log.FATAL_7(f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. Please TOP UP!")
@@ -948,7 +948,7 @@ def on_message(ws, message):
                                     log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
                                 time.sleep(3)
 
-                    with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                    with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                         f.write(f'\n\n\n{log.logging_time()} Within SELL (part I):\n')
                         f.write(f'{log.logging_time()} {"Latest RSI (latest_rsi) is":90} {latest_rsi:40}\n')
                         f.write(f"{log.logging_time()} {'BNB balance (balance_bnb) is':90} {balance_bnb:40}\n")
@@ -974,7 +974,7 @@ def on_message(ws, message):
                                     break
 
                         log.INFO(" ")
-                        with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                        with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                             f.write(f'\n\n\n{log.logging_time()} Within SELL (part II):\n')
                             f.write(f"{log.logging_time()} {'Eligible sells (eligible_sells) is':90} {str(eligible_sells)}\n")
 
@@ -1023,7 +1023,7 @@ def on_message(ws, message):
                                         with open(f"{RYBKA_MODE}/most_recent_commission", 'w', encoding="utf8") as f:
                                             f.write(str(order['fills'][0]['commission']))
 
-                                        with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                        with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                             f.write(f'\n\n{log.logging_time()} Within SELL (part III):\n')
                                             f.write(f"{log.logging_time()} Selling buy [{str(sell):11}] {'of qtty':90} [{str(ktbr_config[sell][0]):5}]\n")
                                         
@@ -1033,7 +1033,7 @@ def on_message(ws, message):
                                         with open(f"{RYBKA_MODE}/ktbr", 'w', encoding="utf8") as f:
                                             f.write(str(json.dumps(ktbr_config)))
 
-                                        with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                        with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                             f.write(f'\n\n{log.logging_time()} Within SELL (part IV):\n')
                                             f.write(f"{log.logging_time()} {'Order time (order_time) is':90} {str(order_time):40}")
                                             f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{str(price_aux)}] $\n")
@@ -1062,7 +1062,7 @@ def on_message(ws, message):
 
                                         ktbr_integrity()
                                         
-                                        with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_order_history", 'a', encoding="utf8") as f:
+                                        with open(f"{current_export_dir}/{TRADE_SYMBOL}_order_history", 'a', encoding="utf8") as f:
                                             f.write(f'{log.logging_time()} Sell order done now at [{str(order_time)}]\n')
                                             f.write(f"{log.logging_time()} Transaction ID [{order['orderId']}] - Sold [{str(qtty_aux)}] EGLD at price per 1 EGLD of [{str(price_aux)}] $\n")
                                             f.write(f"{log.logging_time()} {previous_buy_info} \n\n\n")
@@ -1073,26 +1073,26 @@ def on_message(ws, message):
 
                                         subsequent_valid_rsi_counter = 1
                                     else:
-                                        with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                        with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                             f.write(f'\n\n{log.logging_time()} Within SELL (part V):\n')
                                             f.write(f'{log.logging_time()} Sell order was NOT filled successfully! Please check the cause!\n')
                                             f.write(f"{log.logging_time()} {'Order (order) is':90} {str(json.dumps(order))}\n")
                                             f.write(f"{log.logging_time()} {'Order status (order_status) is':90} {str(json.dumps(order_status))}\n")
                                         log.FATAL_7(f"Sell order was NOT filled successfully! Please check the cause!")
                                 except Exception as e:
-                                    with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                    with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                         f.write(f'\n\n{log.logging_time()} Within SELL (part VI):\n')
                                         f.write(f'{log.logging_time()} Order could NOT be placed due to an error:\n{e}\n')
                                     log.FATAL_7(f"Make sure the API_KEY and API_SECRET have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}")
                             re_sync_time()
                         else:
                             log.INFO(f"No buy transactions are eligible to be sold at this moment!")
-                            with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                            with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                 f.write(f'\n\n{log.logging_time()} Within SELL (part VII):\n')
                                 f.write(f'{log.logging_time()} No buy transactions are eligible to be sold at this moment!\n')
                     else:
                         email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enought BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, it will stop at this point. Please TOP UP!")
-                        with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                        with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                             f.write(f'\n\n{log.logging_time()} Within SELL (part VIII):\n')
                             f.write(f'{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Please TOP UP!\n')
                         log.FATAL_7(f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. Please TOP UP!")
@@ -1204,7 +1204,7 @@ def main():
     log.INFO("=====================================================================================================================================")
     log.INFO("=====================================================================================================================================")
 
-    email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot is starting up. Find logs into the local folder: \n\t[{os.environ.get('CURRENT_EXPORT_DIR')}]")
+    email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot is starting up. Find logs into the local folder: \n\t[{current_export_dir}]")
     bot_uptime()
     
     ws = websocket.WebSocketApp(SOCKET, on_open=on_open, on_close=on_close, on_message=on_message, on_error = on_error)
