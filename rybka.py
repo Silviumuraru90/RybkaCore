@@ -810,7 +810,7 @@ def on_message(ws, message):
 
                                 if heatmap_center_coin_counter >= heatmap_limit or heatmap_counter >= heatmap_actions:
                                     log.INFO(f"HEATMAP DOES NOT ALLOW BUYING!")
-                                    log.INFO(f"heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]\n\n\n\n")
+                                    log.DEBUG(f"heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]\n\n\n\n")
                                     with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                         f.write(f'\n\n{log.logging_time()} Within BUY (part IV):\n')
                                         f.write(f"{log.logging_time()} HEATMAP DOES NOT ALLOW BUYING!")
