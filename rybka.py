@@ -60,7 +60,7 @@ RSI_PERIOD = bootstrap.RSI_PERIOD
 RSI_FOR_BUY = bootstrap.RSI_FOR_BUY
 RSI_FOR_SELL = bootstrap.RSI_FOR_SELL
 
-TRADE_QUANTITY = bootstrap.TRADE_QUANTITY
+TRADE_QUANTITY = round(bootstrap.TRADE_QUANTITY, 4)
 AUX_TRADE_QUANTITY = TRADE_QUANTITY
 MIN_PROFIT = bootstrap.MIN_PROFIT
 
@@ -174,11 +174,17 @@ def account_balance_update():
     global locked_balance_bnb
 
     balance_aux_usdt = client.get_asset_balance(asset='USDT')
-    balance_usdt = round(float(balance_aux_usdt['free']), 4)
+    if float(balance_aux_usdt['free']) == round(float(balance_aux_usdt['free']), 4):
+        balance_usdt = round(float(balance_aux_usdt['free']), 4)
+    else:
+        balance_usdt = round(float(balance_aux_usdt['free']) + 0.0001, 4)
     locked_balance_usdt = round(float(balance_aux_usdt['locked']), 4)
 
     balance_aux_egld = client.get_asset_balance(asset='EGLD')
-    balance_egld = round(float(balance_aux_egld['free']), 4)
+    if float(balance_aux_egld['free']) == round(float(balance_aux_egld['free']), 4):
+        balance_egld = round(float(balance_aux_egld['free']), 4)
+    else:
+        balance_egld = round(float(balance_aux_egld['free']) + 0.0001, 4)
     locked_balance_egld = round(float(balance_aux_egld['locked']), 4)
 
     balance_aux_bnb = client.get_asset_balance(asset='BNB')
@@ -376,7 +382,11 @@ def ktbr_integrity():
         for v in ktbr_config_check.values():
             sum_of_ktbr_cryptocurrency+=v[0]
 
-        if sum_of_ktbr_cryptocurrency <= balance_egld:
+        log.VERBOSE(f"ktbr_config_check is {ktbr_config_check}")
+        log.VERBOSE(f"sum_of_ktbr_cryptocurrency rounded is {round(sum_of_ktbr_cryptocurrency, 4)}")
+        log.VERBOSE(f"ktbr_integrity()'s egld balance is {balance_egld}")
+        
+        if round(sum_of_ktbr_cryptocurrency, 4) <= balance_egld:
             log.DEBUG(" ✅ KTBR integrity status  -  VALID\n")
         else:
             log.FATAL_7("KTBR integrity status  -  INVALID\nThis means that the amount of EGLD you have in cloud is actually less now, than what you retain in the 'ktbr' file. Probably you've spent a part of it in the meantime.")
@@ -427,7 +437,7 @@ def software_config_params():
     log.INFO(f"Rybka software started with the following parameters:\n")
     log.INFO_BOLD(f" 🔘 RYBKA_MODE      set to: {RYBKA_MODE:>50}")
     if DEBUG_LVL:
-        log.INFO_BOLD(f"{bcolors.OKCYAN}DEBUG_LVL       set to: {DEBUG_LVL:>50}{bcolors.ENDC}")
+        log.INFO_BOLD(f"{bcolors.OKCYAN} 🔘 DEBUG_LVL       set to: {DEBUG_LVL:>50}{bcolors.ENDC}")
     log.INFO_BOLD(f" 🔘 SOCKET          set to: {SOCKET:>50}")
     log.INFO_BOLD(f" 🔘 TRADE SYMBOL    set to: {TRADE_SYMBOL:>50}")
     log.INFO_BOLD(f" 🔘 TRADE QUANTITY  set to: {TRADE_QUANTITY:>50} coins per transaction")
@@ -820,6 +830,9 @@ def on_message(ws, message):
                                     try:
                                         back_up()
                                         if RYBKA_MODE == "LIVE":
+                                            log.VERBOSE(f"Before BUY. USDT balance is [{balance_usdt}]")
+                                            log.VERBOSE(f"Before BUY. EGLD balance is [{balance_egld}]")
+                                            log.VERBOSE(f"Before BUY. BNB  balance is [{balance_bnb}]")
                                             order = client.order_market_buy(symbol=TRADE_SYMBOL, quantity=TRADE_QUANTITY)
                                         elif RYBKA_MODE == "DEMO":
                                             order_id_tmp = id_generator()
@@ -842,7 +855,7 @@ def on_message(ws, message):
                                         elif RYBKA_MODE == "DEMO":
                                             order_status = {'symbol': 'EGLDUSDT', 'orderId': 0, 'orderListId': -1, 'clientOrderId': 'TXgNl8RNNipASGTrleH6ZY', 'price': '0.00000000', 'origQty': '0.19000000', 'executedQty': '0.19000000', 'cummulativeQuoteQty': '10.20300000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'BUY', 'stopPrice': '0.00000000', 'icebergQty': '0.00000000', 'time': 1661098548719, 'updateTime': 1661098548719, 'isWorking': True, 'origQuoteOrderQty': '0.00000000'}
                                             order_status['orderId'] = order_id_tmp
-                                            
+
                                         if order_status['status'] == "FILLED":
                                             log.INFO_BOLD_UNDERLINE(" ✅ BUY Order filled successfully!\n")
                                             # avoid rounding up on quantity & price bought
@@ -855,7 +868,7 @@ def on_message(ws, message):
                                             ktbr_config[order['orderId']] = [int(float(order['executedQty']) * 10 ** 4) / 10 ** 4, int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4]
                                             with open(f"{RYBKA_MODE}/ktbr", 'w', encoding="utf8") as f:
                                                 f.write(str(json.dumps(ktbr_config)))
-                                            
+
                                             nr_of_trades += 1
 
                                             with open(f"{RYBKA_MODE}/number_of_buy_trades", 'w', encoding="utf8") as f:
@@ -889,6 +902,10 @@ def on_message(ws, message):
                                             log.DEBUG(f"USDT balance is [{balance_usdt}]")
                                             log.DEBUG(f"EGLD balance is [{balance_egld}]")
                                             log.DEBUG(f"BNB  balance is [{balance_bnb}]")
+
+                                            log.VERBOSE(f"After BUY and balance update. USDT balance is [{balance_usdt}]")
+                                            log.VERBOSE(f"After BUY and balance update. EGLD balance is [{balance_egld}]")
+                                            log.VERBOSE(f"After BUY and balance update. BNB  balance is [{balance_bnb}]")
 
                                             ktbr_integrity()
 
@@ -935,7 +952,7 @@ def on_message(ws, message):
                         log.FATAL_7(f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. Please TOP UP!")
 
                 if latest_rsi > RSI_FOR_SELL:
-      
+
                     log.INFO("================================")
                     log.INFO("          SELL SIGNAL!")
                     log.INFO("================================")
