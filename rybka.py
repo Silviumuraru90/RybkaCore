@@ -768,7 +768,7 @@ def on_message(ws, message):
                                     multiple_sells = "disabled"
                                 
                                 heatmap_actions = round(float(possible_nr_of_trades * 0.6))
-                                heatmap_size = round(float(heatmap_actions * 0.4))
+                                heatmap_size = round(float(heatmap_actions * 0.3))
                                 heatmap_limit = round(float((heatmap_actions - heatmap_size) / 1.2))
 
                                 with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
