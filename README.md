@@ -159,10 +159,10 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 ***
 ## 🟣 [![](https://img.shields.io/badge/project%20status-BETA-orange)](https://gitlab.com/Silviu_space/rybka/-/boards)
 
-| Release lifecycle phases  &emsp;&emsp;&emsp;\|   &emsp; | Current lifecycle phase &emsp;| \| &emsp; &emsp;  Estimated date(s) of `start` / `finish` |
+| Release lifecycle phases | Current lifecycle phase | Estimated date(s) of `start` / `finish` |
 |:--------------------------------|:---------------:|:-----------------------:|
-&emsp;&emsp; ✔️ `ALPHA`              |                 | September 2022 (`finished`)
-&emsp;&emsp; 💻 `BETA`               |        ✅       | September 2022 (`started`)
+&emsp;&emsp; ✔️ `ALPHA`              |                 | August 2022 (`finished`)
+&emsp;&emsp; 💻 `BETA` / `BETA TESTING`              |        ✅       | September 2022 (`started`)
 &emsp;&emsp; 💻 `RELEASE CANDIDATE`  |                 | ⬛️
 &emsp;&emsp; 💻 `GA`                 |                 | ⬛️
 
@@ -178,9 +178,9 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 &emsp;&emsp; ♖ &nbsp;CLI args, at least for `RYBKA_MODE` values <br>
 &emsp;&emsp; ♦︎ &nbsp;Switch to `binance-unicorn` instead of `python-binance`, in order to optime more the uptime <br>
 &emsp;&emsp; ♞ &nbsp;Making the bot a `binary` file with all python modules packaged in <br>
-&emsp;&emsp; ♡ &nbsp;Additional `reports` <br>
+&emsp;&emsp; ♡ &nbsp;&nbsp;Additional `reports` <br>
 &emsp;&emsp; ♛ &nbsp;`Price alerts`, via inputs <br>
-&emsp;&emsp; ♣︎ &nbsp;UI, perhaps through `Tkinter` lib <br>
+&emsp;&emsp; ♣︎ &nbsp;&nbsp;UI, perhaps through `Tkinter` lib <br>
 &emsp;&emsp; ♥︎ &nbsp;`Safety net` implementation for USDT <br>
 &emsp;&emsp; ♔ &nbsp;More `trade pairs` supported <br>
 &emsp;&emsp; ♙ &nbsp;`Graps` provided as output <br>
@@ -188,8 +188,8 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 &emsp;&emsp; ♧ &nbsp;Addition `RSI` periods and `candlestick` periods, not only for scalping <br>
 &emsp;&emsp; ♜ &nbsp;`Telegram` BOT (active mode) - providing `/commands` so thta users will be able to ask for information on the spot <br>
 &emsp;&emsp; ♝ &nbsp;`Telegram` BOT (passive mode) - logging events in chat <br>
-&emsp;&emsp; ♤ &nbsp;`Orders` on demand <br>
-&emsp;&emsp; ♠︎ &nbsp;Control the resulted `output files`' size <br>
+&emsp;&emsp; ♤&nbsp;`Orders` on demand <br>
+&emsp;&emsp; ♠︎ &nbsp;&nbsp;&nbsp;Control the resulted `output files`' size <br>
 &emsp;&emsp; ♕ &nbsp;`Always buy` policy <br>
 &emsp;&emsp; ♚ &nbsp;`Always leave something to sell` at a higher profit <br>
 &emsp;&emsp; ♗ &nbsp;`Code style` checks and `unit testing` + `coverage`, for a better integrity and stability / quicker testing <br>

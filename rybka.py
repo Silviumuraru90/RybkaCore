@@ -487,7 +487,7 @@ def email_engine_params():
         if RYBKA_EMAIL_RECIPIENT_NAME == "User":
             log.WARN("\n[RYBKA_EMAIL_RECIPIENT_NAME] was NOT provided in the HOST MACHINE ENV., but will default to value [User]")
         if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_SENDER_DEVICE_PASSWORD and RYBKA_EMAIL_RECIPIENT_EMAIL:
-            log.INFO_BOLD("\n ✅ Email params in ENV    -  SET")
+            log.INFO_BOLD(" ✅ Email params in ENV    -  SET")
         else:
             log.FATAL_7("Email params in ENV    -  NOT SET\nAs long as you have [RYBKA_EMAIL_SWITCH] set as [True], make sure you also set up the [RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_SENDER_DEVICE_PASSWORD, RYBKA_EMAIL_RECIPIENT_EMAIL] vars in your ENV!")
     else:
@@ -673,8 +673,6 @@ def on_message(ws, message):
     if is_candle_closed:
         closed_candles.append(candle_close_price)
 
-        bot_uptime()
-
         for i in range(0,10):
             try:
                 client.ping()
@@ -691,6 +689,8 @@ def on_message(ws, message):
             log.INFO_BOLD(f"#####################  Bot is gathering data for technical analysis. Currently at min [{len(closed_candles):2} of 10] of processing  #####################")
             log.INFO(f"#####################################################################################################################################")
         log.DEBUG(f"History of target prices is {closed_candles}")
+
+        bot_uptime()
 
         if len(closed_candles) > 30:
             closed_candles = closed_candles[10:]
@@ -1049,7 +1049,7 @@ def on_message(ws, message):
                                             f.write(f'\n\n{log.logging_time()} Within SELL (part III):\n')
                                             f.write(f"{log.logging_time()} Selling buy [{str(sell):11}] {'of qtty':90} [{str(ktbr_config[sell][0]):5}]\n")
                                         
-                                        previous_buy_info = f"What got sold: BUY ID [{str(sell)}] of QTTY [{str(ktbr_config[sell][0]):5}] at bought PRICE of [{str(ktbr_config[sell][1]):5}] USDT"
+                                        previous_buy_info = f"What got sold: BUY ID [{str(sell)}] of QTTY [{str(ktbr_config[sell][0])}] at bought PRICE of [{str(ktbr_config[sell][1])}] USDT"
 
                                         del ktbr_config[sell]
                                         with open(f"{RYBKA_MODE}/ktbr", 'w', encoding="utf8") as f:
