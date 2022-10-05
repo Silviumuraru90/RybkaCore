@@ -744,7 +744,7 @@ def on_message(ws, message):
                         if balance_usdt / 12 > 1:
 
                             min_buy_share = candle_close_price / 12
-                            min_order_quantity = round(float(1 / min_buy_share), 4)
+                            min_order_quantity = round(float(1 / min_buy_share), 2)
 
                             TRADE_QUANTITY = AUX_TRADE_QUANTITY
 
