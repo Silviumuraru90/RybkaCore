@@ -5,7 +5,7 @@
 ## &emsp;&emsp; **Description**
 <br>
 📌 `Rybka` bot is a scalping crypto-trading-bot that currently supports the following pair(s):<br><br>
-&emsp;&emsp;✅ EGLDUSDT <br>
+&emsp;&emsp;✅ `EGLD`-`USDT` <br>
 &emsp;&emsp;⛏ &nbsp;`more in the future` <br><br><br>
 
 📌 It uses 🔌 socket connection to Binance via the `python-binance` lib <br><br>
@@ -15,7 +15,10 @@
 &emsp;&emsp;❔ &nbsp;Ubuntu 20.04 <br>
 &emsp;&emsp;❔ &nbsp;Ubuntu 22.04 <br>
 &emsp;&emsp;✅ Debian 10 (`buster`) <br>
+
 &emsp;&emsp;✅ Win 10 <br>
+&emsp;&emsp;✅ Win 11 <br>
+
 &emsp;&emsp;❔ &nbsp;Mac OS <br><br>
 
 
