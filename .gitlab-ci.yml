@@ -89,6 +89,7 @@ docker-build:
 DEMO_rybka_run:
   extends: .testing_template
   stage: ☢️ functional testing
+  needs: []
   script:
     - !reference [.debug_template, script]
     - sudo chmod +x rybka.py
@@ -100,8 +101,8 @@ DEMO_rybka_run:
       - archived_logs/*
       - DEMO/*
     when: always
-  allow_failure: true
-  timeout: 1h
+  when: manual
+  timeout: 30 m
 
 DEMO_restarter_run:
   extends: DEMO_rybka_run
