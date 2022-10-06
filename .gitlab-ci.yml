@@ -18,7 +18,8 @@ variables:
 default:
   image: registry.gitlab.com/silviu_space/rybka:${DOCKER_IMG_TAG}
   interruptible: true
-
+  tags:
+    - rasp-pi
 
 ###################################
 #######  Templates Section  #######
