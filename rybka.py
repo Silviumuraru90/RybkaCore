@@ -731,7 +731,7 @@ def on_message(ws, message):
                         f.write(f"{log.logging_time()} {'BNB balance (balance_bnb) is':90} {balance_bnb:40}\n")
                         f.write(f"{log.logging_time()} {'USDT balance (balance_usdt) is':90} {balance_usdt:40}\n")
                         f.write(f"{log.logging_time()} {'EGLD balance (balance_egld) is':90} {balance_egld:40}\n")
-                        f.write(f"{log.logging_time()} {'BNB commision (bnb_commission) is':90} {bnb_commission:40}\n")
+                        f.write(f"{log.logging_time()} {'BNB commission (bnb_commission) is':90} {bnb_commission:40}\n")
                         f.write(f"{log.logging_time()} {'Total USDT profit (total_usdt_profit) is':90} {total_usdt_profit:40}\n")
                         f.write(f"{log.logging_time()} {'Multiple sells (multiple_sells) set to':90} {multiple_sells:40}\n")
                         f.write(f"{log.logging_time()} {'TRADE_QUANTITY (BEFORE processing) (TRADE_QUANTITY) is':90} {TRADE_QUANTITY:40}\n")
@@ -861,6 +861,13 @@ def on_message(ws, message):
                                             # avoid rounding up on quantity & price bought
                                             log.INFO_BOLD(f"Transaction ID [{order['orderId']}] - Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT")
 
+                                            usdt_trade_fee = round(float(0.08 / 100 * round(float(order['cummulativeQuoteQty']), 4)), 4)
+                                            log.VERBOSE(f"BUY action's usdt trade fee is {usdt_trade_fee}")
+
+                                            total_usdt_profit = round(total_usdt_profit - usdt_trade_fee, 4)
+                                            with open(f"{RYBKA_MODE}/usdt_profit", 'w', encoding="utf8") as f:
+                                                f.write(str(total_usdt_profit))
+
                                             bnb_commission = float(order['fills'][0]['commission'])
                                             with open(f"{RYBKA_MODE}/most_recent_commission", 'w', encoding="utf8") as f:
                                                 f.write(str(order['fills'][0]['commission']))
@@ -881,7 +888,8 @@ def on_message(ws, message):
                                                 f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n")
                                                 f.write(f"{log.logging_time()} {'Order (order) is':90} {str(json.dumps(order))}\n")
                                                 f.write(f"{log.logging_time()} {'Order status (order_status) is':90} {str(json.dumps(order_status))}\n")
-                                                f.write(f"{log.logging_time()} {'Order commision is':90} {str(order['fills'][0]['commission']):40}\n")
+                                                f.write(f"{log.logging_time()} {'USDT trade fee (usdt_trade_fee) is':90} {str(usdt_trade_fee)}\n")
+                                                f.write(f"{log.logging_time()} {'Order commission is':90} {str(order['fills'][0]['commission']):40}\n")
                                                 f.write(f"{log.logging_time()} KTBR config (AFTER processing) (str(json.dumps(ktbr_config))) is {str(json.dumps(ktbr_config)):40}\n")
                                             
                                             back_up()
@@ -1037,7 +1045,10 @@ def on_message(ws, message):
 
                                         log.INFO_BOLD(f"Transaction ID [{order['orderId']}] - Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT")
 
-                                        total_usdt_profit = int((total_usdt_profit + (price_aux - ktbr_config[sell][1]) * ktbr_config[sell][0]) * 10 ** 4) / 10 ** 4
+                                        usdt_trade_fee = round(float(0.08 / 100 * round(float(order['cummulativeQuoteQty']), 4)), 4)
+                                        log.VERBOSE(f"SELL action's usdt trade fee is {usdt_trade_fee}")
+
+                                        total_usdt_profit = round(int((total_usdt_profit + (price_aux - ktbr_config[sell][1]) * ktbr_config[sell][0]) * 10 ** 4) / 10 ** 4 - usdt_trade_fee, 4)
                                         with open(f"{RYBKA_MODE}/usdt_profit", 'w', encoding="utf8") as f:
                                             f.write(str(total_usdt_profit))
 
@@ -1061,6 +1072,7 @@ def on_message(ws, message):
                                             f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{str(price_aux)}] USDT\n")
                                             f.write(f"{log.logging_time()} {'Order (order) is':90} {str(json.dumps(order))}\n")
                                             f.write(f"{log.logging_time()} {'Order status (order_status) is':90} {str(json.dumps(order_status))}\n")
+                                            f.write(f"{log.logging_time()} {'USDT trade fee (usdt_trade_fee) is':90} {str(usdt_trade_fee)}\n")
                                             f.write(f"{log.logging_time()} {'Order commission is':90} {str(order['fills'][0]['commission']):40}\n")
                                             f.write(f"{log.logging_time()} KTBR config (AFTER processing) (str(json.dumps(ktbr_config))) is {str(json.dumps(ktbr_config)):40}\n")
 
