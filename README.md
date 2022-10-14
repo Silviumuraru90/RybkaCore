@@ -186,7 +186,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 &emsp;&emsp; ♣︎ &nbsp;&nbsp;UI, perhaps through `Tkinter` lib <br>
 &emsp;&emsp; ♥︎ &nbsp;`Safety net` implementation for USDT <br>
 &emsp;&emsp; ♔ &nbsp;More `trade pairs` supported <br>
-&emsp;&emsp; ♙ &nbsp;`Graps` provided as output <br>
+&emsp;&emsp; ♙ &nbsp;`Graphs` provided as output <br>
 &emsp;&emsp; ♘ &nbsp;`Profit tracking` over specfic periods of time, for better assesing the better / worse periods and adjust weights <br>
 &emsp;&emsp; ♧ &nbsp;Addition `RSI` periods and `candlestick` periods, not only for scalping <br>
 &emsp;&emsp; ♜ &nbsp;`Telegram` BOT (active mode) - providing `/commands` so thta users will be able to ask for information on the spot <br>

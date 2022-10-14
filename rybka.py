@@ -60,7 +60,7 @@ RSI_PERIOD = bootstrap.RSI_PERIOD
 RSI_FOR_BUY = bootstrap.RSI_FOR_BUY
 RSI_FOR_SELL = bootstrap.RSI_FOR_SELL
 
-TRADE_QUANTITY = round(bootstrap.TRADE_QUANTITY, 4)
+TRADE_QUANTITY = round(bootstrap.TRADE_QUANTITY, 2)
 AUX_TRADE_QUANTITY = TRADE_QUANTITY
 MIN_PROFIT = bootstrap.MIN_PROFIT
 
@@ -767,9 +767,9 @@ def on_message(ws, message):
                                 else:
                                     multiple_sells = "disabled"
                                 
-                                heatmap_actions = round(float(possible_nr_of_trades * 0.6))
-                                heatmap_size = round(float(heatmap_actions * 0.3))
-                                heatmap_limit = round(float((heatmap_actions - heatmap_size) / 1.2))
+                                heatmap_actions = round(float(possible_nr_of_trades * 0.5))
+                                heatmap_size = round(float(heatmap_actions * 0.4))
+                                heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.2))
 
                                 with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                     f.write(f'\n\n{log.logging_time()} Within BUY (part II):\n')
@@ -989,7 +989,7 @@ def on_message(ws, message):
 
                         for k, v in ktbr_config.items():
                             if v[1] + MIN_PROFIT < candle_close_price:
-                                log.INFO(f"Identified buy ID [{k:11}], qtty [{v[0]:5}] bought at price of [{v[1]:5}] as being eligible for sell")
+                                log.INFO(f"Identified buy ID [{k}], qtty [{v[0]}] bought at price of [{v[1]}] as being eligible for sell")
                                 log.VERBOSE(f"Multiple sells set as [{multiple_sells}]")
                                 eligible_sells.append(k)
                                 if multiple_sells == "disabled":
@@ -1002,7 +1002,7 @@ def on_message(ws, message):
 
                         if eligible_sells:
                             for sell in eligible_sells:
-                                log.DEBUG(f"Selling buy [{sell:11}] of qtty [{ktbr_config[sell][0]:5}]")
+                                log.DEBUG(f"Selling buy [{sell}] of qtty [{ktbr_config[sell][0]}]")
 
                                 try:
                                     back_up()
@@ -1047,7 +1047,7 @@ def on_message(ws, message):
 
                                         with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                             f.write(f'\n\n{log.logging_time()} Within SELL (part III):\n')
-                                            f.write(f"{log.logging_time()} Selling buy [{str(sell):11}] {'of qtty':90} [{str(ktbr_config[sell][0]):5}]\n")
+                                            f.write(f"{log.logging_time()} Selling buy [{str(sell)}] {'of qtty':90} [{str(ktbr_config[sell][0])}]\n")
                                         
                                         previous_buy_info = f"What got sold: BUY ID [{str(sell)}] of QTTY [{str(ktbr_config[sell][0])}] at bought PRICE of [{str(ktbr_config[sell][1])}] USDT"
 
