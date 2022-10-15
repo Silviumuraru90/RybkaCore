@@ -8,7 +8,10 @@ class Rybka_py_env_bootstrap():
     def __init__(self):
         self.BIN_KEY = os.environ.get("BIN_KEY")
         self.BIN_SECRET = os.environ.get("BIN_SECRET")
-        self.DEBUG_LVL = int(os.environ.get("RYBKA_DEBUG_LVL"))
+        try:
+            self.DEBUG_LVL = int(os.environ.get("RYBKA_DEBUG_LVL"))
+        except:
+            self.DEBUG_LVL = None
         self.RYBKA_MODE = os.environ.get("RYBKA_MODE", "DEMO")
         self.TRADE_SYMBOL = os.environ.get("RYBKA_TRADE_SYMBOL", "EGLDUSDT")
         self.SOCKET = os.environ.get("RYBKA_SOCKET", f"wss://stream.binance.com:9443/ws/{self.TRADE_SYMBOL.lower()}@kline_1m")
