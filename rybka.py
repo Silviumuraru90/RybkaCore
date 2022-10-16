@@ -1215,11 +1215,11 @@ def main(version, mode):
     if RYBKA_MODE == "DEMO":
         log.INFO(" ")
         if balance_usdt == 1500:
-            log.WARN(f"USDT Balance of [{balance_usdt:7}] coins  --->  is set by default, by the bot. Modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_USDT]")
+            log.WARN(f"USDT Balance of [{balance_usdt}] coins  --->  is set by default, by the bot. Modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_USDT]")
         if balance_egld == 100:
-            log.WARN(f"EGLD Balance of [{balance_egld:7}] coins  --->  is set by default, by the bot. Modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_EGLD]")
+            log.WARN(f"EGLD Balance of [{balance_egld}]  coins  --->  is set by default, by the bot. Modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_EGLD]")
         if balance_bnb == 0.2:
-            log.WARN(f"BNB  Balance of [{balance_bnb:7}] coins  --->  is set by default, by the bot. Modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_BNB]")
+            log.WARN(f"BNB  Balance of [{balance_bnb}]  coins  --->  is set by default, by the bot. Modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_BNB]")
         log.INFO(" ")
 
     log.INFO("=====================================================================================================================================")

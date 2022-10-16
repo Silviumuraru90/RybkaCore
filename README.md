@@ -195,7 +195,6 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 &emsp;&emsp; ♤&nbsp;`Orders` on demand <br>
 &emsp;&emsp; ♠︎ &nbsp;&nbsp;&nbsp;Control the resulted `output files`' size <br>
 &emsp;&emsp; ♕ &nbsp;`Always buy` policy <br>
-&emsp;&emsp; ♚ &nbsp;`Always leave something to sell` at a higher profit <br>
 &emsp;&emsp; ♗ &nbsp;`Code style` checks and `unit testing` + `coverage`, for a better integrity and stability / quicker testing <br>
 &emsp;&emsp; ♢ &nbsp;Speed up internal processes by moving towards an `OOP` infrastructure / optimization <br>
 
