@@ -41,6 +41,8 @@
 ✅ Individual buys tracking <br>
 ✅ Errors catch mechanism and exception management <br>
 ✅ Uptime tracking <br>
+✅ Some weights can be set from ENV, others from a `env_var_config` file. This gave possibility for some vars to be updated on the fly, while the bot is running, and alter its behavior <br>
+✅ CLI args for `RYBKA_MODE` values, to avoid faulty runs if `RYBKA_MODE` was to remain cached from ENV, even after the user had changed it <br>
 ✅ Email notif. module. Informs the user about being low on BNB, or on USDT, or if an error occured and bot got shutdown. Also sends emails on start / restart actions <br>
 ✅ Dynamic adjustment (greediness) for buy-sell math of the trading pair <br>
 ✅ Live wallet data displayed for the trade pair sides and commission, dynamic adjustment with each buy - sell <br>
@@ -68,10 +70,11 @@ As `rybka` is not a standalone executable software yet, for any of the aforement
 &emsp;&emsp;❔ &nbsp;Python 3.9 <br>
 &emsp;&emsp;❔ &nbsp;Python 3.10 <br><br><br>
 
-Hence, at the moment, you will need 🐍 `python` in your OS to run the software. Via pip, `4` modules would then come on top of your python installation: <br><br>
+Hence, at the moment, you will need 🐍 `python` in your OS to run the software. Via pip, `5` modules would then come on top of your python installation: <br><br>
 &emsp;&emsp;✅ python-binance <br>
 &emsp;&emsp;✅ websocket-client <br>
 &emsp;&emsp;✅ numpy <br>
+&emsp;&emsp;✅ click <br>
 &emsp;&emsp;✅ TA-Lib <br><br><br>
 
 ❗️ `Note:` while via `pip3` you are able to install the first three modules, the 4th (`TA-Lib`) is not within the official `pypi` list, hence you can download the `wheel` file that matches your `python` version and then install it via `pip`. <br> Grab the file from 📦 [HERE](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib) <br><br>
@@ -110,17 +113,17 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 |`BIN_SECRET`                           | string | Binance <b>Auth</b>orization <b>SECRET</b> <br> (Get from environment)                           | ✅ <br> if `RYBKA_MODE` is either `LIVE` or `DEMO`      | ❌ | 
 |`RYBKA_RSI_FOR_BUY`                     | integer | <b>RSI threshold for BUY</b> actions <br> Values ➡️ (`0` ↔️ `50`) <br> The higher the value, the more sensitive the bot on buy actions <br> (Get from environment)                           | ❌        | `30` | 
 |`RYBKA_RSI_FOR_SELL`                    | integer | <b>RSI threshold for SELL</b> actions <br> Values ➡️ (`50` ↔️ `100`) <br> The lower the value, the more sensitive the bot on sell actions <br> (Get from environment)                           | ❌        | `70` | 
-|`RYBKA_TRADE_QUANTITY`                  | integer | The <b>crypto-coin amount</b> to buy on each transaction <br> (Get from environment)                           | ❌        | `0.4` | 
-|`RYBKA_MIN_PROFIT`                      | integer | The `USDT` <b>minimum profit</b>, per transaction, that allows a SELL signal to complete <br> (Get from environment)                           | ❌        | `0.25` | 
+|`RYBKA_TRADE_QUANTITY`                  | float | The <b>crypto-coin amount</b> to buy on each transaction <br> (Get from environment)                           | ❌        | `0.4` | 
+|`RYBKA_MIN_PROFIT`                      | float | The `USDT` <b>minimum profit</b>, per transaction, that allows a SELL signal to complete <br> (Get from environment)                           | ❌        | `0.3` | 
 |`RYBKA_EMAIL_SWITCH`                    | boolean | Values ➡️ `True` or `False` <br> (Get from environment)                           | ❌        | `False` | 
 |`RYBKA_EMAIL_SENDER_EMAIL`              | string | <b>Email</b> for the account sending the email <br> (Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`       | ❌ | 
 |`RYBKA_EMAIL_SENDER_DEVICE_PASSWORD`    | string | <b>DEVICE password</b>, not the emailbox password, (tested only with @gmail.com accounts) of the account sending the email  <br> (Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`       | ❌ | 
 |`RYBKA_EMAIL_RECIPIENT_EMAIL`           | string | <b>Email</b> for the account receiving the email <br> (Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
 |`RYBKA_EMAIL_RECIPIENT_NAME`            | string | <b>Name</b> of the person receiving the email <br> (Get from environment)                           | ❌        | `User` | 
 |`RYBKA_DISCLAIMER`                      | boolean | Values ➡️ `True` or `False` <br> (Get from environment)                           | ❌        | `True` | 
-|`RYBKA_DEMO_BALANCE_USDT`                      | integer | Amount of `USDT` the bot is provided with, in `DEMO` mode <br> (Get from environment)                           | ❌        | `1500` | 
-|`RYBKA_DEMO_BALANCE_EGLD`                      | integer | Amount of `EGLD` the bot is provided with, in `DEMO` mode <br> (Get from environment)                           | ❌        | `100` | 
-|`RYBKA_DEMO_BALANCE_BNB`                      | integer | Amount of `BNB` the bot is provided with, in `DEMO` mode <br> (Get from environment)                           | ❌        | `0.2` | 
+|`RYBKA_DEMO_BALANCE_USDT`                      | float | Amount of `USDT` the bot is provided with, in `DEMO` mode <br> (Get from environment)                           | ❌        | `1500` | 
+|`RYBKA_DEMO_BALANCE_EGLD`                      | float | Amount of `EGLD` the bot is provided with, in `DEMO` mode <br> (Get from environment)                           | ❌        | `100` | 
+|`RYBKA_DEMO_BALANCE_BNB`                      | float | Amount of `BNB` the bot is provided with, in `DEMO` mode <br> (Get from environment)                           | ❌        | `0.2` | 
 
 <br>
 
@@ -177,8 +180,6 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 <b>🔜 There are still some pieces to move and cards to play:</b> <br>
 
->&emsp;&emsp; ♟ &nbsp;Get some inputs from a `config` file, not ENV. This way, users can edit some vars `on the fly`, while bot is still running and this to see them <br>
-&emsp;&emsp; ♖ &nbsp;CLI args, at least for `RYBKA_MODE` values <br>
 &emsp;&emsp; ♦︎ &nbsp;Switch to `binance-unicorn` instead of `python-binance`, in order to optime more the uptime <br>
 &emsp;&emsp; ♞ &nbsp;Making the bot a `binary` file with all python modules packaged in <br>
 &emsp;&emsp; ♡ &nbsp;&nbsp;Additional `reports` <br>

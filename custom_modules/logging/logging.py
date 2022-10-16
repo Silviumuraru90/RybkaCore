@@ -34,8 +34,8 @@ class RybkaLogging:
 
     def all_errors_file_update(self, error_message):
         try:
-            with open(f"{bootstrap.RYBKA_MODE}/errors_thrown", 'a', encoding="utf8") as f:
-                f.write(f"\nError thrown was: \n{error_message}\n")
+            with open(f"{os.environ.get('RYBKA_MODE')}/errors_thrown", 'a', encoding="utf8") as f:
+                f.write(f"\nError / warn thrown was: \n{error_message}\n")
         except Exception as e:
             print(f"{bcolors.WARNING}⚠️  WARN {self.logging_time()} > Could not update 'errors_thrown' file due to error: \n{e}{bcolors.ENDC}")
 
@@ -70,14 +70,17 @@ class RybkaLogging:
         print(f"{bcolors.OKGREEN}{bcolors.BOLD}INFO {self.logging_time()}    > {bcolors.UNDERLINE}{message}{bcolors.ENDC}")
 
     def DEBUG(self, message):
+        self.refresh_bootstrap_object()
         if bootstrap.DEBUG_LVL == 1 or bootstrap.DEBUG_LVL == 2 or bootstrap.DEBUG_LVL == 3:
             print(f"{bcolors.OKCYAN}🛠️  DEBUG {self.logging_time()}             > {message}{bcolors.ENDC}")
 
     def VERBOSE(self, message):
+        self.refresh_bootstrap_object()
         if bootstrap.DEBUG_LVL == 2 or bootstrap.DEBUG_LVL == 3:
             print(f"{bcolors.OKBLUE}🛠️ 🛠️  VERBOSE {self.logging_time()}         > {message}{bcolors.ENDC}")
 
     def HIGH_VERBOSITY(self, message):
+        self.refresh_bootstrap_object()
         if bootstrap.DEBUG_LVL == 3:
             print(f"{bcolors.HEADER}🛠️ 🛠️ 🛠️  HIGH_VERBOSITY {self.logging_time()}> {message}{bcolors.ENDC}")
 
@@ -94,6 +97,11 @@ class RybkaLogging:
         print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {self.logging_time()}> {message}{bcolors.ENDC}")
         self.all_errors_file_update(f"❌ FATAL (7) {self.logging_time()}> {message}")
         exit(7)
+
+    @staticmethod
+    def refresh_bootstrap_object():
+        global bootstrap
+        from ..cfg import bootstrap
 
 
 log = RybkaLogging()

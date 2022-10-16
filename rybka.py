@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# built-in and third-party libs
+# Built-in and Third-Party Libs
 import websocket
 import json
 import talib
@@ -17,6 +17,7 @@ import shutil
 import math
 import subprocess
 import ctypes
+import click
 
 import string as string_str
 
@@ -30,89 +31,19 @@ from os.path import exists
 from sys import platform
 
 
-# custom libs
+def current_dir_path_export():
+    current_dir_path = os.path.dirname(os.path.abspath(__file__))
+    os.environ["CURRENT_DIR_PATH"] = current_dir_path
+
+current_dir_path_export()
+
+# Custom Libs
 from custom_modules.cfg import bootstrap
+from custom_modules.cfg import variables_reinitialization
 from custom_modules.logging.logging import bcolors
 from custom_modules.logging.logging import log
 
 
-
-###############################################
-###########     TIME MANAGEMENT     ###########
-###############################################
-
-start_time = time.time()
-uptime = ""
-
-
-
-###############################################
-########   GLOBAL VARS from ENV VARS   ########
-###############################################
-
-DEBUG_LVL = bootstrap.DEBUG_LVL
-
-RYBKA_MODE = bootstrap.RYBKA_MODE
-TRADE_SYMBOL = bootstrap.TRADE_SYMBOL
-SOCKET = bootstrap.SOCKET
-
-RSI_PERIOD = bootstrap.RSI_PERIOD
-RSI_FOR_BUY = bootstrap.RSI_FOR_BUY
-RSI_FOR_SELL = bootstrap.RSI_FOR_SELL
-
-TRADE_QUANTITY = round(bootstrap.TRADE_QUANTITY, 2)
-AUX_TRADE_QUANTITY = TRADE_QUANTITY
-MIN_PROFIT = bootstrap.MIN_PROFIT
-
-RYBKA_EMAIL_SWITCH = bootstrap.RYBKA_EMAIL_SWITCH
-RYBKA_EMAIL_SENDER_EMAIL = bootstrap.RYBKA_EMAIL_SENDER_EMAIL
-RYBKA_EMAIL_SENDER_DEVICE_PASSWORD = bootstrap.RYBKA_EMAIL_SENDER_DEVICE_PASSWORD
-RYBKA_EMAIL_RECIPIENT_EMAIL = bootstrap.RYBKA_EMAIL_RECIPIENT_EMAIL
-RYBKA_EMAIL_RECIPIENT_NAME = bootstrap.RYBKA_EMAIL_RECIPIENT_NAME
-
-SET_DISCLAIMER = bootstrap.SET_DISCLAIMER
-
-
-
-###############################################
-#########     DEMO AUX GLOBAL VARS    #########
-###############################################
-
-if RYBKA_MODE == "DEMO":
-    balance_usdt = bootstrap.RYBKA_DEMO_BALANCE_USDT
-    balance_egld = bootstrap.RYBKA_DEMO_BALANCE_EGLD
-    balance_bnb = bootstrap.RYBKA_DEMO_BALANCE_BNB
-
-
-
-###############################################
-###########       GLOBAL VARS       ###########
-###############################################
-
-ktbr_config = {}
-closed_candles = []
-client = ""
-
-if RYBKA_MODE == "LIVE":
-    balance_usdt = 0
-    balance_egld = 0
-    balance_bnb = 0
-
-    locked_balance_usdt = 0
-    locked_balance_egld = 0
-    locked_balance_bnb = 0
-
-# value represented ~0.02 $. Considered with a high margin, considering it's bear market
-# usual fee is ~0.0072 $  (1$ paid in fees for ~120 transactions)
-# TODO this to be solved by a double socket opener, to check prices of two pairs in the same time
-bnb_commission = 0.00005577
-total_usdt_profit = 0
-
-multiple_sells = "disabled"
-nr_of_trades = 0
-subsequent_valid_rsi_counter = 0
-
-current_export_dir = ""
 
 ###############################################
 ########      UNIQUE ID FUNCTION      #########
@@ -482,18 +413,21 @@ def disclaimer():
     time.sleep(5)
 
 
-def email_engine_params():
-    if RYBKA_EMAIL_SWITCH:
+def email_engine_params(direct_call="1"):
+    if RYBKA_EMAIL_SWITCH.upper() == "TRUE":
         if RYBKA_EMAIL_RECIPIENT_NAME == "User":
-            log.WARN("\n[RYBKA_EMAIL_RECIPIENT_NAME] was NOT provided in the HOST MACHINE ENV., but will default to value [User]")
+            if direct_call == "1":
+                log.WARN("\n[RYBKA_EMAIL_RECIPIENT_NAME] was NOT provided in the HOST MACHINE ENV., but will default to value [User]")
         if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_SENDER_DEVICE_PASSWORD and RYBKA_EMAIL_RECIPIENT_EMAIL:
-            log.INFO_BOLD(" ✅ Email params in ENV    -  SET")
+            if direct_call == "1":
+                log.INFO_BOLD(" ✅ Email params in ENV    -  SET")
         else:
             log.FATAL_7("Email params in ENV    -  NOT SET\nAs long as you have [RYBKA_EMAIL_SWITCH] set as [True], make sure you also set up the [RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_SENDER_DEVICE_PASSWORD, RYBKA_EMAIL_RECIPIENT_EMAIL] vars in your ENV!")
     else:
-        log.INFO(" ")
-        log.WARN("Emails are turned [OFF]. Set [RYBKA_EMAIL_SWITCH] var as 'True' in env. if you want email notifications enabled!")
-        log.INFO(" ")
+        if direct_call == "1":
+            log.INFO(" ")
+            log.WARN("Emails are turned [OFF]. Set [RYBKA_EMAIL_SWITCH] var as 'True' in env. if you want email notifications enabled!")
+            log.INFO(" ")
 
 
 def bot_uptime():
@@ -513,7 +447,9 @@ def bot_uptime():
 def email_sender(email_message):
     global RYBKA_EMAIL_SWITCH
 
-    if RYBKA_EMAIL_SWITCH:
+    email_engine_params("0")
+
+    if RYBKA_EMAIL_SWITCH.upper() == "TRUE":
         message_template = Template('''Dear ${PERSON_NAME}, 
 
             ${MESSAGE}
@@ -672,6 +608,8 @@ def on_message(ws, message):
     
     if is_candle_closed:
         closed_candles.append(candle_close_price)
+
+        bootstraping_vars()
 
         for i in range(0,10):
             try:
@@ -1024,8 +962,11 @@ def on_message(ws, message):
                                         order['fills'][0]['commission'] = bnb_commission
 
                                         balance_usdt += candle_close_price * ktbr_config[sell][0]
+                                        balance_usdt = round(balance_usdt, 4)
                                         balance_egld -= ktbr_config[sell][0]
+                                        balance_egld = round(balance_egld, 4)
                                         balance_bnb -= bnb_commission
+                                        balance_bnb = round(balance_bnb, 6)
 
                                     order_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                                     log.DEBUG(f'SELL Order placed now at [{order_time}]\n')
@@ -1133,7 +1074,29 @@ def on_message(ws, message):
                         log.FATAL_7(f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. Please TOP UP!")
 
 
-def main():
+@click.command()
+@click.option('--mode', '-m', type=click.Choice(['demo', 'live'], case_sensitive=False), help='Choose the run mode of the software')
+@click.option("--version", is_flag=True, help = "Show the version of the software", required = False)
+def main(version, mode):
+    """\b
+    \b#################################################################################
+    \b###                            🔸 RYBKA Software 🔸                           ###
+    \b###                                                                           ###
+    \b###   📖 Docs: https://gitlab.com/Silviu_space/rybka/-/blob/master/README.md  ###
+    \b#################################################################################
+    \b###                                                                           ###
+    \b###   🔹 Author:    ©️ Silviu-Iulian Muraru                                    ###
+    \b###   🔹 Email:     silviumuraru90@yahoo.com                                  ###
+    \b###   🔹 LinkedIn:  https://www.linkedin.com/in/silviu-muraru-iulian/         ###
+    \b###                                                                           ###
+    \b#################################################################################
+    """
+
+    ###############################################
+    ###########   CLI ARGS MANAGEMENT   ###########
+    ###############################################
+
+    global RYBKA_MODE
     global balance_usdt
     global balance_egld
     global balance_bnb
@@ -1141,8 +1104,40 @@ def main():
     global locked_balance_egld
     global locked_balance_bnb
     global total_usdt_profit
-    global RYBKA_MODE
     global RSI_PERIOD
+
+
+    if not version and not mode:
+        click.echo(click.get_current_context().get_help())
+        exit(0)
+    
+    if version:
+        print(f"🔍 Rybka Software Version  ➜  [{bootstrap.__version__}]")
+        exit(0)
+
+    if mode:
+        RYBKA_MODE = mode.upper()
+
+        # in need for the logging.py module
+        os.environ["RYBKA_MODE"] = RYBKA_MODE
+
+        if RYBKA_MODE == "DEMO":
+            balance_usdt = bootstrap.RYBKA_DEMO_BALANCE_USDT
+            balance_egld = bootstrap.RYBKA_DEMO_BALANCE_EGLD
+            balance_bnb = bootstrap.RYBKA_DEMO_BALANCE_BNB
+        elif RYBKA_MODE == "LIVE":
+            balance_usdt = 0
+            balance_egld = 0
+            balance_bnb = 0
+
+            locked_balance_usdt = 0
+            locked_balance_egld = 0
+            locked_balance_bnb = 0
+
+
+    ###############################################
+    ###########   FUNCTIONS' SEQUENCE   ###########
+    ###############################################
 
     rybka_mode_folder_creation()
     all_errors_file()
@@ -1167,7 +1162,7 @@ def main():
         time.sleep(3)
         clear_terminal()
 
-        if not SET_DISCLAIMER == "False":
+        if not SET_DISCLAIMER.upper() == "FALSE":
             disclaimer()
             clear_terminal()
     elif RYBKA_MODE == "DEMO":
@@ -1220,11 +1215,11 @@ def main():
     if RYBKA_MODE == "DEMO":
         log.INFO(" ")
         if balance_usdt == 1500:
-            log.WARN(f"USDT Balance of [{balance_usdt:7}] coins  --->  is set by default, by the bot. Modify it by setting in ENV the var [RYBKA_DEMO_BALANCE_USDT] and restart the terminal / bot.")
+            log.WARN(f"USDT Balance of [{balance_usdt:7}] coins  --->  is set by default, by the bot. Modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_USDT]")
         if balance_egld == 100:
-            log.WARN(f"EGLD Balance of [{balance_egld:7}] coins  --->  is set by default, by the bot. Modify it by setting in ENV the var [RYBKA_DEMO_BALANCE_EGLD] and restart the terminal / bot.")
+            log.WARN(f"EGLD Balance of [{balance_egld:7}] coins  --->  is set by default, by the bot. Modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_EGLD]")
         if balance_bnb == 0.2:
-            log.WARN(f"BNB  Balance of [{balance_bnb:7}] coins  --->  is set by default, by the bot. Modify it by setting in ENV the var [RYBKA_DEMO_BALANCE_BNB]  and restart the terminal / bot.")
+            log.WARN(f"BNB  Balance of [{balance_bnb:7}] coins  --->  is set by default, by the bot. Modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_BNB]")
         log.INFO(" ")
 
     log.INFO("=====================================================================================================================================")
@@ -1244,4 +1239,75 @@ def main():
     ws.run_forever()
 
 
-main()
+if __name__ == '__main__':
+
+    ###############################################
+    ###########     TIME MANAGEMENT     ###########
+    ###############################################
+
+    start_time = time.time()
+    uptime = ""
+
+
+    ###############################################
+    ########   GLOBAL VARS from ENV VARS   ########
+    ###############################################
+
+    TRADE_SYMBOL = bootstrap.TRADE_SYMBOL
+    SOCKET = bootstrap.SOCKET
+    RSI_PERIOD = bootstrap.RSI_PERIOD
+
+    RYBKA_EMAIL_SENDER_DEVICE_PASSWORD = bootstrap.RYBKA_EMAIL_SENDER_DEVICE_PASSWORD
+
+    def bootstraping_vars():
+
+        variables_reinitialization()
+        from custom_modules.cfg import bootstrap
+        
+        global DEBUG_LVL, RSI_FOR_BUY, RSI_FOR_SELL
+        global TRADE_QUANTITY, AUX_TRADE_QUANTITY, MIN_PROFIT
+        global RYBKA_EMAIL_SWITCH, RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_RECIPIENT_EMAIL, RYBKA_EMAIL_RECIPIENT_NAME
+        global SET_DISCLAIMER
+
+        DEBUG_LVL = bootstrap.DEBUG_LVL
+
+        RSI_FOR_BUY = bootstrap.RSI_FOR_BUY
+        RSI_FOR_SELL = bootstrap.RSI_FOR_SELL
+
+        TRADE_QUANTITY = round(bootstrap.TRADE_QUANTITY, 2)
+        AUX_TRADE_QUANTITY = TRADE_QUANTITY
+        MIN_PROFIT = bootstrap.MIN_PROFIT
+
+        RYBKA_EMAIL_SWITCH = bootstrap.RYBKA_EMAIL_SWITCH
+        RYBKA_EMAIL_SENDER_EMAIL = bootstrap.RYBKA_EMAIL_SENDER_EMAIL
+        
+        RYBKA_EMAIL_RECIPIENT_EMAIL = bootstrap.RYBKA_EMAIL_RECIPIENT_EMAIL
+        RYBKA_EMAIL_RECIPIENT_NAME = bootstrap.RYBKA_EMAIL_RECIPIENT_NAME
+
+        SET_DISCLAIMER = bootstrap.SET_DISCLAIMER
+
+    bootstraping_vars()
+
+    ###############################################
+    ###########       GLOBAL VARS       ###########
+    ###############################################
+
+    RYBKA_MODE = ""
+    ktbr_config = {}
+    closed_candles = []
+    client = ""
+
+    # value represented ~0.02 $. Considered with a high margin, considering it's bear market
+    # usual fee is ~0.0072 $  (1$ paid in fees for ~120 transactions)
+    # TODO this to be solved by a double socket opener, to check prices of two pairs in the same time
+    bnb_commission = 0.00005577
+    total_usdt_profit = 0
+
+    multiple_sells = "disabled"
+    nr_of_trades = 0
+    subsequent_valid_rsi_counter = 0
+
+    current_export_dir = ""
+
+
+    main()
