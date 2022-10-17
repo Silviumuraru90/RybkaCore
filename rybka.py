@@ -642,13 +642,19 @@ def on_message(ws, message):
             log.VERBOSE(f"Latest RSI indicates {latest_rsi}")
 
             if subsequent_valid_rsi_counter == 1:
-                log.DEBUG(f"Invalidating one RSI period, as a buy / sell action just occured.\n")
+                log.DEBUG(f"Invalidating one RSI period, as a buy / sell action just occurred.\n")
                 subsequent_valid_rsi_counter = 0
             else:
-                if latest_rsi < RSI_FOR_BUY:    
-                    log.INFO("===============================")
-                    log.INFO("          BUY SIGNAL!")
-                    log.INFO("===============================")
+                if latest_rsi < RSI_FOR_BUY or len(ktbr_config) == 0 or len(ktbr_config) == 1:  
+                    
+                    if len(ktbr_config) == 0 or len(ktbr_config) == 1:
+                        log.INFO("===============================")
+                        log.INFO(" ALWAYS BUY POLICY ACTIVATED!")
+                        log.INFO("===============================")
+                    else:
+                        log.INFO("===============================")
+                        log.INFO("          BUY SIGNAL!")
+                        log.INFO("===============================")
 
                     if RYBKA_MODE == "LIVE":
                         for i in range(1,11):
@@ -781,8 +787,11 @@ def on_message(ws, message):
                                             order['fills'][0]['commission'] = bnb_commission
 
                                             balance_usdt -= candle_close_price * TRADE_QUANTITY
+                                            balance_usdt = round(balance_usdt, 4)
                                             balance_egld += TRADE_QUANTITY
+                                            balance_egld = round(balance_egld, 4)
                                             balance_bnb -= bnb_commission
+                                            balance_bnb = round(balance_bnb, 6)
 
                                         order_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                                         log.DEBUG(f'BUY Order placed now at [{order_time}]\n')
@@ -845,13 +854,14 @@ def on_message(ws, message):
 
                                             real_time_balances_update()
 
-                                            log.DEBUG(f"USDT balance is [{balance_usdt}]")
-                                            log.DEBUG(f"EGLD balance is [{balance_egld}]")
-                                            log.DEBUG(f"BNB  balance is [{balance_bnb}]")
+                                            if not DEBUG_LVL == 3:
+                                                log.DEBUG(f"USDT balance is [{balance_usdt}]")
+                                                log.DEBUG(f"EGLD balance is [{balance_egld}]")
+                                                log.DEBUG(f"BNB  balance is [{balance_bnb}]")
 
-                                            log.VERBOSE(f"After BUY and balance update. USDT balance is [{balance_usdt}]")
-                                            log.VERBOSE(f"After BUY and balance update. EGLD balance is [{balance_egld}]")
-                                            log.VERBOSE(f"After BUY and balance update. BNB  balance is [{balance_bnb}]")
+                                            log.VERBOSE(f"After BUY - balance update. USDT balance is [{balance_usdt}]")
+                                            log.VERBOSE(f"After BUY - balance update. EGLD balance is [{balance_egld}]")
+                                            log.VERBOSE(f"After BUY - balance update. BNB  balance is [{balance_bnb}]")
 
                                             ktbr_integrity()
 
@@ -862,7 +872,8 @@ def on_message(ws, message):
                                                 f.write(f'{log.logging_time()} Buy order done now at [{str(order_time)}]\n')
                                                 f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n\n\n")
                                             
-                                            subsequent_valid_rsi_counter = 1
+                                            if len(ktbr_config) > 1:
+                                                subsequent_valid_rsi_counter = 1
 
                                             re_sync_time()
                                         else:
@@ -1152,7 +1163,7 @@ def main(version, mode):
         pass
     elif platform == "win32":
         if isAdmin() != True:
-            log.FATAL_7("Please run the script with admin privileges as bot needs access to auto-update HOST's time with NIST servers!")
+            log.FATAL_7("Please run the script with admin privileges, as bot needs access to auto-update HOST's time with NIST servers!")
     
     if RYBKA_MODE == "LIVE":
         log.INFO("====================================================================================================")
@@ -1218,11 +1229,11 @@ def main(version, mode):
     if RYBKA_MODE == "DEMO":
         log.INFO(" ")
         if balance_usdt == 1500:
-            log.WARN(f"USDT Balance of [{balance_usdt}] coins  --->  is set by default, by the bot. Modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_USDT]")
+            log.WARN(f"USDT Balance of [{balance_usdt}] coins  --->  is set by default, by the bot. You can modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_USDT]")
         if balance_egld == 100:
-            log.WARN(f"EGLD Balance of [{balance_egld}]  coins  --->  is set by default, by the bot. Modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_EGLD]")
+            log.WARN(f"EGLD Balance of [{balance_egld}]  coins  --->  is set by default, by the bot. You can modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_EGLD]")
         if balance_bnb == 0.2:
-            log.WARN(f"BNB  Balance of [{balance_bnb}]  coins  --->  is set by default, by the bot. Modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_BNB]")
+            log.WARN(f"BNB  Balance of [{balance_bnb}]  coins  --->  is set by default, by the bot. You can modify this value within the 'env_vars_config.ini' file, for var [RYBKA_DEMO_BALANCE_BNB]")
         log.INFO(" ")
 
     log.INFO("=====================================================================================================================================")
