@@ -698,7 +698,7 @@ def on_message(ws, message):
                             if possible_nr_of_trades != 0:
 
                                 if len(ktbr_config) > 5:
-                                    if possible_nr_of_trades < len(ktbr_config) * 0.7:
+                                    if possible_nr_of_trades < len(ktbr_config) * 0.8:
                                         multiple_sells = "enabled"
                                     else:
                                         multiple_sells = "disabled"
@@ -940,6 +940,8 @@ def on_message(ws, message):
                                 eligible_sells.append(k)
                                 if multiple_sells == "disabled":
                                     break
+                                elif len(eligible_sells) == 3:
+                                    break
 
                         log.INFO(" ")
                         with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
@@ -1047,7 +1049,8 @@ def on_message(ws, message):
                                             f.write(f"{log.logging_time()} Transaction ID [{order['orderId']}] - Sold [{str(qtty_aux)}] EGLD at price per 1 EGLD of [{str(price_aux)}] USDT\n")
                                             f.write(f"{log.logging_time()} {previous_buy_info} \n\n\n")
 
-                                        subsequent_valid_rsi_counter = 1
+                                        if not multiple_sells == "enabled":
+                                            subsequent_valid_rsi_counter = 1
                                     else:
                                         with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                             f.write(f'\n\n{log.logging_time()} Within SELL (part V):\n')
