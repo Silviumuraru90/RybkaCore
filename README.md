@@ -107,23 +107,23 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 | VARIABLE                                 | TYPE   |   DESCRIPTION                                                                      | MANDATORY ? |  DEFAULT VALUE | 
 |:-------------------------------------------|:------:|:------:|:----------------------------------------------------------------------------------:| :--------:|
-|`RYBKA_DEBUG_LVL`                      | integer | Values ➡️ `1`, `2` or `3` <br>1️⃣ ➜ <b>Debug</b> &emsp; &emsp; &emsp;&nbsp;<br> 2️⃣ ➜ <b>Verbose</b> &emsp; &emsp; &nbsp;&nbsp; <br> 3️⃣ ➜ <b>&nbsp;High Verbosity</b><br> (Get from environment)                           | ❌        | ❌ | 
-|`RYBKA_MODE `                           | string | Values ➡️ `DEMO` or `LIVE` <br> (Get from environment)                           | ❌        | `DEMO` | 
+|`RYBKA_DEBUG_LVL`                      | integer | Values ➡️ `1`, `2` or `3` <br>1️⃣ ➜ <b>Debug</b> &emsp; &emsp; &emsp;&nbsp;<br> 2️⃣ ➜ <b>Verbose</b> &emsp; &emsp; &nbsp;&nbsp; <br> 3️⃣ ➜ <b>&nbsp;High Verbosity</b><br> (Get from environment / config file)                           | ❌        | ❌ | 
+|`RYBKA_MODE`                           | string | Values ➡️ `DEMO` or `LIVE` <br> (Get from cli args)                           | ❌        | ❌ | 
 |`BIN_KEY`                              | string | Binance <b>Auth</b>orization <b>KEY</b> <br> (Get from environment)                            | ✅ <br> if `RYBKA_MODE` is either `LIVE` or `DEMO`        | ❌ | 
 |`BIN_SECRET`                           | string | Binance <b>Auth</b>orization <b>SECRET</b> <br> (Get from environment)                           | ✅ <br> if `RYBKA_MODE` is either `LIVE` or `DEMO`      | ❌ | 
-|`RYBKA_RSI_FOR_BUY`                     | integer | <b>RSI threshold for BUY</b> actions <br> Values ➡️ (`0` ↔️ `50`) <br> The higher the value, the more sensitive the bot on buy actions <br> (Get from environment)                           | ❌        | `30` | 
-|`RYBKA_RSI_FOR_SELL`                    | integer | <b>RSI threshold for SELL</b> actions <br> Values ➡️ (`50` ↔️ `100`) <br> The lower the value, the more sensitive the bot on sell actions <br> (Get from environment)                           | ❌        | `70` | 
-|`RYBKA_TRADE_QUANTITY`                  | float | The <b>crypto-coin amount</b> to buy on each transaction <br> (Get from environment)                           | ❌        | `0.4` | 
-|`RYBKA_MIN_PROFIT`                      | float | The `USDT` <b>minimum profit</b>, per transaction, that allows a SELL signal to complete <br> (Get from environment)                           | ❌        | `0.3` | 
-|`RYBKA_EMAIL_SWITCH`                    | boolean | Values ➡️ `True` or `False` <br> (Get from environment)                           | ❌        | `False` | 
-|`RYBKA_EMAIL_SENDER_EMAIL`              | string | <b>Email</b> for the account sending the email <br> (Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`       | ❌ | 
+|`RYBKA_RSI_FOR_BUY`                     | integer | <b>RSI threshold for BUY</b> actions <br> Values ➡️ (`0` ↔️ `50`) <br> The higher the value, the more sensitive the bot on buy actions <br> (Get from environment / config file)                           | ❌        | `30` | 
+|`RYBKA_RSI_FOR_SELL`                    | integer | <b>RSI threshold for SELL</b> actions <br> Values ➡️ (`50` ↔️ `100`) <br> The lower the value, the more sensitive the bot on sell actions <br> (Get from environment / config file)                           | ❌        | `70` | 
+|`RYBKA_TRADE_QUANTITY`                  | float | The <b>crypto-coin amount</b> to buy on each transaction <br> (Get from environment / config file)                           | ❌        | `0.4` | 
+|`RYBKA_MIN_PROFIT`                      | float | The `USDT` <b>minimum profit</b>, per transaction, that allows a SELL signal to complete <br> (Get from environment / config file)                           | ❌        | `0.3` | 
+|`RYBKA_EMAIL_SWITCH`                    | boolean | Values ➡️ `True` or `False` <br> (Get from environment / config file)                           | ❌        | `False` | 
+|`RYBKA_EMAIL_SENDER_EMAIL`              | string | <b>Email</b> for the account sending the email <br> (Get from environment / config file)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`       | ❌ | 
 |`RYBKA_EMAIL_SENDER_DEVICE_PASSWORD`    | string | <b>DEVICE password</b>, not the emailbox password, (tested only with @gmail.com accounts) of the account sending the email  <br> (Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`       | ❌ | 
-|`RYBKA_EMAIL_RECIPIENT_EMAIL`           | string | <b>Email</b> for the account receiving the email <br> (Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
-|`RYBKA_EMAIL_RECIPIENT_NAME`            | string | <b>Name</b> of the person receiving the email <br> (Get from environment)                           | ❌        | `User` | 
-|`RYBKA_DISCLAIMER`                      | boolean | Values ➡️ `True` or `False` <br> (Get from environment)                           | ❌        | `True` | 
-|`RYBKA_DEMO_BALANCE_USDT`                      | float | Amount of `USDT` the bot is provided with, in `DEMO` mode <br> (Get from environment)                           | ❌        | `1500` | 
-|`RYBKA_DEMO_BALANCE_EGLD`                      | float | Amount of `EGLD` the bot is provided with, in `DEMO` mode <br> (Get from environment)                           | ❌        | `100` | 
-|`RYBKA_DEMO_BALANCE_BNB`                      | float | Amount of `BNB` the bot is provided with, in `DEMO` mode <br> (Get from environment)                           | ❌        | `0.2` | 
+|`RYBKA_EMAIL_RECIPIENT_EMAIL`           | string | <b>Email</b> for the account receiving the email <br> (Get from environment / config file)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
+|`RYBKA_EMAIL_RECIPIENT_NAME`            | string | <b>Name</b> of the person receiving the email <br> (Get from environment / config file)                           | ❌        | `User` | 
+|`RYBKA_DISCLAIMER`                      | boolean | Values ➡️ `True` or `False` <br> (Get from environment / config file)                           | ❌        | `True` | 
+|`RYBKA_DEMO_BALANCE_USDT`                      | float | Amount of `USDT` the bot is provided with, in `DEMO` mode <br> (Get from environment / config file)                           | ❌        | `1500` | 
+|`RYBKA_DEMO_BALANCE_EGLD`                      | float | Amount of `EGLD` the bot is provided with, in `DEMO` mode <br> (Get from environment / config file)                           | ❌        | `100` | 
+|`RYBKA_DEMO_BALANCE_BNB`                      | float | Amount of `BNB` the bot is provided with, in `DEMO` mode <br> (Get from environment / config file)                           | ❌        | `0.2` | 
 
 <br>
 
