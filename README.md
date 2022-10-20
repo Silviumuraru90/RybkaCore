@@ -67,19 +67,21 @@ As `rybka` is not a standalone executable software yet, for any of the aforement
 &emsp;&emsp;✅ Python 3.6 <br>
 &emsp;&emsp;✅ Python 3.7 <br>
 &emsp;&emsp;✅ Python 3.8 <br>
-&emsp;&emsp;❔ &nbsp;Python 3.9 <br>
-&emsp;&emsp;❔ &nbsp;Python 3.10 <br><br><br>
+&emsp;&emsp;✅ Python 3.9 <br>
+&emsp;&emsp;✅ Python 3.10 <br><br><br>
 
-Hence, at the moment, you will need 🐍 `python` in your OS to run the software. Via pip, `5` modules would then come on top of your python installation: <br><br>
+Hence, at the moment, you will need 🐍 `python` in your OS to run the software. Via `pip`, some modules would then come on top of your python installation: <br><br>
 &emsp;&emsp;✅ python-binance <br>
 &emsp;&emsp;✅ websocket-client <br>
 &emsp;&emsp;✅ colored <br>
 &emsp;&emsp;✅ click <br>
+&emsp;&emsp;✅ requests <br>
+&emsp;&emsp;✅ telepot <br>
 &emsp;&emsp;✅ TA-Lib <br><br><br>
 
-❗️ `Note:` while via `pip3` you are able to install the first three modules, the 4th (`TA-Lib`) is not within the official `pypi` list, hence you can download the `wheel` file that matches your `python` version and then install it via `pip`. <br> Grab the file from 📦 [HERE](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib) <br><br>
+❗️ `Note:` while via `pip3` you are able to install the first modules, `TA-Lib` is not currently available to be installed from the official `pypi` list on Windows platforms, hence you can download the `wheel` file that matches your `python` version and then install it via `pip`. <br> Grab the file from 📦 [HERE](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib) <br><br>
 OR <br><br>
-📦 Build it from source with these commands and then install it in the same way, via `pip`. Commands:
+📦 Build it from source via Windows's `Linux subsystem` with these commands and then install it in the same way, via `pip`. Commands:
 ```
 wget https://artiya4u.keybase.pub/TA-lib/ta-lib-0.4.0-src.tar.gz
 tar -xvf ta-lib-0.4.0-src.tar.gz
@@ -124,6 +126,9 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 |`RYBKA_DEMO_BALANCE_USDT`                      | float | Amount of `USDT` the bot is provided with, in `DEMO` mode <br> (Get from environment / config file)                           | ❌        | `1500` | 
 |`RYBKA_DEMO_BALANCE_EGLD`                      | float | Amount of `EGLD` the bot is provided with, in `DEMO` mode <br> (Get from environment / config file)                           | ❌        | `100` | 
 |`RYBKA_DEMO_BALANCE_BNB`                      | float | Amount of `BNB` the bot is provided with, in `DEMO` mode <br> (Get from environment / config file)                           | ❌        | `0.2` | 
+|`RYBKA_TELEGRAM_SWITCH`                      | boolean | Values ➡️ `True` or `False` <br> (Get from environment / config file)                           | ❌        | `False` |  
+|`RYBKA_TELEGRAM_API_KEY`                      | string | Telegram bot's <b>Auth</b>orization <b>KEY</b> <br> (Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
+|`RYBKA_TELEGRAM_CHAT_ID`                      | string | Telegram bot's chat <b>id</b>entificator <br> (Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
 
 <br>
 
@@ -133,12 +138,16 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 🔘 And, of course, an `internet connection` <br><br><br>
 
-▶️ You can run the software directly (the `rybka.py` file) or via the `restarer.py` module that will automatically start the bot, but also restart the bot if it exits on a not-hardcoded error (such as a temporary internet drop) <br><br>
-
-❗️ `Note:` Recommendation for having the best UI output - running `rybka` into a `cmd` shell within `Visual Studio Code` <br>
-
+### &emsp;&emsp;<b>Notes for Telegram Notifications</b>
+❗️ `Note for the [RYBKA_TELEGRAM_API_KEY] var:` For Telegram notifications, you'll need to create your own Telegram bot in the `telegram` app. Simply search for `BotFather` among "Contacts", then type in that chat `/newbot` and follow instructions to create one and grab the API KEY that you need to set in your env as a value for the `RYBKA_TELEGRAM_API_KEY` var. <br><br>
+❗️ `Note for the [RYBKA_TELEGRAM_CHAT_ID] var:` In order to grab this value go to this link: `https://api.telegram.org/bot<replace_with_your_value_for_RYBKA_TELEGRAM_API_KEY>/getUpdates`, then type something in the chat of your newly created bot (not in the same chat for `BotFather`!). The message you typed should be visible there as an API payload. Grab the value for the `RYBKA_TELEGRAM_CHAT_ID` var from there - find it within such structure `"chat":{"id":<your_chat_id_value>,`. Add it to the ENV.
 
 <br><br>
+
+▶️ You can run the software directly (the `rybka.py` file) or via the `restarer.py` module that will automatically start the bot, but also restart the bot if it exits on a not-hardcoded error (such as a temporary internet drop) <br><br>
+
+❗️ `Note:` Recommendation for having the best UI output - running `Rybka` software into a `cmd` shell within `Visual Studio Code` <br>
+❗️ `Note:` Recommendation for having the best uptime and better profit return (due to low electricity cost) - running `Rybka` software via the `restarter` module on a `Raspberry PI 4` connected directly to a `UPS` <br><br><br>
 
 ***
 ***

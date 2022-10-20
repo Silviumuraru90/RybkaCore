@@ -8,7 +8,7 @@ import colored
 
 # custom libs
 from ..cfg import bootstrap
-
+from custom_modules.telegram.telegram_passive import telegram
 
 
 ###############################################
@@ -101,11 +101,13 @@ class RybkaLogging:
     def FATAL(self, message):
         print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {self.logging_time()}      > {message}{bcolors.ENDC}")
         self.all_errors_file_update(f"❌ FATAL (1) {self.logging_time()}      > {message}")
+        telegram.LOG("FATAL", message)
         exit(1)
 
     def FATAL_7(self, message):
         print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL (7) {self.logging_time()}  > {message}{bcolors.ENDC}")
         self.all_errors_file_update(f"❌ FATAL (7) {self.logging_time()}  > {message}")
+        telegram.LOG("FATAL", message)
         exit(7)
 
     @staticmethod

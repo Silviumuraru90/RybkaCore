@@ -7,9 +7,13 @@ import configparser
 # Rybka proj. specific prerequisites
 class Rybka_py_env_bootstrap():
     def __init__(self):
-        # API Authorization
+        # API Authorization for Binance
         self.BIN_KEY = os.environ.get("BIN_KEY")
         self.BIN_SECRET = os.environ.get("BIN_SECRET")
+
+        # API Authorization for Telegram
+        self.TELE_KEY = os.environ.get("RYBKA_TELEGRAM_API_KEY")
+        self.TELE_CHAT_ID = os.environ.get("RYBKA_TELEGRAM_CHAT_ID")
 
         # Disclaimer
         if not os.environ.get("RYBKA_DISCLAIMER"):
@@ -23,7 +27,7 @@ class Rybka_py_env_bootstrap():
         except:
             self.DEBUG_LVL = None
         
-        # Email related configuration
+        # Email related config.
         self.RYBKA_EMAIL_SENDER_DEVICE_PASSWORD = str(os.environ.get("RYBKA_EMAIL_SENDER_DEVICE_PASSWORD")).strip("\n").strip()
         if not os.environ.get("RYBKA_EMAIL_SWITCH"):
             self.RYBKA_EMAIL_SWITCH = config.get("Rybka Standalone Configuration. For LIVE and DEMO modes", "RYBKA_EMAIL_SWITCH").strip("\n").strip()
@@ -42,7 +46,13 @@ class Rybka_py_env_bootstrap():
         else:
             self.RYBKA_EMAIL_RECIPIENT_NAME = os.environ.get("RYBKA_EMAIL_RECIPIENT_NAME").strip("\n").strip()
 
-        # Binance related configuration
+        # Telegram related config.
+        if not os.environ.get("RYBKA_TELEGRAM_SWITCH"):
+            self.RYBKA_TELEGRAM_SWITCH = config.get("Rybka Standalone Configuration. For LIVE and DEMO modes", "RYBKA_TELEGRAM_SWITCH").strip("\n").strip()
+        else:
+            self.RYBKA_TELEGRAM_SWITCH = os.environ.get("RYBKA_TELEGRAM_SWITCH").strip("\n").strip()
+        
+        # Binance related config.
         self.TRADE_SYMBOL = config.get("Rybka Binance Configuration. For LIVE and DEMO modes", "RYBKA_TRADE_SYMBOL").strip("\n").strip()
         self.SOCKET = f"wss://stream.binance.com:9443/ws/{self.TRADE_SYMBOL.lower()}@kline_1m"
         self.RSI_PERIOD = int(config.get("Rybka Binance Configuration. For LIVE and DEMO modes", "RYBKA_RSI_PERIOD"))
@@ -51,7 +61,7 @@ class Rybka_py_env_bootstrap():
         self.TRADE_QUANTITY = float(config.get("Rybka Binance Configuration. For LIVE and DEMO modes", "RYBKA_TRADE_QUANTITY"))
         self.MIN_PROFIT = float(config.get("Rybka Binance Configuration. For LIVE and DEMO modes", "RYBKA_MIN_PROFIT"))
 
-        # DEMO mode related configuration
+        # DEMO mode related config.
         try:
             self.RYBKA_DEMO_BALANCE_USDT = int(config.get("Rybka Standalone Configuration. Only for DEMO mode", "RYBKA_DEMO_BALANCE_USDT")).strip("\n").strip()
         except:

@@ -42,6 +42,7 @@ from custom_modules.cfg import bootstrap
 from custom_modules.cfg import variables_reinitialization
 from custom_modules.logging.logging import bcolors
 from custom_modules.logging.logging import log
+from custom_modules.telegram.telegram_passive import telegram
 
 
 
@@ -157,12 +158,14 @@ def log_files_creation(direct_call="1"):
             f.write(f"RSI FOR BUY     set to: {RSI_FOR_BUY:>50} threshold\n")
             f.write(f"RSI FOR SELL    set to: {RSI_FOR_SELL:>50} threshold\n")
             f.write(f"EMAIL SWITCH    set to: {str(RYBKA_EMAIL_SWITCH):>50}\n")
+            f.write(f"Telegram SWITCH set to: {str(RYBKA_TELEGRAM_SWITCH):>50}\n")
             if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_RECIPIENT_EMAIL:
                 f.write(f"SENDER EMAIL    set to: {RYBKA_EMAIL_SENDER_EMAIL:>50}\n")
                 f.write(f"RECIPIENT EMAIL set to: {RYBKA_EMAIL_RECIPIENT_EMAIL:>50}\n")
         
         if direct_call == "1":
             log.INFO_BOLD(f" ✅ Files creation status  -  {bcolors.PURPLE}DONE")
+            log.INFO("==============================================")
         
     except Exception as e:
         log.FATAL_7(f"Attempt to create local folder [{current_export_dir}] and inner files for output analysis FAILED - with error:\n{e}")
@@ -172,7 +175,11 @@ def log_files_creation(direct_call="1"):
 def rybka_mode_folder_creation():
     global RYBKA_MODE
     if os.path.isdir(RYBKA_MODE) is False:
-        os.makedirs(RYBKA_MODE)
+        try:
+            os.makedirs(RYBKA_MODE)
+        except Exception as e:
+            log.FATAL_7(f"Attempt to create local folder for the mode in which software runs - [{RYBKA_MODE}] - FAILED with error:\n{e}")
+
 
 
 def ktbr_configuration():
@@ -324,16 +331,16 @@ def ktbr_integrity():
 
 def all_errors_file():
     global RYBKA_MODE
-    log.INFO("=====================================================================================================================================")
+    log.INFO("==============================================")
     if exists(f"{RYBKA_MODE}/errors_thrown"):
-        log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/errors_thrown] file already exists!\n")
+        log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/errors_thrown] file already exists!")
     else:
         try:
             open(f"{RYBKA_MODE}/errors_thrown", 'w', encoding="utf8").close()
             log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/errors_thrown] file created!")
         except Exception as e:
             log.FATAL_7(f"[{RYBKA_MODE}/errors_thrown] file could NOT be created!\nFailing with error:\n{e}")
-    log.INFO("=====================================================================================================================================")
+    log.INFO("==============================================")
 
 
 ###############################################
@@ -356,6 +363,7 @@ def back_up():
 
 
 def software_config_params():
+    print("\n\n")
     log.ORANGE(f"\t\t\t\t██████╗░██╗░░░██╗██████╗░██╗░░██╗░█████╗░")
     log.ORANGE(f"\t\t\t\t██╔══██╗╚██╗░██╔╝██╔══██╗██║░██╔╝██╔══██╗")
     log.ORANGE(f"\t\t\t\t██████╔╝░╚████╔╝░██████╦╝█████═╝░███████║")
@@ -376,6 +384,7 @@ def software_config_params():
     log.INFO_BOLD(f" 🔘 RSI FOR BUY     set to: {bcolors.PURPLE}{RSI_FOR_BUY:>50}{bcolors.DARKGRAY} threshold")
     log.INFO_BOLD(f" 🔘 RSI FORSELL     set to: {bcolors.PURPLE}{RSI_FOR_SELL:>50}{bcolors.DARKGRAY} threshold")
     log.INFO_BOLD(f" 🔘 EMAIL SWITCH    set to: {bcolors.PURPLE}{str(RYBKA_EMAIL_SWITCH):>50}")
+    log.INFO_BOLD(f" 🔘 Telegram SWITCH set to: {bcolors.PURPLE}{str(RYBKA_TELEGRAM_SWITCH):>50}")
     if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_RECIPIENT_EMAIL:
         log.INFO_BOLD(f" 🔘 SENDER EMAIL    set to: {bcolors.PURPLE}{RYBKA_EMAIL_SENDER_EMAIL:>50}")
         log.INFO_BOLD(f" 🔘 RECIPIENT EMAIL set to: {bcolors.PURPLE}{RYBKA_EMAIL_RECIPIENT_EMAIL:>50}")
@@ -419,13 +428,27 @@ def email_engine_params(direct_call="1"):
                 log.WARN("\n[RYBKA_EMAIL_RECIPIENT_NAME] was NOT provided in the HOST MACHINE ENV., but will default to value [User]")
         if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_SENDER_DEVICE_PASSWORD and RYBKA_EMAIL_RECIPIENT_EMAIL:
             if direct_call == "1":
-                log.INFO_BOLD(" ✅ Email params in ENV    -  SET")
+                log.INFO_BOLD(f" ✅ Email params in ENV    -  {bcolors.PURPLE}SET")
         else:
             log.FATAL_7("Email params in ENV    -  NOT SET\nAs long as you have [RYBKA_EMAIL_SWITCH] set as [True], make sure you also set up the [RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_SENDER_DEVICE_PASSWORD, RYBKA_EMAIL_RECIPIENT_EMAIL] vars in your ENV!")
     else:
         if direct_call == "1":
             log.INFO(" ")
             log.WARN("Emails are turned [OFF]. Set [RYBKA_EMAIL_SWITCH] var as 'True' in env. if you want email notifications enabled!")
+            log.INFO(" ")
+
+
+def telegram_engine_switch(direct_call="1"):
+    if RYBKA_TELEGRAM_SWITCH.upper() == "TRUE":
+        if bootstrap.TELE_KEY and bootstrap.TELE_CHAT_ID:
+            if direct_call == "1":
+                log.INFO_BOLD(f" ✅ Telegram params in ENV -  {bcolors.PURPLE}SET")
+        else:
+            log.FATAL_7("Telegram params in ENV -  NOT SET\nAs long as you have [RYBKA_TELEGRAM_SWITCH] set as [True], make sure you also set up the [RYBKA_TELEGRAM_API_KEY, RYBKA_TELEGRAM_CHAT_ID] vars in your ENV!")
+    else:
+        if direct_call == "1":
+            log.INFO(" ")
+            log.WARN("Telegram notifications are turned [OFF]. Set [RYBKA_TELEGRAM_SWITCH] var as 'True' in env. if you want Telegram notifications enabled!")
             log.INFO(" ")
 
 
@@ -442,9 +465,9 @@ def bot_uptime_and_current_price(current_price):
     days = math.floor(uptime_hours / 24)
     
     if days < 1:
-        price_and_uptime = f"◼️ EGLD = [{bcolors.PURPLE}{current_price}{bcolors.DARKGRAY}] USDT   ◾️◼️⬛️◼️◾️   UPTIME = [{bcolors.PURPLE}{hours_in_limit}h:{minutes_in_limit}m:{seconds_in_limit}s{bcolors.DARKGRAY}] ◼️" 
+        price_and_uptime = f"◼️ EGLD = [{bcolors.PURPLE}{current_price}{bcolors.DARKGRAY}] USDT   ◼️⬛️◼️   UPTIME = [{bcolors.PURPLE}{hours_in_limit}h:{minutes_in_limit}m:{seconds_in_limit}s{bcolors.DARKGRAY}] ◼️" 
     else:
-        price_and_uptime = f"◼️ EGLD = [{bcolors.PURPLE}{current_price}{bcolors.DARKGRAY}] USDT   ◾️◼️⬛️◼️◾️   UPTIME = [{bcolors.PURPLE}{days} days + {hours_in_limit}h:{minutes_in_limit}m:{seconds_in_limit}s{bcolors.DARKGRAY}] ◼️"
+        price_and_uptime = f"◼️ EGLD = [{bcolors.PURPLE}{current_price}{bcolors.DARKGRAY}] USDT   ◼️⬛️◼️   UPTIME = [{bcolors.PURPLE}{days} days + {hours_in_limit}h:{minutes_in_limit}m:{seconds_in_limit}s{bcolors.DARKGRAY}] ◼️"
 
     log.INFO(price_and_uptime)
 
@@ -557,8 +580,9 @@ def on_open(ws):
     
 
 def on_close(ws, close_status_code, close_msg):
-    print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}> Closed connection, something went wrong. Please consult logs and restart the bot.{bcolors.ENDC}")
-    log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}> Closed connection, something went wrong. Please consult logs and restart the bot.")
+    print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.{bcolors.ENDC}")
+    log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.")
+    telegram.LOG("FATAL", f"☠️ Bot is shutting down...")
 
     archive_folder = 'archived_logs'
     if not os.path.isdir(archive_folder):
@@ -566,10 +590,11 @@ def on_close(ws, close_status_code, close_msg):
     shutil.move(current_export_dir, archive_folder)
 
     if close_status_code or close_msg:
-        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}> Close status code: {str(close_status_code)}{bcolors.ENDC}")
-        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}> Close message: {str(close_msg)}{bcolors.ENDC}")
-        log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}> Close status code: {str(close_status_code)}")
-        log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}> Close message: {str(close_msg)}")
+        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}      > Close status code: {str(close_status_code)}{bcolors.ENDC}")
+        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}      > Close message: {str(close_msg)}{bcolors.ENDC}")
+        log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}      > Close status code: {str(close_status_code)}")
+        log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}      > Close message: {str(close_msg)}")
+        telegram.LOG("FATAL", f"[RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working.\n\n Close Status Code: {str(close_status_code)}\n Close Message: {str(close_msg)}")
         email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working.\n\n Close Status Code: {str(close_status_code)}\n Close Message: {str(close_msg)}")
     else:
         email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working. No DEBUG close message or status code provided")
@@ -577,11 +602,11 @@ def on_close(ws, close_status_code, close_msg):
 
 def on_error(ws, message):
     if str(message).strip():
-        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}> Software encountered an error and got shutdown! Additional error message provided:\n{message}{bcolors.ENDC}")
-        log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}> Software encountered an error and got shutdown! Additional error message provided:\n{message}")
+        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}      > Software encountered an error and got shutdown! Additional error message provided:\n{message}{bcolors.ENDC}")
+        log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}      > Software encountered an error and got shutdown! Additional error message provided:\n{message}")
     else:
-        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}> Software encountered an error and got shutdown! No additional error message provided{bcolors.ENDC}")
-        log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}> Software encountered an error and got shutdown! No additional error message provided")
+        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}      > Software encountered an error and got shutdown! No additional error message provided{bcolors.ENDC}")
+        log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}      > Software encountered an error and got shutdown! No additional error message provided")
 
 
 def on_message(ws, message):
@@ -616,6 +641,7 @@ def on_message(ws, message):
 
         bootstraping_vars()
         log_files_creation("0")
+        telegram_engine_switch("0")
 
         for i in range(0,10):
             try:
@@ -810,8 +836,10 @@ def on_message(ws, message):
 
                                         if order_status['status'] == "FILLED":
                                             log.INFO_BOLD_UNDERLINE(" ✅ BUY Order filled successfully!\n")
+
                                             # avoid rounding up on quantity & price bought
-                                            log.INFO_SPECIAL(f"Transaction ID [{order['orderId']}] - Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT")
+                                            log.INFO_SPECIAL(f"🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT")
+                                            telegram.LOG("INFO", f"\n🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT/EGLD")
 
                                             usdt_trade_fee = round(float(0.08 / 100 * round(float(order['cummulativeQuoteQty']), 4)), 4)
                                             log.VERBOSE(f"BUY action's usdt trade fee is {usdt_trade_fee}")
@@ -892,7 +920,7 @@ def on_message(ws, message):
                                         with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                             f.write(f'\n\n{log.logging_time()} Within BUY (part VII):\n')
                                             f.write(f'{log.logging_time()} Order could NOT be placed due to an error:\n{e}\n')
-                                        log.FATAL_7(f"Make sure the API_KEY and API_SECRET have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}")
+                                        log.FATAL_7(f"Make sure the [BIN_KEY] and [BIN_SECRET] ENV vars have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}")
                             else:
                                 log.WARN(f"Bot might still be able to buy some crypto, but only at a [{min_order_quantity}] EGLD trading quantity, not at the current one set of [{TRADE_QUANTITY}] EGLD per transaction!\n")
                                 with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
@@ -951,7 +979,7 @@ def on_message(ws, message):
 
                         for k, v in ktbr_config.items():
                             if v[1] + MIN_PROFIT < candle_close_price:
-                                log.INFO(f"Identified buy ID [{k}], qtty [{v[0]}] bought at price of [{v[1]}] as being eligible for sell")
+                                log.DEBUG(f"Identified buy ID [{k}], qtty [{v[0]}] bought at price of [{v[1]}] as being eligible for sell")
                                 log.VERBOSE(f"Multiple sells set as [{multiple_sells}]")
                                 eligible_sells.append(k)
                                 if multiple_sells == "disabled":
@@ -1002,7 +1030,8 @@ def on_message(ws, message):
                                         qtty_aux = int(float(order['executedQty']) * 10 ** 4) / 10 ** 4
                                         price_aux = int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4
 
-                                        log.INFO_SPECIAL(f"Transaction ID [{order['orderId']}] - Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT")
+                                        log.INFO_SPECIAL(f"🟢 Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT. Previously bought at [{str(ktbr_config[sell][1])}] USDT")
+                                        telegram.LOG("INFO", f"\n🟢 Sold [{qtty_aux}] EGLD at [{price_aux}] USDT/EGLD.\nWas bought at [{str(ktbr_config[sell][1])}] USDT/EGLD")
 
                                         usdt_trade_fee = round(float(0.08 / 100 * round(float(order['cummulativeQuoteQty']), 4)), 4)
                                         log.VERBOSE(f"SELL action's usdt trade fee is {usdt_trade_fee}")
@@ -1078,7 +1107,7 @@ def on_message(ws, message):
                                     with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                         f.write(f'\n\n{log.logging_time()} Within SELL (part VI):\n')
                                         f.write(f'{log.logging_time()} Order could NOT be placed due to an error:\n{e}\n')
-                                    log.FATAL_7(f"Make sure the API_KEY and API_SECRET have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}")
+                                    log.FATAL_7(f"Make sure the [BIN_KEY] and [BIN_SECRET] ENV vars have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}")
                             re_sync_time()
                         else:
                             log.INFO(f"No buy transactions are eligible to be sold at this moment!")
@@ -1118,6 +1147,7 @@ def main(version, mode):
     global RYBKA_MODE
     global TRADE_SYMBOL
     global RSI_PERIOD
+    global RYBKA_TELEGRAM_SWITCH
 
     global balance_usdt
     global balance_egld
@@ -1162,9 +1192,18 @@ def main(version, mode):
     ###########   FUNCTIONS' SEQUENCE   ###########
     ###############################################
 
+    clear_terminal()
+    log.ORANGE("\nPREREQUISITE PROCESS...\n")
     rybka_mode_folder_creation()
     all_errors_file()
 
+    current_export_dir = f'{RYBKA_MODE}_{TRADE_SYMBOL}_{datetime.now().strftime("%d_%m_%Y")}_AT_{datetime.now().strftime("%H_%M_%S")}_{id_generator()}'
+    # In need for telegram notif. file
+    os.environ["CURRENT_EXPORT_DIR"] = current_export_dir   
+    os.environ["TRADE_SYMBOL"] = TRADE_SYMBOL   
+
+    log_files_creation()
+    time.sleep(2)
     clear_terminal()
 
     if platform == "linux" or platform == "linux2":
@@ -1217,10 +1256,7 @@ def main(version, mode):
     user_initial_config()
     email_engine_params()
     binance_system_status()
-
-    current_export_dir = f'{RYBKA_MODE}_{TRADE_SYMBOL}_{datetime.now().strftime("%d_%m_%Y")}_AT_{datetime.now().strftime("%H_%M_%S")}_{id_generator()}'
-
-    log_files_creation()
+    telegram_engine_switch()
 
     log.INFO(" ")
     log.INFO("=====================================================================================================================================")
@@ -1265,6 +1301,7 @@ def main(version, mode):
     log.INFO("=====================================================================================================================================")
     log.INFO("=====================================================================================================================================")
 
+    telegram.LOG("INFO", "Bot started! 🔌 💻")
     email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot is starting up. Find logs into the local folder: \n\t[{current_export_dir}]")
 
     ws = websocket.WebSocketApp(SOCKET, on_open=on_open, on_close=on_close, on_message=on_message, on_error = on_error)
@@ -1299,6 +1336,7 @@ if __name__ == '__main__':
         global DEBUG_LVL, RSI_FOR_BUY, RSI_FOR_SELL
         global TRADE_QUANTITY, AUX_TRADE_QUANTITY, MIN_PROFIT
         global RYBKA_EMAIL_SWITCH, RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_RECIPIENT_EMAIL, RYBKA_EMAIL_RECIPIENT_NAME
+        global RYBKA_TELEGRAM_SWITCH
         global SET_DISCLAIMER
 
         DEBUG_LVL = bootstrap.DEBUG_LVL
@@ -1312,9 +1350,10 @@ if __name__ == '__main__':
 
         RYBKA_EMAIL_SWITCH = bootstrap.RYBKA_EMAIL_SWITCH
         RYBKA_EMAIL_SENDER_EMAIL = bootstrap.RYBKA_EMAIL_SENDER_EMAIL
-        
         RYBKA_EMAIL_RECIPIENT_EMAIL = bootstrap.RYBKA_EMAIL_RECIPIENT_EMAIL
         RYBKA_EMAIL_RECIPIENT_NAME = bootstrap.RYBKA_EMAIL_RECIPIENT_NAME
+
+        RYBKA_TELEGRAM_SWITCH = bootstrap.RYBKA_TELEGRAM_SWITCH
 
         SET_DISCLAIMER = bootstrap.SET_DISCLAIMER
 
