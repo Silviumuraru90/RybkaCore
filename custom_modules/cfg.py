@@ -73,7 +73,7 @@ bootstrap = ""
 
 def variables_reinitialization():
     
-    config.read(os.path.join(os.environ.get("CURRENT_DIR_PATH"), "env_vars_config.ini"))
+    config.read(os.path.join(os.environ.get("CURRENT_DIR_PATH"), "config.ini"))
 
     global bootstrap
     bootstrap = Rybka_py_env_bootstrap()
