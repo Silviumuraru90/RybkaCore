@@ -107,7 +107,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 | VARIABLE                                 | TYPE   |   DESCRIPTION                                                                      | MANDATORY ? |  DEFAULT VALUE | 
 |:-------------------------------------------|:------:|:------:|:----------------------------------------------------------------------------------:| :--------:|
-|`RYBKA_DEBUG_LVL`                      | integer | Values ➡️ `1`, `2` or `3` <br>1️⃣ ➜ <b>Debug</b> &emsp; &emsp; &emsp;&nbsp;<br> 2️⃣ ➜ <b>Verbose</b> &emsp; &emsp; &nbsp;&nbsp; <br> 3️⃣ ➜ <b>&nbsp;High Verbosity</b><br> (Get from environment / config file)                           | ❌        | ❌ | 
+|`RYBKA_DEBUG_LVL`                      | integer | Values ➡️ `1`, `2` or `3` <br>1️⃣ ➜ <b>Debug</b> &emsp; &emsp; &emsp;&nbsp;<br> 2️⃣ ➜ <b>Verbose</b> &emsp; &emsp; &nbsp;&nbsp; <br> 3️⃣ ➜ <b>High Verbosity</b><br> (Get from environment / config file)                           | ❌        | ❌ | 
 |`RYBKA_MODE`                           | string | Values ➡️ `DEMO` or `LIVE` <br> (Get from cli args)                           | ❌        | ❌ | 
 |`BIN_KEY`                              | string | Binance <b>Auth</b>orization <b>KEY</b> <br> (Get from environment)                            | ✅ <br> if `RYBKA_MODE` is either `LIVE` or `DEMO`        | ❌ | 
 |`BIN_SECRET`                           | string | Binance <b>Auth</b>orization <b>SECRET</b> <br> (Get from environment)                           | ✅ <br> if `RYBKA_MODE` is either `LIVE` or `DEMO`      | ❌ | 

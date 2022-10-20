@@ -711,25 +711,24 @@ def on_message(ws, message):
                                 else:
                                     multiple_sells = "disabled"
                                 
-                                heatmap_actions = round(float(possible_nr_of_trades * 0.5))
-                                heatmap_size = round(float(heatmap_actions * 0.4))
-                                heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.2))
-
-                                with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
-                                    f.write(f'\n\n{log.logging_time()} Within BUY (part II):\n')
-                                    f.write(f"{log.logging_time()} {'HEATMAP actions (BEFORE processing) (heatmap_actions) is':90} {heatmap_actions:40}\n")
-                                    f.write(f"{log.logging_time()} {'HEATMAP size (BEFORE processing) (heatmap_size) is':90} {heatmap_size:40}\n")
-                                    f.write(f"{log.logging_time()} {'HEATMAP limit (BEFORE processing) (heatmap_limit) is':90} {heatmap_limit:40}\n")
-
-                                if heatmap_actions == heatmap_size:
-                                    heatmap_actions += 2
-                                elif heatmap_actions - heatmap_size < 2:
-                                    heatmap_actions += 1
-                                if heatmap_limit < 2:
-                                    heatmap_limit = 2
-                                if heatmap_size < 2:
+                                ########   Make sure `division by 0` is not hit when editing the weights in here   ########
+                                if possible_nr_of_trades == 1:
+                                    heatmap_actions = 1
                                     heatmap_size = 2
+                                    heatmap_limit = 1
+                                else:
+                                    heatmap_actions = round(float(possible_nr_of_trades * 0.5))
+                                    if heatmap_actions == 1:
+                                        heatmap_size = 2
+                                        heatmap_limit = 1
+                                    else:
+                                        heatmap_size = round(float(heatmap_actions * 0.4))
+                                        if heatmap_size == 1:
+                                            heatmap_size = 2
+                                        heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.2))
+                                ############################################################################################
 
+                                log.VERBOSE(f"possible_nr_of_trades is {possible_nr_of_trades}")
                                 log.VERBOSE(f"heatmap_actions is {heatmap_actions}")
                                 log.VERBOSE(f"heatmap_size is {heatmap_size}")
                                 log.VERBOSE(f"heatmap_limit is {heatmap_limit}")
@@ -750,9 +749,9 @@ def on_message(ws, message):
 
                                 with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                     f.write(f'\n\n{log.logging_time()} Within BUY (part III):\n')
-                                    f.write(f"{log.logging_time()} {'HEATMAP actions (AFTER processing) (heatmap_actions) is':90} {heatmap_actions:40}\n")
-                                    f.write(f"{log.logging_time()} {'HEATMAP size (AFTER processing) (heatmap_size) is':90} {heatmap_size:40}\n")
-                                    f.write(f"{log.logging_time()} {'HEATMAP limit (AFTER processing) (heatmap_limit) is':90} {heatmap_limit:40}\n")
+                                    f.write(f"{log.logging_time()} {'HEATMAP actions (heatmap_actions) is':90} {heatmap_actions:40}\n")
+                                    f.write(f"{log.logging_time()} {'HEATMAP size (heatmap_size) is':90} {heatmap_size:40}\n")
+                                    f.write(f"{log.logging_time()} {'HEATMAP limit (heatmap_limit) is':90} {heatmap_limit:40}\n")
                                     f.write(f"{log.logging_time()} {'HEATMAP counter (heatmap_counter) is':90} {heatmap_counter:40}\n")
                                     f.write(f"{log.logging_time()} {'HEATMAP center coin counter (heatmap_center_coin_counter) is':90} {heatmap_center_coin_counter:40}\n")
                                     f.write(f"{log.logging_time()} {'Min Buy share (min_buy_share) is':90} {min_buy_share:40}\n")
