@@ -188,7 +188,7 @@ def ktbr_configuration():
                     ktbr_config = json.loads(f.read())
                     log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/ktbr] file contains the following past transactions:\n")
                     for k, v in ktbr_config.items():
-                        log.INFO(f" 💎 Transaction [{k}]  ---  [{bcolors.BOLD}{v[0]}{bcolors.ENDC}{bcolors.OKGREEN}] \t EGLD bought at price of [{bcolors.BOLD}{v[1]}{bcolors.ENDC}{bcolors.OKGREEN}] \t USDT per EGLD{bcolors.ENDC}")
+                        log.INFO(f" 💎 Transaction [{k}]  ---  [{bcolors.OKGREEN}{bcolors.BOLD}{v[0]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t EGLD bought at price of [{bcolors.OKGREEN}{bcolors.BOLD}{v[1]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t USDT per EGLD{bcolors.ENDC}")
                 except Exception as e:
                     log.FATAL_7(f"[{RYBKA_MODE}/ktbr] file contains wrong formatted content!\nFailing with error:\n{e}")
     else:
@@ -357,13 +357,13 @@ def back_up():
 
 def software_config_params():
     log.INFO("\n\n")
-    log.INFO_BOLD("\t\t\t\t██████╗░██╗░░░██╗██████╗░██╗░░██╗░█████╗░")
-    log.INFO_BOLD("\t\t\t\t██╔══██╗╚██╗░██╔╝██╔══██╗██║░██╔╝██╔══██╗")
-    log.INFO_BOLD("\t\t\t\t██████╔╝░╚████╔╝░██████╦╝█████═╝░███████║")
-    log.INFO_BOLD("\t\t\t\t██╔══██╗░░╚██╔╝░░██╔══██╗██╔═██╗░██╔══██║")
-    log.INFO_BOLD("\t\t\t\t██║░░██║░░░██║░░░██████╦╝██║░╚██╗██║░░██║")
-    log.INFO_BOLD("\t\t\t\t╚═╝░░╚═╝░░░╚═╝░░░╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝\n")
-    log.INFO_BOLD(f"\t\t\t\t             - MODE: {RYBKA_MODE} -           \n\n")
+    log.INFO_BOLD(f"\t\t\t\t{bcolors.PURPLE}██████╗░██╗░░░██╗██████╗░██╗░░██╗░█████╗░")
+    log.INFO_BOLD(f"\t\t\t\t{bcolors.PURPLE}██╔══██╗╚██╗░██╔╝██╔══██╗██║░██╔╝██╔══██╗")
+    log.INFO_BOLD(f"\t\t\t\t{bcolors.PURPLE}██████╔╝░╚████╔╝░██████╦╝█████═╝░███████║")
+    log.INFO_BOLD(f"\t\t\t\t{bcolors.PURPLE}██╔══██╗░░╚██╔╝░░██╔══██╗██╔═██╗░██╔══██║")
+    log.INFO_BOLD(f"\t\t\t\t{bcolors.PURPLE}██║░░██║░░░██║░░░██████╦╝██║░╚██╗██║░░██║")
+    log.INFO_BOLD(f"\t\t\t\t{bcolors.PURPLE}╚═╝░░╚═╝░░░╚═╝░░░╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝\n")
+    log.INFO_BOLD(f"\t\t\t\t             {bcolors.PURPLE}- MODE: {RYBKA_MODE} -           \n\n")
                     
     log.INFO(f"Rybka software started with the following parameters:\n")
     log.INFO_BOLD(f" 🔘 RYBKA_MODE      set to: {RYBKA_MODE:>50}")
@@ -624,7 +624,7 @@ def on_message(ws, message):
 
         if len(closed_candles) < 11:
             log.INFO(f"#####################################################################################################################################")
-            log.INFO_BOLD(f"#####################  Bot is gathering data for technical analysis. Currently at min [{len(closed_candles):2} of 10] of processing  #####################")
+            log.INFO_BOLD(f"#####################  Bot is gathering data for technical analysis. Currently at min {bcolors.OKGREEN}[{len(closed_candles):2} of 10]{bcolors.ENDC}{bcolors.DARKGRAY} of processing  #####################")
             log.INFO(f"#####################################################################################################################################")
         log.DEBUG(f"History of target prices is {closed_candles}")
 
@@ -805,7 +805,7 @@ def on_message(ws, message):
                                         if order_status['status'] == "FILLED":
                                             log.INFO_BOLD_UNDERLINE(" ✅ BUY Order filled successfully!\n")
                                             # avoid rounding up on quantity & price bought
-                                            log.INFO_BOLD(f"Transaction ID [{order['orderId']}] - Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT")
+                                            log.INFO_SPECIAL(f"Transaction ID [{order['orderId']}] - Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT")
 
                                             usdt_trade_fee = round(float(0.08 / 100 * round(float(order['cummulativeQuoteQty']), 4)), 4)
                                             log.VERBOSE(f"BUY action's usdt trade fee is {usdt_trade_fee}")
@@ -996,7 +996,7 @@ def on_message(ws, message):
                                         qtty_aux = int(float(order['executedQty']) * 10 ** 4) / 10 ** 4
                                         price_aux = int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4
 
-                                        log.INFO_BOLD(f"Transaction ID [{order['orderId']}] - Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT")
+                                        log.INFO_SPECIAL(f"Transaction ID [{order['orderId']}] - Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT")
 
                                         usdt_trade_fee = round(float(0.08 / 100 * round(float(order['cummulativeQuoteQty']), 4)), 4)
                                         log.VERBOSE(f"SELL action's usdt trade fee is {usdt_trade_fee}")

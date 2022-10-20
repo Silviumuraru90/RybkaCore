@@ -24,6 +24,8 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     CRED = '\33[31m'
+    DARKGRAY = '\033[90m'
+    PURPLE = '\033[95m'
 
 
 class RybkaLogging:
@@ -58,16 +60,19 @@ class RybkaLogging:
                 sys.stdout = old_stdout
 
     def INFO(self, message):
-        print(f"{bcolors.OKGREEN}INFO {self.logging_time()}    > {message}{bcolors.ENDC}")
+        print(f"{bcolors.DARKGRAY}INFO {self.logging_time()}    > {message}{bcolors.ENDC}")
 
     def INFO_BOLD(self, message):
-        print(f"{bcolors.OKGREEN}{bcolors.BOLD}INFO {self.logging_time()}    > {message}{bcolors.ENDC}")
+        print(f"{bcolors.DARKGRAY}{bcolors.BOLD}INFO {self.logging_time()}    > {message}{bcolors.ENDC}")
 
     def INFO_UNDERLINE(self, message):
-        print(f"{bcolors.OKGREEN}INFO {self.logging_time()}    > {bcolors.UNDERLINE}{message}{bcolors.ENDC}")
+        print(f"{bcolors.DARKGRAY}INFO {self.logging_time()}    > {bcolors.UNDERLINE}{message}{bcolors.ENDC}")
 
     def INFO_BOLD_UNDERLINE(self, message):
-        print(f"{bcolors.OKGREEN}{bcolors.BOLD}INFO {self.logging_time()}    > {bcolors.UNDERLINE}{message}{bcolors.ENDC}")
+        print(f"{bcolors.DARKGRAY}{bcolors.BOLD}INFO {self.logging_time()}    > {bcolors.UNDERLINE}{message}{bcolors.ENDC}")
+
+    def INFO_SPECIAL(self, message):
+        print(f"{bcolors.OKGREEN}INFO {self.logging_time()}    > {message}{bcolors.ENDC}")
 
     def DEBUG(self, message):
         self.refresh_bootstrap_object()
