@@ -129,19 +129,21 @@ def account_balance_update():
 ###############################################
 
 
-def log_files_creation():
+def log_files_creation(direct_call="1"):
     global current_export_dir
 
-    current_export_dir = f'{RYBKA_MODE}_{TRADE_SYMBOL}_{datetime.now().strftime("%d_%m_%Y")}_AT_{datetime.now().strftime("%H_%M_%S")}_{id_generator()}'
-    os.mkdir(current_export_dir)
-    
     try:
-        with open(f"{current_export_dir}/{TRADE_SYMBOL}_historical_prices", 'w', encoding="utf8") as f:
-            f.write(f'Here is a detailed view of the history of candle prices for the [{TRADE_SYMBOL}] currency pair:\n\n')
-        with open(f"{current_export_dir}/{TRADE_SYMBOL}_order_history", 'w', encoding="utf8") as f:
-            f.write(f'Here is a detailed view of the history of orders done for the [{TRADE_SYMBOL}] currency pair:\n\n')
-        with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'w', encoding="utf8") as f:
-            f.write(f'DEBUG logs for the [{TRADE_SYMBOL}] currency pair:\n\n')
+        if direct_call == "1":
+
+            os.mkdir(current_export_dir)
+
+            with open(f"{current_export_dir}/{TRADE_SYMBOL}_historical_prices", 'w', encoding="utf8") as f:
+                f.write(f'Here is a detailed view of the history of candle prices for the [{TRADE_SYMBOL}] currency pair:\n\n')
+            with open(f"{current_export_dir}/{TRADE_SYMBOL}_order_history", 'w', encoding="utf8") as f:
+                f.write(f'Here is a detailed view of the history of orders done for the [{TRADE_SYMBOL}] currency pair:\n\n')
+            with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'w', encoding="utf8") as f:
+                f.write(f'DEBUG logs for the [{TRADE_SYMBOL}] currency pair:\n\n')
+        
         with open(f"{current_export_dir}/{TRADE_SYMBOL}_weights", 'w', encoding="utf8") as f:
             f.write(f'Here is a detailed view of weights set for the [{TRADE_SYMBOL}] currency pair:\n\n')
             f.write(f"RYBKA_MODE      set to: {RYBKA_MODE:>50}\n")
@@ -158,12 +160,10 @@ def log_files_creation():
             if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_RECIPIENT_EMAIL:
                 f.write(f"SENDER EMAIL    set to: {RYBKA_EMAIL_SENDER_EMAIL:>50}\n")
                 f.write(f"RECIPIENT EMAIL set to: {RYBKA_EMAIL_RECIPIENT_EMAIL:>50}\n")
-        log.INFO_BOLD(f" ✅ Files creation status  -  {bcolors.PURPLE}DONE")
-        log.INFO(" ")
-        log.INFO("=====================================================================================================================================")
-        log.INFO(f" Check files created for this run, under the newly created local folder {bcolors.BOLD}[{bcolors.PURPLE}{current_export_dir}{bcolors.DARKGRAY}]{bcolors.ENDC}")
-        log.INFO("=====================================================================================================================================")
-        log.INFO(" ")
+        
+        if direct_call == "1":
+            log.INFO_BOLD(f" ✅ Files creation status  -  {bcolors.PURPLE}DONE")
+        
     except Exception as e:
         log.FATAL_7(f"Attempt to create local folder [{current_export_dir}] and inner files for output analysis FAILED - with error:\n{e}")
         
@@ -356,14 +356,13 @@ def back_up():
 
 
 def software_config_params():
-    log.INFO("\n\n")
-    log.INFO_BOLD(f"\t\t\t\t{bcolors.PURPLE}██████╗░██╗░░░██╗██████╗░██╗░░██╗░█████╗░")
-    log.INFO_BOLD(f"\t\t\t\t{bcolors.PURPLE}██╔══██╗╚██╗░██╔╝██╔══██╗██║░██╔╝██╔══██╗")
-    log.INFO_BOLD(f"\t\t\t\t{bcolors.PURPLE}██████╔╝░╚████╔╝░██████╦╝█████═╝░███████║")
-    log.INFO_BOLD(f"\t\t\t\t{bcolors.PURPLE}██╔══██╗░░╚██╔╝░░██╔══██╗██╔═██╗░██╔══██║")
-    log.INFO_BOLD(f"\t\t\t\t{bcolors.PURPLE}██║░░██║░░░██║░░░██████╦╝██║░╚██╗██║░░██║")
-    log.INFO_BOLD(f"\t\t\t\t{bcolors.PURPLE}╚═╝░░╚═╝░░░╚═╝░░░╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝\n")
-    log.INFO_BOLD(f"\t\t\t\t             {bcolors.PURPLE}- MODE: {RYBKA_MODE} -           \n\n")
+    log.ORANGE(f"\t\t\t\t██████╗░██╗░░░██╗██████╗░██╗░░██╗░█████╗░")
+    log.ORANGE(f"\t\t\t\t██╔══██╗╚██╗░██╔╝██╔══██╗██║░██╔╝██╔══██╗")
+    log.ORANGE(f"\t\t\t\t██████╔╝░╚████╔╝░██████╦╝█████═╝░███████║")
+    log.ORANGE(f"\t\t\t\t██╔══██╗░░╚██╔╝░░██╔══██╗██╔═██╗░██╔══██║")
+    log.ORANGE(f"\t\t\t\t██║░░██║░░░██║░░░██████╦╝██║░╚██╗██║░░██║")
+    log.ORANGE(f"\t\t\t\t╚═╝░░╚═╝░░░╚═╝░░░╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝\n")
+    log.ORANGE(f"\t\t\t\t             - MODE: {RYBKA_MODE} -           \n\n")
                     
     log.INFO(f"Rybka software started with the following parameters:\n")
     log.INFO_BOLD(f" 🔘 RYBKA_MODE      set to: {bcolors.PURPLE}{RYBKA_MODE:>50}")
@@ -443,9 +442,9 @@ def bot_uptime_and_current_price(current_price):
     days = math.floor(uptime_hours / 24)
     
     if days < 1:
-        price_and_uptime = f"EGLD = [{bcolors.PURPLE}{current_price}{bcolors.DARKGRAY}] USDT    |||||    UPTIME = [{bcolors.PURPLE}{hours_in_limit}:{minutes_in_limit}:{seconds_in_limit}{bcolors.DARKGRAY}]" 
+        price_and_uptime = f"◼️ EGLD = [{bcolors.PURPLE}{current_price}{bcolors.DARKGRAY}] USDT   ◾️◼️⬛️◼️◾️   UPTIME = [{bcolors.PURPLE}{hours_in_limit}h:{minutes_in_limit}m:{seconds_in_limit}s{bcolors.DARKGRAY}] ◼️" 
     else:
-        price_and_uptime = f"EGLD = [{bcolors.PURPLE}{current_price}{bcolors.DARKGRAY}] USDT    |||||    UPTIME = [{bcolors.PURPLE}{days} days + {hours_in_limit}:{minutes_in_limit}:{seconds_in_limit}{bcolors.DARKGRAY}]"
+        price_and_uptime = f"◼️ EGLD = [{bcolors.PURPLE}{current_price}{bcolors.DARKGRAY}] USDT   ◾️◼️⬛️◼️◾️   UPTIME = [{bcolors.PURPLE}{days} days + {hours_in_limit}h:{minutes_in_limit}m:{seconds_in_limit}s{bcolors.DARKGRAY}] ◼️"
 
     log.INFO(price_and_uptime)
 
@@ -616,6 +615,7 @@ def on_message(ws, message):
         closed_candles.append(candle_close_price)
 
         bootstraping_vars()
+        log_files_creation("0")
 
         for i in range(0,10):
             try:
@@ -1116,6 +1116,9 @@ def main(version, mode):
     ###############################################
 
     global RYBKA_MODE
+    global TRADE_SYMBOL
+    global RSI_PERIOD
+
     global balance_usdt
     global balance_egld
     global balance_bnb
@@ -1123,7 +1126,8 @@ def main(version, mode):
     global locked_balance_egld
     global locked_balance_bnb
     global total_usdt_profit
-    global RSI_PERIOD
+
+    global current_export_dir
 
 
     if not version and not mode:
@@ -1213,7 +1217,16 @@ def main(version, mode):
     user_initial_config()
     email_engine_params()
     binance_system_status()
+
+    current_export_dir = f'{RYBKA_MODE}_{TRADE_SYMBOL}_{datetime.now().strftime("%d_%m_%Y")}_AT_{datetime.now().strftime("%H_%M_%S")}_{id_generator()}'
+
     log_files_creation()
+
+    log.INFO(" ")
+    log.INFO("=====================================================================================================================================")
+    log.INFO(f" Check files created for this run, under the newly created local folder {bcolors.BOLD}[{bcolors.PURPLE}{current_export_dir}{bcolors.DARKGRAY}]{bcolors.ENDC}")
+    log.INFO("=====================================================================================================================================")
+    log.INFO(" ")
 
     if RYBKA_MODE == "LIVE":
         for i in range(1,6):

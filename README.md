@@ -73,7 +73,7 @@ As `rybka` is not a standalone executable software yet, for any of the aforement
 Hence, at the moment, you will need 🐍 `python` in your OS to run the software. Via pip, `5` modules would then come on top of your python installation: <br><br>
 &emsp;&emsp;✅ python-binance <br>
 &emsp;&emsp;✅ websocket-client <br>
-&emsp;&emsp;✅ numpy <br>
+&emsp;&emsp;✅ colored <br>
 &emsp;&emsp;✅ click <br>
 &emsp;&emsp;✅ TA-Lib <br><br><br>
 

@@ -4,6 +4,7 @@
 from datetime import datetime
 from contextlib import contextmanager
 import sys, os
+import colored
 
 # custom libs
 from ..cfg import bootstrap
@@ -58,6 +59,10 @@ class RybkaLogging:
                 yield
             finally:
                 sys.stdout = old_stdout
+
+    @staticmethod
+    def ORANGE(message):
+        print(colored.fg(202) + f"{message}")
 
     def INFO(self, message):
         print(f"{bcolors.DARKGRAY}◻️ INFO {self.logging_time()}        > {message}{bcolors.ENDC}")

@@ -24,7 +24,7 @@ class Rybka_py_env_bootstrap():
             self.DEBUG_LVL = None
         
         # Email related configuration
-        self.RYBKA_EMAIL_SENDER_DEVICE_PASSWORD = int(os.environ.get("RYBKA_EMAIL_SENDER_DEVICE_PASSWORD")).strip("\n").strip()
+        self.RYBKA_EMAIL_SENDER_DEVICE_PASSWORD = str(os.environ.get("RYBKA_EMAIL_SENDER_DEVICE_PASSWORD")).strip("\n").strip()
         if not os.environ.get("RYBKA_EMAIL_SWITCH"):
             self.RYBKA_EMAIL_SWITCH = config.get("Rybka Standalone Configuration. For LIVE and DEMO modes", "RYBKA_EMAIL_SWITCH").strip("\n").strip()
         else:
