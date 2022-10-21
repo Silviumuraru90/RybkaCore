@@ -63,7 +63,7 @@ def user_initial_config():
     global client
     try:
         client = Client(bootstrap.BIN_KEY, bootstrap.BIN_SECRET)
-        log.INFO_BOLD(" ✅ Client initial config  -  DONE")
+        log.INFO_BOLD(f" ✅ Client initial config  -  {bcolors.PURPLE}DONE")
     except Exception as e:
         log.FATAL_7(f"Client initial config  -  FAILED\nError encountered at setting user config. via API KEY and API SECRET. Please check error below:\n{e}")
 
@@ -72,7 +72,7 @@ def binance_system_status():
     global client
     binance_status = client.get_system_status()
     if binance_status["status"] == 0:
-        log.INFO_BOLD(f" ✅ Binance servers status -  {binance_status['msg'].upper()}")
+        log.INFO_BOLD(f" ✅ Binance servers status -  {bcolors.PURPLE}{binance_status['msg'].upper()}")
     else:
         log.FATAL_7(f"Binance servers status -  {binance_status['msg'].upper()}")
 
@@ -81,7 +81,7 @@ def binance_account_status():
     global client
     acc_status = client.get_account_status()
     if acc_status['data'].upper() == "NORMAL":
-        log.INFO_BOLD(f" ✅ Binance acc. status    -  {acc_status['data'].upper()}")
+        log.INFO_BOLD(f" ✅ Binance acc. status    -  {bcolors.PURPLE}{acc_status['data'].upper()}")
     else:
         log.FATAL_7(f"Binance acc. status    -  {acc_status['data'].upper()}")
 
@@ -90,7 +90,7 @@ def binance_api_account_status():
     global client
     acc_api_status = client.get_account_api_trading_status()
     if acc_api_status['data']['isLocked'] is False:
-        log.INFO_BOLD(f" ✅ API acc. locked status -  {str(acc_api_status['data']['isLocked']).upper()}")
+        log.INFO_BOLD(f" ✅ API acc. locked status -  {bcolors.PURPLE}{str(acc_api_status['data']['isLocked']).upper()}")
     else:
         log.FATAL_7(f"API acc. locked status -  {str(acc_api_status['data']['isLocked']).upper()}\nLocked status duration is - {acc_api_status['data']['plannedRecoverTime']}")
 
@@ -158,10 +158,10 @@ def log_files_creation():
             if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_RECIPIENT_EMAIL:
                 f.write(f"SENDER EMAIL    set to: {RYBKA_EMAIL_SENDER_EMAIL:>50}\n")
                 f.write(f"RECIPIENT EMAIL set to: {RYBKA_EMAIL_RECIPIENT_EMAIL:>50}\n")
-        log.INFO_BOLD(" ✅ Files creation status  -  DONE")
+        log.INFO_BOLD(f" ✅ Files creation status  -  {bcolors.PURPLE}DONE")
         log.INFO(" ")
         log.INFO("=====================================================================================================================================")
-        log.INFO(f" Check files created for this run, under the newly created local folder {bcolors.BOLD}[{current_export_dir}]{bcolors.ENDC}")
+        log.INFO(f" Check files created for this run, under the newly created local folder {bcolors.BOLD}[{bcolors.PURPLE}{current_export_dir}{bcolors.DARKGRAY}]{bcolors.ENDC}")
         log.INFO("=====================================================================================================================================")
         log.INFO(" ")
     except Exception as e:
@@ -188,7 +188,7 @@ def ktbr_configuration():
                     ktbr_config = json.loads(f.read())
                     log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/ktbr] file contains the following past transactions:\n")
                     for k, v in ktbr_config.items():
-                        log.INFO(f" 💎 Transaction [{k}]  ---  [{bcolors.OKGREEN}{bcolors.BOLD}{v[0]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t EGLD bought at price of [{bcolors.OKGREEN}{bcolors.BOLD}{v[1]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t USDT per EGLD{bcolors.ENDC}")
+                        log.INFO(f" 💳 Transaction [{k}]  ---  [{bcolors.OKGREEN}{bcolors.BOLD}{v[0]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t EGLD bought at price of [{bcolors.OKGREEN}{bcolors.BOLD}{v[1]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t USDT per EGLD{bcolors.ENDC}")
                 except Exception as e:
                     log.FATAL_7(f"[{RYBKA_MODE}/ktbr] file contains wrong formatted content!\nFailing with error:\n{e}")
     else:
@@ -203,7 +203,7 @@ def ktbr_configuration():
 def profit_file():
     global total_usdt_profit
     global RYBKA_MODE
-    log.INFO("=====================================================================================================================================")
+    log.VERBOSE("=====================================================================================================================================")
     if exists(f"{RYBKA_MODE}/usdt_profit"):
         with open(f"{RYBKA_MODE}/usdt_profit", 'r', encoding="utf8") as f:
             if os.stat(f"{RYBKA_MODE}/usdt_profit").st_size == 0:
@@ -211,7 +211,7 @@ def profit_file():
             else:
                 try:
                     total_usdt_profit = round(float(f.read()), 4)
-                    log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/usdt_profit] file contains the following already done profit: [{total_usdt_profit}] USDT")
+                    log.VERBOSE(f" ✅ [{RYBKA_MODE}/usdt_profit] file contains the following already done profit: [{bcolors.PURPLE}{total_usdt_profit}{bcolors.DARKGRAY}] USDT")
                 except Exception as e:
                     log.FATAL_7(f"[{RYBKA_MODE}/usdt_profit] file contains wrong formatted content!\nFailing with error:\n{e}")
     else:
@@ -220,13 +220,13 @@ def profit_file():
             log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/usdt_profit] file created!")
         except Exception as e:
             log.FATAL_7(f"[{RYBKA_MODE}/usdt_profit] file could NOT be created!\nFailing with error:\n{e}")
-    log.INFO("=====================================================================================================================================")
+    log.VERBOSE("=====================================================================================================================================")
 
 
 def commission_file():
     global bnb_commission
     global RYBKA_MODE
-    log.INFO("=====================================================================================================================================")
+    log.VERBOSE("=====================================================================================================================================")
     if exists(f"{RYBKA_MODE}/most_recent_commission"):
         with open(f"{RYBKA_MODE}/most_recent_commission", 'r', encoding="utf8") as f:
             if os.stat(f"{RYBKA_MODE}/most_recent_commission").st_size == 0:
@@ -234,7 +234,7 @@ def commission_file():
             else:
                 try:
                     bnb_commission = float(f.read())
-                    log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/most_recent_commission] file contains the following most recent paid fee: [{bnb_commission}] BNB")
+                    log.VERBOSE(f" ✅ [{RYBKA_MODE}/most_recent_commission] file contains the following most recent paid fee: [{bnb_commission}] BNB")
                 except Exception as e:
                     log.FATAL_7(f"[{RYBKA_MODE}/most_recent_commission] file contains wrong formatted content!\nFailing with error:\n{e}")
     else:
@@ -243,7 +243,7 @@ def commission_file():
             log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/most_recent_commission] file created!")
         except Exception as e:
             log.FATAL_7(f"[{RYBKA_MODE}/most_recent_commission] file could NOT be created!\nFailing with error:\n{e}")
-    log.INFO("=====================================================================================================================================")
+    log.VERBOSE("=====================================================================================================================================")
 
 
 def nr_of_trades_file():
@@ -257,7 +257,7 @@ def nr_of_trades_file():
             else:
                 try:
                     nr_of_trades = int(f.read())
-                    log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/number_of_buy_trades] file contains the following already done nr. of buy trades: [{nr_of_trades}]")
+                    log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/number_of_buy_trades] file shows historical nr. of buy trades raising to: [{bcolors.PURPLE}{nr_of_trades}{bcolors.DARKGRAY}]")
                 except Exception as e:
                     log.FATAL_7(f"[{RYBKA_MODE}/number_of_buy_trades] file contains wrong formatted content!\nFailing with error:\n{e}")
     else:
@@ -366,24 +366,24 @@ def software_config_params():
     log.INFO_BOLD(f"\t\t\t\t             {bcolors.PURPLE}- MODE: {RYBKA_MODE} -           \n\n")
                     
     log.INFO(f"Rybka software started with the following parameters:\n")
-    log.INFO_BOLD(f" 🔘 RYBKA_MODE      set to: {RYBKA_MODE:>50}")
+    log.INFO_BOLD(f" 🔘 RYBKA_MODE      set to: {bcolors.PURPLE}{RYBKA_MODE:>50}")
     if DEBUG_LVL:
         log.INFO_BOLD(f"{bcolors.OKCYAN} 🔘 DEBUG_LVL       set to: {DEBUG_LVL:>50}{bcolors.ENDC}")
-    log.INFO_BOLD(f" 🔘 SOCKET          set to: {SOCKET:>50}")
-    log.INFO_BOLD(f" 🔘 TRADE SYMBOL    set to: {TRADE_SYMBOL:>50}")
-    log.INFO_BOLD(f" 🔘 TRADE QUANTITY  set to: {TRADE_QUANTITY:>50} coins per transaction")
-    log.INFO_BOLD(f" 🔘 MIN PROFIT      set to: {MIN_PROFIT:>50} USDT per transaction")
-    log.INFO_BOLD(f" 🔘 RSI PERIOD      set to: {RSI_PERIOD:>50} minutes")
-    log.INFO_BOLD(f" 🔘 RSI FOR BUY     set to: {RSI_FOR_BUY:>50} threshold")
-    log.INFO_BOLD(f" 🔘 RSI FORSELL     set to: {RSI_FOR_SELL:>50} threshold")
-    log.INFO_BOLD(f" 🔘 EMAIL SWITCH    set to: {str(RYBKA_EMAIL_SWITCH):>50}")
+    log.INFO_BOLD(f" 🔘 SOCKET          set to: {bcolors.PURPLE}{SOCKET:>50}")
+    log.INFO_BOLD(f" 🔘 TRADE SYMBOL    set to: {bcolors.PURPLE}{TRADE_SYMBOL:>50}")
+    log.INFO_BOLD(f" 🔘 TRADE QUANTITY  set to: {bcolors.PURPLE}{TRADE_QUANTITY:>50}{bcolors.DARKGRAY} coins per transaction")
+    log.INFO_BOLD(f" 🔘 MIN PROFIT      set to: {bcolors.PURPLE}{MIN_PROFIT:>50}{bcolors.DARKGRAY} USDT per transaction")
+    log.INFO_BOLD(f" 🔘 RSI PERIOD      set to: {bcolors.PURPLE}{RSI_PERIOD:>50}{bcolors.DARKGRAY} minutes")
+    log.INFO_BOLD(f" 🔘 RSI FOR BUY     set to: {bcolors.PURPLE}{RSI_FOR_BUY:>50}{bcolors.DARKGRAY} threshold")
+    log.INFO_BOLD(f" 🔘 RSI FORSELL     set to: {bcolors.PURPLE}{RSI_FOR_SELL:>50}{bcolors.DARKGRAY} threshold")
+    log.INFO_BOLD(f" 🔘 EMAIL SWITCH    set to: {bcolors.PURPLE}{str(RYBKA_EMAIL_SWITCH):>50}")
     if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_RECIPIENT_EMAIL:
-        log.INFO_BOLD(f" 🔘 SENDER EMAIL    set to: {RYBKA_EMAIL_SENDER_EMAIL:>50}")
-        log.INFO_BOLD(f" 🔘 RECIPIENT EMAIL set to: {RYBKA_EMAIL_RECIPIENT_EMAIL:>50}")
+        log.INFO_BOLD(f" 🔘 SENDER EMAIL    set to: {bcolors.PURPLE}{RYBKA_EMAIL_SENDER_EMAIL:>50}")
+        log.INFO_BOLD(f" 🔘 RECIPIENT EMAIL set to: {bcolors.PURPLE}{RYBKA_EMAIL_RECIPIENT_EMAIL:>50}")
     log.INFO(" ")
     log.INFO(" ")
     log.INFO(" ")
-    log.INFO_BOLD(" ✅ Initial params config  -  DONE")
+    log.INFO_BOLD(f" ✅ Initial params config  -  {bcolors.PURPLE}DONE")
 
 
 
@@ -430,19 +430,25 @@ def email_engine_params(direct_call="1"):
             log.INFO(" ")
 
 
-def bot_uptime():
+def bot_uptime_and_current_price(current_price):
     global uptime
     check_time = time.time()
     uptime_seconds = round(check_time - start_time)
-    uptime_minutes = round(uptime_seconds / 60, 1)
-    uptime_hours = round(uptime_minutes / 60, 1)
-    uptime_days = round(uptime_hours / 24, 1)
-    uptime_weeks = round(uptime_days / 7, 1)
-    uptime_months = round(uptime_days / 30, 1)
+    uptime_minutes = math.floor(uptime_seconds / 60)
+    uptime_hours = math.floor(uptime_minutes / 60)
     
-    uptime = f"Rybka bot uptime is [{uptime_seconds}] in seconds | [{uptime_minutes}] in minutes | [{uptime_hours}] in hours | [{uptime_days}] in days | [{uptime_weeks}] in weeks | [{uptime_months}] in months\n"
-    log.INFO(uptime)
+    seconds_in_limit = uptime_seconds % 60
+    minutes_in_limit = math.floor(uptime_seconds / 60) % 60
+    hours_in_limit = math.floor(uptime_minutes / 60) % 24
+    days = math.floor(uptime_hours / 24)
     
+    if days < 1:
+        price_and_uptime = f"EGLD = [{bcolors.PURPLE}{current_price}{bcolors.DARKGRAY}] USDT    |||||    UPTIME = [{bcolors.PURPLE}{hours_in_limit}:{minutes_in_limit}:{seconds_in_limit}{bcolors.DARKGRAY}]" 
+    else:
+        price_and_uptime = f"EGLD = [{bcolors.PURPLE}{current_price}{bcolors.DARKGRAY}] USDT    |||||    UPTIME = [{bcolors.PURPLE}{days} days + {hours_in_limit}:{minutes_in_limit}:{seconds_in_limit}{bcolors.DARKGRAY}]"
+
+    log.INFO(price_and_uptime)
+
 
 def email_sender(email_message):
     global RYBKA_EMAIL_SWITCH
@@ -545,7 +551,7 @@ def real_time_balances_update():
 
 def on_open(ws):
     log.INFO("=====================================================================================================================================")
-    log.INFO_BOLD(f'Connection to Binance servers established, listening to [{TRADE_SYMBOL}] data')
+    log.INFO_BOLD(f'Connection to Binance servers established, listening to [{bcolors.PURPLE}{TRADE_SYMBOL}{bcolors.DARKGRAY}] data')
     log.INFO("=====================================================================================================================================")
     log.INFO_BOLD("Initiating a one-time 10-min info gathering timeframe. Please wait...")
     log.INFO("=====================================================================================================================================")
@@ -628,7 +634,7 @@ def on_message(ws, message):
             log.INFO(f"#####################################################################################################################################")
         log.DEBUG(f"History of target prices is {closed_candles}")
 
-        bot_uptime()
+        bot_uptime_and_current_price(candle_close_price)
 
         if len(closed_candles) > 30:
             closed_candles = closed_candles[10:]
@@ -660,7 +666,7 @@ def on_message(ws, message):
                         for i in range(1,11):
                             try:
                                 account_balance_update()
-                                log.INFO_BOLD(f"Account Balance Sync. - Successful")
+                                log.DEBUG(f"Account Balance Sync. - Successful")
                                 break
                             except Exception as e:
                                 if i == 10:
@@ -844,7 +850,7 @@ def on_message(ws, message):
                                                 for i in range(1,11):
                                                     try:
                                                         account_balance_update()
-                                                        log.INFO_BOLD(f"Account Balance Sync. - Successful")
+                                                        log.DEBUG(f"Account Balance Sync. - Successful")
                                                         break
                                                     except Exception as e:
                                                         if i == 10:
@@ -917,7 +923,7 @@ def on_message(ws, message):
                         for i in range(1,11):
                             try:
                                 account_balance_update()
-                                log.INFO_BOLD(f"Account Balance Sync. - Successful")
+                                log.DEBUG(f"Account Balance Sync. - Successful")
                                 break
                             except Exception as e:
                                 if i == 10:
@@ -1035,7 +1041,7 @@ def on_message(ws, message):
                                             for i in range(1,11):
                                                 try:
                                                     account_balance_update()
-                                                    log.INFO_BOLD(f"Account Balance Sync. - Successful")
+                                                    log.DEBUG(f"Account Balance Sync. - Successful")
                                                     break
                                                 except Exception as e:
                                                     if i == 10:
@@ -1167,7 +1173,7 @@ def main(version, mode):
     if RYBKA_MODE == "LIVE":
         log.INFO("====================================================================================================")
         log.INFO("====================================================================================================")
-        log.INFO_BOLD("=================================  ✅ RYBKA MODE   ---   LIVE ✅  ==================================")
+        log.INFO_BOLD(f"=================================  ✅ {bcolors.PURPLE}RYBKA MODE   ---   LIVE{bcolors.DARKGRAY} ✅  ==================================")
         log.INFO("====================================================================================================")
         log.INFO("====================================================================================================")
 
@@ -1181,7 +1187,7 @@ def main(version, mode):
     elif RYBKA_MODE == "DEMO":
         log.INFO("====================================================================================================")
         log.INFO("====================================================================================================")
-        log.INFO_BOLD("===============================  🛠️  RYBKA MODE   ---   DEMO 🛠️ ====================================")
+        log.INFO_BOLD(f"===============================  🛠️  {bcolors.PURPLE}RYBKA MODE   ---   DEMO{bcolors.DARKGRAY} 🛠️   ===================================")
         log.INFO("====================================================================================================")
         log.INFO("====================================================================================================")
         time.sleep(3)
@@ -1236,13 +1242,13 @@ def main(version, mode):
         log.INFO(" ")
 
     log.INFO("=====================================================================================================================================")
-    log.INFO_BOLD(f"Account's AVAILABLE balance is:\n\t\t\t\t\t⚖️  USDT  ---  [{balance_usdt}]\n\t\t\t\t\t⚖️  EGLD  ---  [{balance_egld}]\n\n\t\t\t\t\t⚖️  BNB   ---  [{balance_bnb}] (for transaction fees)")
+    log.INFO_BOLD(f"Account's AVAILABLE balance is:\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}USDT{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{balance_usdt}{bcolors.DARKGRAY}]\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}EGLD{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{balance_egld}{bcolors.DARKGRAY}]\n\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}BNB{bcolors.DARKGRAY}   ---  [{bcolors.OKGREEN}{balance_bnb}{bcolors.DARKGRAY}] (for transaction fees)")
     log.INFO("=====================================================================================================================================")
     if RYBKA_MODE == "LIVE":
-        log.INFO_BOLD(f"Account's LOCKED balance in limit orders is:\n\t\t\t\t\t⚖️  LOCKED USDT  ---  [{locked_balance_usdt}]\n\t\t\t\t\t⚖️  LOCKED EGLD  ---  [{locked_balance_egld}]\n\n\t\t\t\t\t⚖️  LOCKED BNB   ---  [{locked_balance_bnb}]")
+        log.INFO_BOLD(f"Account's LOCKED balance in limit orders is:\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED USDT{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{locked_balance_usdt}{bcolors.DARKGRAY}]\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED EGLD{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{locked_balance_egld}{bcolors.DARKGRAY}]\n\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED BNB{bcolors.DARKGRAY}   ---  [{bcolors.OKGREEN}{locked_balance_bnb}{bcolors.DARKGRAY}]")
         log.INFO("=====================================================================================================================================")
     log.INFO("=====================================================================================================================================")
-    log.INFO_BOLD(f"Rybka's historical registered PROFIT is:\n\t\t\t\t\t💰 [{total_usdt_profit}] USDT")
+    log.INFO_BOLD(f"Rybka's historical registered PROFIT is:\n\t\t\t\t\t\t\t💰 [{bcolors.OKGREEN}{total_usdt_profit}{bcolors.DARKGRAY}] {bcolors.PURPLE}USDT")
     log.INFO("=====================================================================================================================================")
     log.INFO("=====================================================================================================================================")
 
