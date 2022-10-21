@@ -13,7 +13,7 @@ class Rybka_py_env_bootstrap():
 
         # Disclaimer
         if not os.environ.get("RYBKA_DISCLAIMER"):
-            self.SET_DISCLAIMER = config.get("Rybka Binance Configuration. For LIVE and DEMO modes", "SET_DISCLAIMER").strip("\n").strip()
+            self.SET_DISCLAIMER = config.get("Rybka Standalone Configuration. For LIVE and DEMO modes", "RYBKA_DISCLAIMER").strip("\n").strip()
         else:
             self.SET_DISCLAIMER = os.environ.get("RYBKA_DISCLAIMER").strip("\n").strip()
         
@@ -24,7 +24,7 @@ class Rybka_py_env_bootstrap():
             self.DEBUG_LVL = None
         
         # Email related configuration
-        self.RYBKA_EMAIL_SENDER_DEVICE_PASSWORD = os.environ.get("RYBKA_EMAIL_SENDER_DEVICE_PASSWORD").strip("\n").strip()
+        self.RYBKA_EMAIL_SENDER_DEVICE_PASSWORD = int(os.environ.get("RYBKA_EMAIL_SENDER_DEVICE_PASSWORD")).strip("\n").strip()
         if not os.environ.get("RYBKA_EMAIL_SWITCH"):
             self.RYBKA_EMAIL_SWITCH = config.get("Rybka Standalone Configuration. For LIVE and DEMO modes", "RYBKA_EMAIL_SWITCH").strip("\n").strip()
         else:
