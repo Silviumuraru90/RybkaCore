@@ -52,9 +52,10 @@ class TelegramEngine:
         print(f"{bcolors.WARNING}⚠️  WARN {self.logging_time()}       > {message}{bcolors.ENDC}")
         self.all_errors_file_update(f"⚠️ WARN {self.logging_time()}       > {message}")
     
-    def FATAL_7(self, message):
-        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL (7) {self.logging_time()}  > {message}{bcolors.ENDC}")
-        self.all_errors_file_update(f"❌ FATAL (7) {self.logging_time()}  > {message}")
+    def FATAL(self, message):
+        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {self.logging_time()}      > {message}{bcolors.ENDC}")
+        self.all_errors_file_update(f"❌ FATAL (1) {self.logging_time()}      > {message}")
+        exit(1)
 
     def HIGH_VERBOSITY(self, message):
         self.refresh_bootstrap_object()
@@ -63,9 +64,9 @@ class TelegramEngine:
 
     def LOG_EXCEPTION(self, e):
         with open(f"{os.environ.get('CURRENT_EXPORT_DIR')}/{os.environ.get('TRADE_SYMBOL')}_DEBUG", 'a', encoding="utf8") as f:
-            f.write(f'{self.logging_time()} Make sure the [RYBKA_TELEGRAM_API_KEY] and [RYBKA_TELEGRAM_CHAT_ID] have valid values\nNotification could NOT be sent due to an error:\n{e}')
-        self.all_errors_file_update(f"⚠️ WARN {self.logging_time()}       > Make sure the [RYBKA_TELEGRAM_API_KEY] and [RYBKA_TELEGRAM_CHAT_ID] have valid values\nNotification could NOT be sent due to an error:\n{e}")
-        self.FATAL_7(f"Make sure the [RYBKA_TELEGRAM_API_KEY] and [RYBKA_TELEGRAM_CHAT_ID] have valid values\nNotification could NOT be sent due to an error:\n{e}")
+            f.write(f'{self.logging_time()} Make sure the [RYBKA_TELEGRAM_API_KEY] and [RYBKA_TELEGRAM_CHAT_ID] have valid values or that internet is available.\nNotification could NOT be sent due to an error:\n{e}')
+        self.all_errors_file_update(f"⚠️ WARN {self.logging_time()}       > Make sure the [RYBKA_TELEGRAM_API_KEY] and [RYBKA_TELEGRAM_CHAT_ID] have valid values or that internet is available.\nNotification could NOT be sent due to an error:\n{e}")
+        self.FATAL(f"Make sure the [RYBKA_TELEGRAM_API_KEY] and [RYBKA_TELEGRAM_CHAT_ID] have valid values or that internet is available.\nNotification could NOT be sent due to an error:\n{e}")
 
     def LOG(self, type, message):
         self.refresh_bootstrap_object()
@@ -83,8 +84,9 @@ class TelegramEngine:
                 response = requests.get(f'{self.text_url}&parse_mode=Markdown&text={bot_message}')
                 self.HIGH_VERBOSITY(response.json())
             except Exception as e:
-                self.LOG_EXCEPTION(e)
                 self.WARN(f"[{type}] message could not be sent via TELEGRAM!")
+                self.LOG_EXCEPTION(e)
+                
             
     def LOCAL_PIC(self, image):
         try:

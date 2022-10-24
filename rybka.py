@@ -181,6 +181,13 @@ def rybka_mode_folder_creation():
             log.FATAL_7(f"Attempt to create local folder for the mode in which software runs - [{RYBKA_MODE}] - FAILED with error:\n{e}")
 
 
+def TMP_folder(folder):
+    if os.path.isdir(folder) is False:
+        try:
+            os.makedirs(folder)
+        except Exception as e:
+            log.FATAL_7(f"Attempt to create local folder [{folder}] - FAILED with error:\n{e}")
+
 
 def ktbr_configuration():
     global ktbr_config
@@ -1193,7 +1200,18 @@ def main(version, mode):
     ###############################################
 
     clear_terminal()
+
+    ###########  Prerequisites - start  ###########
     log.ORANGE("\nPREREQUISITE PROCESS...\n")
+    time.sleep(1)
+
+    process_pid = os.getpid()
+    log.ORANGE(f"RYBKA Software got allocated PID [{process_pid}]\n\n\n")
+    TMP_folder("TEMP")
+    with open("TEMP/pidTmp", 'w', encoding="utf8") as f:
+        f.write(str(process_pid))
+    time.sleep(1)
+
     rybka_mode_folder_creation()
     all_errors_file()
 
@@ -1204,6 +1222,8 @@ def main(version, mode):
 
     log_files_creation()
     time.sleep(2)
+    ###########   Prerequisites - end   ###########
+
     clear_terminal()
 
     if platform == "linux" or platform == "linux2":

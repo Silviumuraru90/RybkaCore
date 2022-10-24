@@ -56,6 +56,9 @@
 ✅ Cross-OS support (Win / Linux-based) <br>
 ✅ Check which amount of the USDT is locked (in limit / stop orders, etc.) and avoids using it <br>
 ✅ Local files check on each start / restart action, even integrity check for files' values <br>
+✅ Telegram notifier (passive mode) <br>
+✅ Telegram listener (active mode) <br>
+✅ Implementation of an `always buy` policy in which it will always buy when price goes up and has nothing / close to nothing to sell <br>
 
 <br><br>
 
@@ -76,7 +79,10 @@ Hence, at the moment, you will need 🐍 `python` in your OS to run the software
 &emsp;&emsp;✅ colored <br>
 &emsp;&emsp;✅ click <br>
 &emsp;&emsp;✅ requests <br>
+&emsp;&emsp;✅ GPUtil <br>
+&emsp;&emsp;✅ psutil <br>
 &emsp;&emsp;✅ telepot <br>
+&emsp;&emsp;✅ python-telegram-bot <br>
 &emsp;&emsp;✅ TA-Lib <br><br><br>
 
 ❗️ `Note:` while via `pip3` you are able to install the first modules, `TA-Lib` is not currently available to be installed from the official `pypi` list on Windows platforms, hence you can download the `wheel` file that matches your `python` version and then install it via `pip`. <br> Grab the file from 📦 [HERE](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib) <br><br>
@@ -144,7 +150,10 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 <br><br>
 
-▶️ You can run the software directly (the `rybka.py` file) or via the `restarer.py` module that will automatically start the bot, but also restart the bot if it exits on a not-hardcoded error (such as a temporary internet drop) <br><br>
+> ▶️ You can run the software directly (the `rybka.py` file) or via the `restarer.py` module that will automatically start the bot, but also restart the bot if it exits on a not-hardcoded error (such as a temporary internet drop / others) <br><br>
+▶️ The `telegram_engine.py` module (which is only the listener part where user can input commands and info. will be provided for each) has to be started into a sepparate shell as neither `rybka.py`, nor `restarter.py` will run this on their own!
+
+<br><br>
 
 ❗️ `Note:` Recommendation for having the best UI output - running `Rybka` software into a `cmd` shell within `Visual Studio Code` <br>
 ❗️ `Note:` Recommendation for having the best uptime and better profit return (due to low electricity cost) - running `Rybka` software via the `restarter` module on a `Raspberry PI 4` connected directly to a `UPS` <br><br><br>
@@ -167,7 +176,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 <br>
 
 ***
-## 🟣 [![](https://img.shields.io/gitlab/license/Silviu_space/rybka)](https://gitlab.com/Silviu_space/rybka/-/blob/master/LICENSE)
+## 🟣 [![](https://img.shields.io/badge/LICENSE-CDDL%20v1.0-lightgrey)](https://gitlab.com/Silviu_space/rybka/-/blob/master/LICENSE)
 
 <br>
 
@@ -197,13 +206,10 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 &emsp;&emsp; ♥︎ &nbsp;`Safety net` implementation for USDT <br>
 &emsp;&emsp; ♔ &nbsp;More `trade pairs` supported <br>
 &emsp;&emsp; ♙ &nbsp;`Graphs` provided as output <br>
-&emsp;&emsp; ♘ &nbsp;`Profit tracking` over specfic periods of time, for better assesing the better / worse periods and adjust weights <br>
+&emsp;&emsp; ♘ &nbsp;`Profit tracking` over specific periods of time, for better assesing the better / worse periods and adjust weights <br>
 &emsp;&emsp; ♧ &nbsp;Addition `RSI` periods and `candlestick` periods, not only for scalping <br>
-&emsp;&emsp; ♜ &nbsp;`Telegram` BOT (active mode) - providing `/commands` so thta users will be able to ask for information on the spot <br>
-&emsp;&emsp; ♝ &nbsp;`Telegram` BOT (passive mode) - logging events in chat <br>
 &emsp;&emsp; ♤&nbsp;`Orders` on demand <br>
 &emsp;&emsp; ♠︎ &nbsp;&nbsp;&nbsp;Control the resulted `output files`' size <br>
-&emsp;&emsp; ♕ &nbsp;`Always buy` policy <br>
 &emsp;&emsp; ♗ &nbsp;`Code style` checks and `unit testing` + `coverage`, for a better integrity and stability / quicker testing <br>
 &emsp;&emsp; ♢ &nbsp;Speed up internal processes by moving towards an `OOP` infrastructure / optimization <br>
 

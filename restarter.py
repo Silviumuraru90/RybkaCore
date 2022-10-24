@@ -15,8 +15,6 @@ from custom_modules.logging.logging import log
 from custom_modules.cfg import bootstrap
 
 
-running_in_ci = os.environ.get("CI", False)
-runs = 0
 
 @click.command()
 @click.option('--mode', '-m', type=click.Choice(['demo', 'live'], case_sensitive=False), help='Choose the run mode of the software')
@@ -37,6 +35,9 @@ def main(version, mode, info):
     \b###                                                                           ###
     \b#################################################################################
     """
+
+    running_in_ci = os.environ.get("CI", False)
+    runs = 0
 
     if not version and not mode and not info:
         click.echo(click.get_current_context().get_help())
