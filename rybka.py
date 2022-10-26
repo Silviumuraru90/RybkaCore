@@ -474,7 +474,7 @@ def bot_uptime_and_current_price(current_price):
     if days < 1:
         price_and_uptime = f"◼️ [EGLD = {bcolors.PURPLE}{current_price:5}{bcolors.DARKGRAY} USDT]   ◼️⬛️◼️   [UPTIME = {bcolors.PURPLE}{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY}] ◼️" 
     else:
-        price_and_uptime = f"◼️ [EGLD = {bcolors.PURPLE}{current_price:5}{bcolors.DARKGRAY} USDT]   ◼️⬛️◼️   [UPTIME = {bcolors.PURPLE}{days} day(s) + {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY}] ◼️"
+        price_and_uptime = f"◼️ [EGLD = {bcolors.PURPLE}{current_price:5}{bcolors.DARKGRAY} USDT]   ◼️⬛️◼️   [UPTIME = {bcolors.PURPLE}{days}d & {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY}] ◼️"
 
     log.INFO(price_and_uptime)
 
