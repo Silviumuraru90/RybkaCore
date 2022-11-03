@@ -75,12 +75,12 @@ def main(version, mode, info):
                     log.INFO(f" 🟣 Testing internet. Attempt [{i}/10]")
                     try:
                         r = requests.get("https://www.google.com")
-                        log.INFO(f" 🟢🔌 Could ping Google servers, internet should be on - response [{r.status_code}] returned")
+                        log.INFO(f" 🟢 🔌 Could ping Google servers, internet should be on - response [{r.status_code}] returned")
                         time.sleep(5)
                         break
                     except Exception as e:
                         internet_down = True
-                        log.WARN(" 🟠🔌 Internet seems to not be available")
+                        log.WARN(" 🟠 🔌 Internet seems to not be available")
                         log.INFO(" 🟣 Waiting 15 seconds and trying again")
                         time.sleep(15)
                 if not internet_down:

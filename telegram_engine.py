@@ -6,6 +6,7 @@ import GPUtil
 import json
 import psutil
 
+from termcolor import colored
 from os.path import exists
 from binance.client import Client
 
@@ -20,7 +21,20 @@ from telegram.ext import *
 ##############    Custom Functions    ##############
 ####################################################
 
-print("Telegram listener activated!")
+print(colored("""
+#########################################################
+#####        📡 Telegram listener activated!        #####
+#########################################################
+""", "magenta"), colored("""
+#########################################################
+#####                                               #####
+#####  1️⃣  Open `Telegram` app                       #####
+#####  2️⃣  Open your Rybka Telegram bot's chat       #####
+#####  3️⃣  Type `/help` for details on how to use    #####
+#####                                               #####
+#########################################################
+\n\n""", "cyan"))
+
 
 def help_command(update, context):
     update.message.reply_text(f"""Available commands are:
