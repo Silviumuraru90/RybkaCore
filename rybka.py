@@ -589,7 +589,7 @@ def on_open(ws):
 def on_close(ws, close_status_code, close_msg):
     print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.{bcolors.ENDC}")
     log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.")
-    telegram.LOG("FATAL", f"☠️ Bot is shutting down...")
+    telegram.LOG("FATAL", f"🏴‍☠️ Bot is shutting down... [{RYBKA_MODE}]")
 
     archive_folder = 'archived_logs'
     if not os.path.isdir(archive_folder):
@@ -1323,7 +1323,7 @@ def main(version, mode):
     log.INFO("=====================================================================================================================================")
     log.INFO("=====================================================================================================================================")
 
-    telegram.LOG("INFO", "Bot started! 🔌 💻")
+    telegram.LOG("INFO", f"🏁 Bot started! [{RYBKA_MODE}]")
     email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot is starting up. Find logs into the local folder: \n\t[{current_export_dir}]")
 
     ws = websocket.WebSocketApp(SOCKET, on_open=on_open, on_close=on_close, on_message=on_message, on_error = on_error)
