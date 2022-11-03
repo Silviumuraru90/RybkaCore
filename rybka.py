@@ -1171,11 +1171,11 @@ def main(version, mode):
 
     if not version and not mode:
         click.echo(click.get_current_context().get_help())
-        exit(0)
+        exit(111)
     
     if version:
         print(f"🔍 Rybka Software Version  ➜  [{bootstrap.__version__}]")
-        exit(0)
+        exit(111)
 
     if mode:
         RYBKA_MODE = mode.upper()

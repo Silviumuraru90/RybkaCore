@@ -63,7 +63,7 @@ def main(version, mode, info):
             #             Change below line to: os.system("rybka")                #
             #######################################################################
             status = os.system(f"python3 rybka.py -m {mode.upper()}")
-            if status == 0:
+            if status == 111:
                 break
             elif status == 7:
                 log.FATAL(f" 🔴 Rybka bot errored out with code [{status}].\n\nExit code '7' is a custom-set exit code within bot's mechanics. Manual action is required, both Rybka and restarter module are stopped.")
