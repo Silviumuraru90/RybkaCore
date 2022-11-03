@@ -116,6 +116,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 | VARIABLE                                 | TYPE   |   DESCRIPTION                                                                      | MANDATORY ? |  DEFAULT VALUE | 
 |:-------------------------------------------|:------:|:------:|:----------------------------------------------------------------------------------:| :--------:|
 |`RYBKA_DEBUG_LVL`                      | integer | Values ➡️ `1`, `2` or `3` <br>1️⃣ ➜ <b>Debug</b> &emsp; &emsp; &emsp;&nbsp;<br> 2️⃣ ➜ <b>Verbose</b> &emsp; &emsp; &nbsp;&nbsp; <br> 3️⃣ ➜ <b>High Verbosity</b><br> (Get from environment / config file)                           | ❌        | ❌ | 
+|`RYBKA_TRADING_BOOST_LVL`                      | integer | Values ➡️ `1`, `2`, `3`, `4` or `5` <br>&emsp;1️⃣ ➜ <b>Less Greediness</b> &emsp;<br>..... &emsp; &emsp; &nbsp;&nbsp; <br>5️⃣ ➜ <b>High Greediness</b><br> (Get from environment / config file)                           | ✅        | `2` | 
 |`RYBKA_MODE`                           | string | Values ➡️ `DEMO` or `LIVE` <br> (Get from cli args)                           | ❌        | ❌ | 
 |`BIN_KEY`                              | string | Binance <b>Auth</b>orization <b>KEY</b> <br> (Get from environment)                            | ✅ <br> if `RYBKA_MODE` is either `LIVE` or `DEMO`        | ❌ | 
 |`BIN_SECRET`                           | string | Binance <b>Auth</b>orization <b>SECRET</b> <br> (Get from environment)                           | ✅ <br> if `RYBKA_MODE` is either `LIVE` or `DEMO`      | ❌ | 
@@ -145,7 +146,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 🔘 And, of course, an `internet connection` <br><br><br>
 
 ### &emsp;&emsp;<b>Notes for Telegram Notifications</b>
-❗️ `Note for the [RYBKA_TELEGRAM_API_KEY] var:` For Telegram notifications, you'll need to create your own Telegram bot in the `telegram` app. Simply search for `BotFather` among "Contacts", then type in that chat `/newbot` and follow instructions to create one and grab the API KEY that you need to set in your env as a value for the `RYBKA_TELEGRAM_API_KEY` var. <br><br>
+❗️ `Note for the [RYBKA_TELEGRAM_API_KEY] var:` For Telegram notifications, you'll need to create your own Telegram bot in the `Telegram` app. Simply search for `BotFather` among "Contacts", then type in that chat `/newbot` and follow instructions to create one and grab the API KEY that you need to set in your env as a value for the `RYBKA_TELEGRAM_API_KEY` var. <br><br>
 ❗️ `Note for the [RYBKA_TELEGRAM_CHAT_ID] var:` In order to grab this value go to this link: `https://api.telegram.org/bot<replace_with_your_value_for_RYBKA_TELEGRAM_API_KEY>/getUpdates`, then type something in the chat of your newly created bot (not in the same chat for `BotFather`!). The message you typed should be visible there as an API payload. Grab the value for the `RYBKA_TELEGRAM_CHAT_ID` var from there - find it within such structure `"chat":{"id":<your_chat_id_value>,`. Add it to the ENV.
 
 <br><br>

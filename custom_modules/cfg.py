@@ -21,6 +21,12 @@ class Rybka_py_env_bootstrap():
         else:
             self.SET_DISCLAIMER = os.environ.get("RYBKA_DISCLAIMER").strip("\n").strip()
         
+        # Heatmap algorith overriden for trading boost
+        if not os.environ.get("RYBKA_TRADING_BOOST_LVL"):
+            self.TRADING_BOOST_LVL = int(config.get("Rybka Standalone Configuration. For LIVE and DEMO modes", "RYBKA_TRADING_BOOST_LVL"))
+        else:
+            self.TRADING_BOOST_LVL = int(os.environ.get("RYBKA_TRADING_BOOST_LVL").strip("\n").strip())
+
         # Debug level
         try:
             self.DEBUG_LVL = int(config.get("Rybka Standalone Configuration. For LIVE and DEMO modes", "RYBKA_DEBUG_LVL"))

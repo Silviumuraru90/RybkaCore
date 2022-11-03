@@ -637,6 +637,7 @@ def on_message(ws, message):
     global RSI_FOR_BUY
     global RSI_FOR_SELL
     global MIN_PROFIT
+    global TRADING_BOOST_LVL
     
     log.HIGH_VERBOSITY(message)
     candle = json.loads(message)['k']
@@ -756,21 +757,49 @@ def on_message(ws, message):
                                     heatmap_size = 2
                                     heatmap_limit = 1
                                 else:
-                                    heatmap_actions = round(float(possible_nr_of_trades * 0.5))
-                                    if heatmap_actions == 1:
+                                    if int(TRADING_BOOST_LVL) == 1:
+                                        heatmap_actions = round(float(possible_nr_of_trades * 0.4))
+                                    elif int(TRADING_BOOST_LVL) == 2:
+                                        heatmap_actions = round(float(possible_nr_of_trades * 0.6))
+                                    elif int(TRADING_BOOST_LVL) == 3:
+                                        heatmap_actions = round(float(possible_nr_of_trades * 0.75))
+                                    elif int(TRADING_BOOST_LVL) == 4:
+                                        heatmap_actions = round(float(possible_nr_of_trades * 0.9))
+                                    elif int(TRADING_BOOST_LVL) == 5:
+                                        heatmap_actions = possible_nr_of_trades
+                                    if heatmap_actions == 0 or heatmap_actions == 1:
                                         heatmap_size = 2
                                         heatmap_limit = 1
                                     else:
-                                        heatmap_size = round(float(heatmap_actions * 0.4))
-                                        if heatmap_size == 1:
+                                        if int(TRADING_BOOST_LVL) == 1:
+                                            heatmap_size = round(float(heatmap_actions * 0.65))
+                                        elif int(TRADING_BOOST_LVL) == 2:
+                                            heatmap_size = round(float(heatmap_actions * 0.4))
+                                        elif int(TRADING_BOOST_LVL) == 3:
+                                            heatmap_size = round(float(heatmap_actions * 0.25))
+                                        elif int(TRADING_BOOST_LVL) == 4:
+                                            heatmap_size = 3
+                                        elif int(TRADING_BOOST_LVL) == 5:
                                             heatmap_size = 2
-                                        heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.2))
+                                        if heatmap_size == 0 or heatmap_size == 1:
+                                            heatmap_size = 2
+                                        if int(TRADING_BOOST_LVL) == 1:
+                                            heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.15))
+                                        elif int(TRADING_BOOST_LVL) == 2:
+                                            heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.3))
+                                        elif int(TRADING_BOOST_LVL) == 3:
+                                            heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.5))
+                                        elif int(TRADING_BOOST_LVL) == 4:
+                                            heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.85))
+                                        elif int(TRADING_BOOST_LVL) == 5:
+                                            heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 1.5))
                                 ############################################################################################
 
                                 log.VERBOSE(f"possible_nr_of_trades is {possible_nr_of_trades}")
                                 log.VERBOSE(f"heatmap_actions is {heatmap_actions}")
                                 log.VERBOSE(f"heatmap_size is {heatmap_size}")
                                 log.VERBOSE(f"heatmap_limit is {heatmap_limit}")
+                                log.DEBUG(f"TRADING_BOOST_LVL is {str(TRADING_BOOST_LVL)}")
 
                                 current_price_rounded_down = math.floor(round(float(candle_close_price), 4))
 
@@ -1218,7 +1247,7 @@ def main(version, mode):
     all_errors_file()
 
     current_export_dir = f'{RYBKA_MODE}_{TRADE_SYMBOL}_{datetime.now().strftime("%d_%m_%Y")}_AT_{datetime.now().strftime("%H_%M_%S")}_{id_generator()}'
-    # In need for telegram notif. file
+    # In need for Telegram notif. file
     os.environ["CURRENT_EXPORT_DIR"] = current_export_dir   
     os.environ["TRADE_SYMBOL"] = TRADE_SYMBOL   
 
@@ -1355,13 +1384,17 @@ if __name__ == '__main__':
         variables_reinitialization()
         from custom_modules.cfg import bootstrap
         
-        global DEBUG_LVL, RSI_FOR_BUY, RSI_FOR_SELL
+        global DEBUG_LVL, RSI_FOR_BUY, RSI_FOR_SELL, TRADING_BOOST_LVL
         global TRADE_QUANTITY, AUX_TRADE_QUANTITY, MIN_PROFIT
         global RYBKA_EMAIL_SWITCH, RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_RECIPIENT_EMAIL, RYBKA_EMAIL_RECIPIENT_NAME
         global RYBKA_TELEGRAM_SWITCH
         global SET_DISCLAIMER
 
         DEBUG_LVL = bootstrap.DEBUG_LVL
+
+        TRADING_BOOST_LVL = bootstrap.TRADING_BOOST_LVL
+        if TRADING_BOOST_LVL not in [1, 2, 3, 4, 5]:
+            log.FATAL_7(f"Please consult [README.md] file for valid values of [RYBKA_TRADING_BOOST_LVL] var.\n[{TRADING_BOOST_LVL}] is not a valid value!")
 
         RSI_FOR_BUY = bootstrap.RSI_FOR_BUY
         RSI_FOR_SELL = bootstrap.RSI_FOR_SELL
