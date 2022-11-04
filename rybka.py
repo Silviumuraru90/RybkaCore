@@ -651,6 +651,9 @@ def on_message(ws, message):
         log_files_creation("0")
         telegram_engine_switch("0")
 
+        with open("TEMP/priceTmp", 'w', encoding="utf8") as f:
+            f.write(str(candle_close_price))
+
         for i in range(0,10):
             try:
                 client.ping()
@@ -822,6 +825,7 @@ def on_message(ws, message):
                                     f.write(f"{log.logging_time()} {'HEATMAP limit (heatmap_limit) is':90} {heatmap_limit:40}\n")
                                     f.write(f"{log.logging_time()} {'HEATMAP counter (heatmap_counter) is':90} {heatmap_counter:40}\n")
                                     f.write(f"{log.logging_time()} {'HEATMAP center coin counter (heatmap_center_coin_counter) is':90} {heatmap_center_coin_counter:40}\n")
+                                    f.write(f"{log.logging_time()} {'TRADING BOOST LVL (TRADING_BOOST_LVL) is':90} {str(TRADING_BOOST_LVL):40}\n")
                                     f.write(f"{log.logging_time()} {'Min Buy share (min_buy_share) is':90} {min_buy_share:40}\n")
                                     f.write(f"{log.logging_time()} {'Min Order QTTY (min_order_quantity) is':90} {min_order_quantity:40}\n")
                                     f.write(f"{log.logging_time()} {'Current price rounded down (current_price_rounded_down) set to':90} {current_price_rounded_down:40}\n")

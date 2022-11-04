@@ -82,6 +82,7 @@ Hence, at the moment, you will need 🐍 `python` in your OS to run the software
 &emsp;&emsp;✅ GPUtil <br>
 &emsp;&emsp;✅ psutil <br>
 &emsp;&emsp;✅ telepot <br>
+&emsp;&emsp;✅ termcolor <br>
 &emsp;&emsp;✅ python-telegram-bot <br>
 &emsp;&emsp;✅ TA-Lib <br><br><br>
 

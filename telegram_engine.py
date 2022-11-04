@@ -53,6 +53,7 @@ FUNctional commands:
     {'/lifetime_buys_nr':20}- Total nr. of buys
     {'/profit':20}        - Lifetime profit
     {'/balances':20}    - Shows balances
+    {'/current_price':20}    - Shows USDT/EGLD
 
 
     {'/help'}   -   Shows this help message
@@ -60,23 +61,26 @@ FUNctional commands:
 
 
 def status_command(update, context):
-    a = "a"
-    with open(f"TEMP/pidTmp", 'r', encoding="utf8") as f:
-        pID = int(f.read())
-    if psutil.pid_exists(pID):
-        status = "🟢 Bot is alive and well, no worries! \nGive yourself a pat on the back! \nRelax and stay hydrated!"
-    else:
-        status = "💤 Bot is stopped. Help it get back on track! \nC'mon! Results, not excuses!"
-    update.message.reply_text(status)
+    try:
+        with open(f"TEMP/pidTmp", 'r', encoding="utf8") as f:
+            pID = int(f.read())
+        if psutil.pid_exists(pID):
+            update.message.reply_text("🟢 Bot is alive and well, no worries! \nGive yourself a pat on the back! \nRelax and stay hydrated!")
+        else:
+            update.message.reply_text("💤 Bot is stopped. Help it get back on track! \nC'mon! Results, not excuses!")
+    except Exception as e:
+        print(e)
+        update.message.reply_text("The file for Rybka's PID does NOT exist!")
 
 
 def gpu_command(update, context):
 
     # Works for Nvidia GPUs
     # Need to find solutions for Intel, AMD and Broadcom
-    if (GPUtil.getGPUs()[0].temperature, float):
-        status=f"GPU Temp is {GPUtil.getGPUs()[0].temperature}" + u'\xb0' + "C"
-    else:
+    try:
+        if (GPUtil.getGPUs()[0].temperature, float):
+            status=f"GPU Temp is {GPUtil.getGPUs()[0].temperature}" + u'\xb0' + "C"
+    except Exception:
         status="GPU Temp currently supported for Nvidia GPUs only"
     update.message.reply_text(status)
 
@@ -176,7 +180,7 @@ Address [{elem['address']}]\n
 Fee applied was [{elem['transactionFee']}] {elem['coin']}\n
     """)
     else:
-        update.message.reply_text("No withdrawal history found!")
+        update.message.reply_text("No crypto withdrawal history found!")
 
 
 def binance_deposit_history_command(update, context):
@@ -192,7 +196,22 @@ Address [{elem['address']}]\n
 Fee applied was [{elem['transactionFee']}] {elem['coin']}\n
     """)
     else:
-        update.message.reply_text("No deposit history found!")
+        update.message.reply_text("No crypto deposit history found!")
+
+
+def current_price_command(update, context):
+    try:
+        with open("TEMP/priceTmp", 'r', encoding="utf8") as f:
+            with open(f"TEMP/pidTmp", 'r', encoding="utf8") as g:
+                pID = int(g.read())
+            if psutil.pid_exists(pID):
+                current_price = float(f.read())
+                update.message.reply_text(f"🩺 Current USDT / EGLD is [{current_price}]")
+            else:
+                update.message.reply_text("💤 Bot is stopped. Help it get back on track for an accurate price of EGLD!")
+    except Exception as e:
+        print(e)
+        update.message.reply_text("The file for current price does NOT exist!")
 
 
 
@@ -221,6 +240,7 @@ def main():
     dp.add_handler(CommandHandler("lifetime_buys_nr", lifetime_buys_nr_command))
     dp.add_handler(CommandHandler("profit", profit_command))
     dp.add_handler(CommandHandler("balances", balances_command))
+    dp.add_handler(CommandHandler("current_price", current_price_command))
 
     dp.add_handler(CommandHandler("withdrawals", binance_withdrawal_history_command))
     dp.add_handler(CommandHandler("deposits", binance_deposit_history_command))
