@@ -840,6 +840,8 @@ def on_message(ws, message):
                                         f.write(f'\n\n{log.logging_time()} Within BUY (part IV):\n')
                                         f.write(f"{log.logging_time()} HEATMAP DOES NOT ALLOW BUYING!")
                                         f.write(f"{log.logging_time()} heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]")
+                                elif float(balance_usdt) < float(TRADE_QUANTITY) * float(candle_close_price) + 1:
+                                    log.INFO("Way too low diff between acc. balance and current price * trade quantity. Not allowing buy.")
                                 else:
                                     log.VERBOSE(f"HEATMAP ALLOWS BUYING!\n")
                                     try:
