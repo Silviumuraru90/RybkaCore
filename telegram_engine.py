@@ -53,7 +53,7 @@ FUNctional commands:
     {'/lifetime_buys_nr':20}- Total nr. of buys
     {'/profit':20}        - Lifetime profit
     {'/balances':20}    - Shows balances
-    {'/current_price':20}    - Shows USDT/EGLD
+    {'/current_price':20}  - Shows USDT/EGLD
 
 
     {'/help'}   -   Shows this help message

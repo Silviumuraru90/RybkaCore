@@ -389,7 +389,7 @@ def software_config_params():
     log.INFO_BOLD(f" 🔘 MIN PROFIT      set to: {bcolors.PURPLE}{MIN_PROFIT:>50}{bcolors.DARKGRAY} USDT per transaction")
     log.INFO_BOLD(f" 🔘 RSI PERIOD      set to: {bcolors.PURPLE}{RSI_PERIOD:>50}{bcolors.DARKGRAY} minutes")
     log.INFO_BOLD(f" 🔘 RSI FOR BUY     set to: {bcolors.PURPLE}{RSI_FOR_BUY:>50}{bcolors.DARKGRAY} threshold")
-    log.INFO_BOLD(f" 🔘 RSI FORSELL     set to: {bcolors.PURPLE}{RSI_FOR_SELL:>50}{bcolors.DARKGRAY} threshold")
+    log.INFO_BOLD(f" 🔘 RSI FOR SELL    set to: {bcolors.PURPLE}{RSI_FOR_SELL:>50}{bcolors.DARKGRAY} threshold")
     log.INFO_BOLD(f" 🔘 EMAIL SWITCH    set to: {bcolors.PURPLE}{str(RYBKA_EMAIL_SWITCH):>50}")
     log.INFO_BOLD(f" 🔘 Telegram SWITCH set to: {bcolors.PURPLE}{str(RYBKA_TELEGRAM_SWITCH):>50}")
     if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_RECIPIENT_EMAIL:
@@ -474,7 +474,7 @@ def bot_uptime_and_current_price(current_price):
     if days < 1:
         price_and_uptime = f"◼️ [EGLD = {bcolors.PURPLE}{current_price:5}{bcolors.DARKGRAY} USDT]   ◼️⬛️◼️   [UPTIME = {bcolors.PURPLE}{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY}] ◼️" 
     else:
-        price_and_uptime = f"◼️ [EGLD = {bcolors.PURPLE}{current_price:5}{bcolors.DARKGRAY} USDT]   ◼️⬛️◼️   [UPTIME = {bcolors.PURPLE}{days}d & {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY}] ◼️"
+        price_and_uptime = f"◼️ [EGLD = {bcolors.PURPLE}{current_price:5}{bcolors.DARKGRAY} USDT]   ◼️⬛️◼️   [UPTIME = {bcolors.PURPLE}{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY}] ◼️"
 
     log.INFO(price_and_uptime)
 
