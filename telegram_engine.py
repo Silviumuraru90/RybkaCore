@@ -191,12 +191,9 @@ def binance_deposit_history_command(update, context):
     binance_deposits_history = client.get_deposit_history()
     if binance_deposits_history:
         for elem in binance_deposits_history:
-            update.message.reply_text(f"""🟢 Deposit [{elem['applyTime']}]:\n
+            update.message.reply_text(f"""🟢 Deposit [{elem['id']}]:\n
 [{elem['amount']}] {elem['coin']} sent to:\n
-Address [{elem['address']}]\n
-☞ via [{elem['network']}] network
-Fee applied was [{elem['transactionFee']}] {elem['coin']}\n
-    """)
+Address [{elem['address']}]""")
     else:
         update.message.reply_text("No crypto deposit history found!")
 
