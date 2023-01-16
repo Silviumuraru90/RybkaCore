@@ -79,7 +79,9 @@ def gpu_command(update, context):
     # Need to find solutions for Intel, AMD and Broadcom
     try:
         if (GPUtil.getGPUs()[0].temperature, float):
-            status=f"GPU Temp is {GPUtil.getGPUs()[0].temperature}" + u'\xb0' + "C"
+            status = f"GPU Temp is {GPUtil.getGPUs()[0].temperature}" + u'\xb0' + "C"
+            if float(GPUtil.getGPUs()[0].temperature) == 0:
+                status = "Your PC does NOT seem to have a GPU-specific senzor!"
     except Exception:
         status="GPU Temp currently supported for Nvidia GPUs only"
     update.message.reply_text(status)
