@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
 # Built-in and Third-Party Libs
-import os
 import GPUtil
 import json
+import os
 import psutil
+import signal
+import subprocess
+import time
 
 from termcolor import colored
 from os.path import exists
@@ -37,40 +40,49 @@ print(colored("""
 
 
 def help_command(update, context):
-    update.message.reply_text(f"""Available commands are:
+    update.message.reply_text(f"""Available commands are ⤵️
 
-FUN commands:
+
+👨‍💻 FUN commands:
     {'who are you?':20} - Who are you talking to?
 
-FUNds history on Binance commands:
+👨‍💻 FUNds info on Binance commands:
     {'/withdrawals':20} - Withdrawal history
     {'/deposits':20}    - Deposit history
+    {'/balances':20}    - Acc. balances
+    {'/current_price':20}  - USDT/EGLD
 
-FUNctional commands:
-    {'/status':20}      - Bot's status
-    {'/gpu':20}       - GPU temp
+👨‍💻 FUNds handling history via Rybka:
     {'/current_buys':20} - Tracked buys
     {'/lifetime_buys_nr':20}- Total nr. of buys
     {'/profit':20}        - Lifetime profit
-    {'/balances':20}    - Shows balances
-    {'/current_price':20}  - Shows USDT/EGLD
+
+👨‍💻 FUNctional commands:
+    {'/status':20}      - Bot's status
+    {'/start_restarter':20}  - Starts Restarter
+    {'/start_rybka':20}   - Starts Rybka
+    {'/stop_software':20}- Stops Software
+    {'/gpu':20}       - GPU temp
 
 
-    {'/help'}   -   Shows this help message
+    🔄 {'/help'}  -  Shows this help message
+
+
+❕ These only apply to LIVE mode!
+❕ Use with caution!
         """)
 
 
 def status_command(update, context):
     try:
-        with open(f"TEMP/pidTmp", 'r', encoding="utf8") as f:
+        with open("TEMP/pidTmp", 'r', encoding="utf8") as f:
             pID = int(f.read())
         if psutil.pid_exists(pID):
             update.message.reply_text("🟢 Bot is alive and well, no worries! \nGive yourself a pat on the back! \nRelax and stay hydrated!")
         else:
             update.message.reply_text("💤 Bot is stopped. Help it get back on track! \nC'mon! Results, not excuses!")
     except Exception as e:
-        print(e)
-        update.message.reply_text("The file for Rybka's PID does NOT exist!")
+        update.message.reply_text(f"The file for Rybka's PID does NOT exist! Exception raised:\n{e}")
 
 
 def gpu_command(update, context):
@@ -201,7 +213,7 @@ Address [{elem['address']}]""")
 def current_price_command(update, context):
     try:
         with open("TEMP/priceTmp", 'r', encoding="utf8") as f:
-            with open(f"TEMP/pidTmp", 'r', encoding="utf8") as g:
+            with open("TEMP/pidTmp", 'r', encoding="utf8") as g:
                 pID = int(g.read())
             if psutil.pid_exists(pID):
                 current_price = float(f.read())
@@ -209,8 +221,70 @@ def current_price_command(update, context):
             else:
                 update.message.reply_text("💤 Bot is stopped. Help it get back on track for an accurate price of EGLD!")
     except Exception as e:
-        print(e)
-        update.message.reply_text("The file for current price does NOT exist!")
+        update.message.reply_text(f"The file for current price does NOT exist! Exception raised:\n{e}")
+
+
+def start_cmds_template(update, context, module):
+    try:
+        with open("TEMP/pidTmp", 'r', encoding="utf8") as f:
+            pID = int(f.read())
+        if psutil.pid_exists(pID):
+            update.message.reply_text("🟢 Bot is already running! \nDo NOT start multiple instances, they'll corrupt each other's data!")
+        else:
+            update.message.reply_text("💤 Bot is indeed stopped at this moment.")
+            update.message.reply_text(f"🚀 Starting bot via `{module}` module!\nPlease wait...")
+            try:
+                subprocess.Popen(["python", f"{module}.py", "-m", "live"])
+                for i in range(0,10):
+                    try:
+                        time.sleep(2*i)
+                        with open("TEMP/pidTmp", 'r', encoding="utf8") as f:
+                            pID = int(f.read())
+                            if psutil.pid_exists(pID):
+                                update.message.reply_text("✅ Bot got successfully started remotely!")
+                                break
+                            elif i == 9:
+                                update.message.reply_text("❌ Bot could NOT be started remotely!")
+                    except Exception as e:
+                        update.message.reply_text(f"Error occured while checking if bot got started or not via a remote command. Exception raised:\n{e}")
+                        time.sleep(5)
+            except Exception as e:
+                update.message.reply_text(f"❌ Some error occured, bot could NOT be started remotely... Exception raised:\n{e}")
+    except Exception as e:
+        update.message.reply_text(f"The file for Rybka's PID does NOT exist! This needs to exist in order to check if software is already running! Exception raised:\n{e}")
+
+
+
+def start_restarter_command(update, context):
+    start_cmds_template(update, context, "restarter")
+
+
+def start_rybka_command(update, context):
+    start_cmds_template(update, context, "rybka")
+
+
+def stop_software_command(update, context):
+    try:
+        with open("TEMP/pidTmp", 'r', encoding="utf8") as f:
+            pID = int(f.read())
+        if psutil.pid_exists(pID):
+            update.message.reply_text("🟢 Bot is indeed currently running!")
+            update.message.reply_text(f"🪓 Killing the process [pID:{str(pID)}]!\nPlease wait...")
+            try:
+                psutil.Process(pID).kill()
+                time.sleep(5)
+                if psutil.pid_exists(pID):
+                    update.message.reply_text("❌ Bot could NOT be stopped remotely! Interesting, as the kill process cmd did complete just fine...")
+                else:
+                    update.message.reply_text("🚮 Bot got successfully stopped remotely!")
+                    update.message.reply_text("Too bad 🥺, go make profit somewhere else now!")
+            except Exception as e:
+                update.message.reply_text(f"Could not kill process [pID:{str(pID)}]. Exception raised:\n{e}")
+        else:
+            update.message.reply_text(f"💤 Bot is already stopped at this moment. Last known [pID:{str(pID)}]")
+            update.message.reply_text("🪓 No process to kill!")
+    except Exception as e:
+        update.message.reply_text(f"The file for Rybka's PID does NOT exist! This needs to exist in order to check if software is already running! Exception raised:\n{e}")
 
 
 
@@ -244,6 +318,9 @@ def main():
     dp.add_handler(CommandHandler("withdrawals", binance_withdrawal_history_command))
     dp.add_handler(CommandHandler("deposits", binance_deposit_history_command))
 
+    dp.add_handler(CommandHandler("start_restarter", start_restarter_command))
+    dp.add_handler(CommandHandler("start_rybka", start_rybka_command))
+    dp.add_handler(CommandHandler("stop_software", stop_software_command))
 
     dp.add_handler(MessageHandler(Filters.text, handle_message))
     
