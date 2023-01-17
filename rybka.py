@@ -531,7 +531,6 @@ def clear_terminal():
 def re_sync_time():
     try:
         if platform == "linux" or platform == "linux2":
-            # TODO sync time cmd for linux
             pass
         elif platform == "win32":
             if DEBUG_LVL == 2 or DEBUG_LVL == 3:
@@ -1267,7 +1266,6 @@ def main(version, mode):
     clear_terminal()
 
     if platform == "linux" or platform == "linux2":
-        # TODO cmd of checking elevation privileges
         pass
     elif platform == "win32":
         if isAdmin() != True:
@@ -1432,9 +1430,6 @@ if __name__ == '__main__':
     closed_candles = []
     client = ""
 
-    # value represented ~0.02 $. Considered with a high margin, considering it's bear market
-    # usual fee is ~0.0072 $  (1$ paid in fees for ~120 transactions)
-    # TODO this to be solved by a double socket opener, to check prices of two pairs in the same time
     bnb_commission = 0.00005577
     total_usdt_profit = 0
 
