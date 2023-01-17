@@ -976,8 +976,8 @@ def on_message(ws, message):
                         else:
                             log.WARN(f"Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].")
                             #TODO add log.WARN message and email func within the same 'if' clause for enabling / disabling such emails
-                            log.WARN(f"Notifying user (via email) that bot might need more money for buy actions, if possible.")
-                            email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot might be able to buy more, but doesn't have enought USDT in balance [{balance_usdt}]\n\nTOP UP if possible!")
+                            #log.WARN(f"Notifying user (via email) that bot might need more money for buy actions, if possible.")
+                            #email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot might be able to buy more, but doesn't have enought USDT in balance [{balance_usdt}]\n\nTOP UP if possible!")
                             with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
                                 f.write(f'\n\n{log.logging_time()} Within BUY (part IX):\n')
                                 f.write(f'{log.logging_time()} Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].\n')
