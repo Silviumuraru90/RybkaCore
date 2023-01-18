@@ -18,8 +18,14 @@ variables:
 default:
   image: registry.gitlab.com/silviu_space/rybka:${DOCKER_IMG_TAG}
   interruptible: true
+#TODO: to be enabled here when docker image is well packaged with deps locally
+  # tags:
+  #   - rasp-pi
+
+.local_runners:
   tags:
     - rasp-pi
+
 
 ###################################
 #######  Templates Section  #######
@@ -58,8 +64,6 @@ docker-build:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: manual
     - if: $CI_PIPELINE_SOURCE == "push"
-      changes:
-        - Dockerfile
       when: manual
 
 .code_checks:
@@ -75,7 +79,9 @@ docker-build:
 ###################################
 
 .testing_template:
-  extends: .dev_branches_and_master_shadow
+  extends: 
+    - .dev_branches_and_master_shadow
+    - .local_runners
   stage: 🔬 unit testing
   script:
     - !reference [.debug_template, script]
