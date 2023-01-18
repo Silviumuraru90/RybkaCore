@@ -31,7 +31,7 @@ print(colored("""
 """, "magenta"), colored("""
 #########################################################
 #####                                               #####
-#####  1️⃣  Open `Telegram` app                       #####
+#####  1️⃣  Open `Telegram` app on your device        #####
 #####  2️⃣  Open your Rybka Telegram bot's chat       #####
 #####  3️⃣  Type `/help` for details on how to use    #####
 #####                                               #####
