@@ -883,7 +883,7 @@ def on_message(ws, message):
 
                                             # avoid rounding up on quantity & price bought
                                             log.INFO_SPECIAL(f"🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT")
-                                            telegram.LOG("INFO", f"\n🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT/EGLD")
+                                            telegram.LOG("INFO", f" 🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT/EGLD")
 
                                             usdt_trade_fee = round(float(0.08 / 100 * round(float(order['cummulativeQuoteQty']), 4)), 4)
                                             log.VERBOSE(f"BUY action's usdt trade fee is {usdt_trade_fee}")
@@ -1077,7 +1077,7 @@ def on_message(ws, message):
                                         price_aux = int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4
 
                                         log.INFO_SPECIAL(f"🟢 Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT. Previously bought at [{str(ktbr_config[sell][1])}] USDT")
-                                        telegram.LOG("INFO", f"\n🟢 Sold [{qtty_aux}] EGLD at [{price_aux}] USDT/EGLD.\nWas bought at [{str(ktbr_config[sell][1])}] USDT/EGLD")
+                                        telegram.LOG("INFO", f" 🟢 Sold [{qtty_aux}] EGLD at [{price_aux}] USDT/EGLD.\nWas bought at [{str(ktbr_config[sell][1])}] USDT/EGLD")
 
                                         usdt_trade_fee = round(float(0.08 / 100 * round(float(order['cummulativeQuoteQty']), 4)), 4)
                                         log.VERBOSE(f"SELL action's usdt trade fee is {usdt_trade_fee}")
@@ -1377,6 +1377,14 @@ if __name__ == '__main__':
 
 
     ###############################################
+    ########          GLOBAL VARS          ########
+    ###############################################
+
+    WEIGHTS_DICT_OUTDATED = {}
+    WEIGHTS_DICT_UPDATED = {}
+
+
+    ###############################################
     ########   GLOBAL VARS from ENV VARS   ########
     ###############################################
 
@@ -1391,6 +1399,8 @@ if __name__ == '__main__':
         variables_reinitialization()
         from custom_modules.cfg import bootstrap
         
+        global WEIGHTS_DICT_OUTDATED, WEIGHTS_DICT_UPDATED
+
         global DEBUG_LVL, RSI_FOR_BUY, RSI_FOR_SELL, TRADING_BOOST_LVL
         global TRADE_QUANTITY, AUX_TRADE_QUANTITY, MIN_PROFIT
         global RYBKA_EMAIL_SWITCH, RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_RECIPIENT_EMAIL, RYBKA_EMAIL_RECIPIENT_NAME
@@ -1401,7 +1411,7 @@ if __name__ == '__main__':
 
         TRADING_BOOST_LVL = bootstrap.TRADING_BOOST_LVL
         if TRADING_BOOST_LVL not in [1, 2, 3, 4, 5]:
-            log.FATAL_7(f"Please consult [README.md] file for valid values of [RYBKA_TRADING_BOOST_LVL] var.\n[{TRADING_BOOST_LVL}] is not a valid value!")
+            log.FATAL_7(f"Please consult [README.md] file for valid values of [RYBKA_TRADING_BOOST_LVL] var.\n[{str(TRADING_BOOST_LVL)}] is not a valid value!")
 
         RSI_FOR_BUY = bootstrap.RSI_FOR_BUY
         RSI_FOR_SELL = bootstrap.RSI_FOR_SELL
@@ -1418,6 +1428,34 @@ if __name__ == '__main__':
         RYBKA_TELEGRAM_SWITCH = bootstrap.RYBKA_TELEGRAM_SWITCH
 
         SET_DISCLAIMER = bootstrap.SET_DISCLAIMER
+
+        def parse_weights():
+            WEIGHTS_DICT_UPDATED.update({"DEBUG_LVL":DEBUG_LVL})
+            WEIGHTS_DICT_UPDATED.update({"TRADING_BOOST_LVL":TRADING_BOOST_LVL})
+            WEIGHTS_DICT_UPDATED.update({"RSI_FOR_BUY":RSI_FOR_BUY})
+            WEIGHTS_DICT_UPDATED.update({"RSI_FOR_SELL":RSI_FOR_SELL})
+            WEIGHTS_DICT_UPDATED.update({"TRADE_QUANTITY":TRADE_QUANTITY})
+            WEIGHTS_DICT_UPDATED.update({"MIN_PROFIT":MIN_PROFIT})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_SWITCH":RYBKA_EMAIL_SWITCH})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_SENDER_EMAIL":RYBKA_EMAIL_SENDER_EMAIL})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_RECIPIENT_EMAIL":RYBKA_EMAIL_RECIPIENT_EMAIL})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_RECIPIENT_NAME":RYBKA_EMAIL_RECIPIENT_NAME})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_TELEGRAM_SWITCH":RYBKA_TELEGRAM_SWITCH})
+            WEIGHTS_DICT_UPDATED.update({"SET_DISCLAIMER":SET_DISCLAIMER})
+
+        if not WEIGHTS_DICT_UPDATED:
+            parse_weights()
+            WEIGHTS_DICT_OUTDATED = WEIGHTS_DICT_UPDATED.copy()
+        else:
+            parse_weights()
+            for k in WEIGHTS_DICT_UPDATED.keys():
+                if WEIGHTS_DICT_UPDATED[k] !=  WEIGHTS_DICT_OUTDATED[k]:
+                    log.INFO(" ")
+                    log.INFO_BOLD(f" ⚖️  Rybka's weight [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!")
+                    telegram.LOG("INFO", f" ⚖️ Rybka's weight [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!")
+                    log.INFO(" ")
+                    WEIGHTS_DICT_OUTDATED.update({k:WEIGHTS_DICT_UPDATED[k]})
+
 
     bootstraping_vars()
 
