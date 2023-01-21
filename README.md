@@ -114,7 +114,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 🔘 Some `ENV` variables set: <br>
 
-| VARIABLE                                 | TYPE   |   DESCRIPTION                                                                      | MANDATORY ? |  DEFAULT VALUE | 
+| VARIABLE | TYPE | DESCRIPTION | MANDATORY OR NOT | DEFAULT VALUE | 
 |:-------------------------------------------|:------:|:------:|:----------------------------------------------------------------------------------:| :--------:|
 |`RYBKA_DEBUG_LVL`                      | integer | Values ➡️ `1`, `2` or `3`,<br>otherwise leave it `blank`<br>1️⃣ ➜ <b>Debug</b> &emsp; &emsp; &emsp;&nbsp;<br> 2️⃣ ➜ <b>Verbose</b> &emsp; &emsp; &nbsp;&nbsp; <br> 3️⃣ ➜ <b>High Verbosity</b><br> (Get from environment / config file)                           | ❌        | ❌ | 
 |`RYBKA_TRADING_BOOST_LVL`                      | integer | Values ➡️ `1`, `2`, `3`, `4` or `5` <br>&emsp;1️⃣ ➜ <b>Less Greediness</b> &emsp;<br>..... &emsp; &emsp; &nbsp;&nbsp; <br>5️⃣ ➜ <b>High Greediness</b><br> (Get from environment / config file)                           | ✅        | `2` | 
