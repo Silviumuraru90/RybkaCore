@@ -92,7 +92,7 @@ docker-build:
 #######  Functional Testing #######
 ###################################
 
-DEMO_rybka_run:
+.DEMO_rybka_run:
   extends: .testing_template
   stage: ☢️ functional testing
   needs: []
@@ -110,8 +110,8 @@ DEMO_rybka_run:
   when: manual
   timeout: 30 m
 
-DEMO_restarter_run:
-  extends: DEMO_rybka_run
+.DEMO_restarter_run:
+  extends: .DEMO_rybka_run
   script:
     - !reference [.debug_template, script]
     - sudo chmod +x restarter.py
@@ -122,27 +122,27 @@ DEMO_restarter_run:
 #######  Scheduled Testing  #######
 ###################################
 
-DEMO_rybka_daily_24h_run:
-  extends: DEMO_rybka_run
+.DEMO_rybka_daily_24h_run:
+  extends: .DEMO_rybka_run
   timeout: 1d
   rules:
     - if: '$DAILY_RUN && $CI_PIPELINE_SOURCE == "schedule"'
       when: always
     - when: never
 
-DEMO_restarter_daily_24h_run:
-  extends: DEMO_rybka_daily_24h_run
+.DEMO_restarter_daily_24h_run:
+  extends: .DEMO_rybka_daily_24h_run
 
-DEMO_rybka_weekly_7d_run:
-  extends: DEMO_rybka_run
+.DEMO_rybka_weekly_7d_run:
+  extends: .DEMO_rybka_run
   timeout: 7d
   rules:
     - if: '$WEEKLY_RUN && $CI_PIPELINE_SOURCE == "schedule"'
       when: always
     - when: never
 
-DEMO_restarter_weekly_7d_run:
-  extends: DEMO_rybka_weekly_7d_run
+.DEMO_restarter_weekly_7d_run:
+  extends: .DEMO_rybka_weekly_7d_run
 
 
 ###################################
