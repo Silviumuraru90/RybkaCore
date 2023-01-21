@@ -8,6 +8,7 @@ stages:
   - ☢️ functional testing
   - 🗂 binaries creation
   - 🟪.🟪.🟩 patch versioning
+  - 🌐 public
 
 variables:
   DOCKER_IMG_TAG:
@@ -203,3 +204,21 @@ patch_versioning:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
     - when: never
+
+
+##############################################
+#######             Public             #######
+##############################################
+
+pages:
+  stage: 🌐 public
+  needs: []
+  script:
+    - echo "Updating Gitlab Pages"
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_DEFAULT_BRANCH
+      when: always
+    - when: always
