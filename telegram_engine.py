@@ -5,13 +5,13 @@ import GPUtil
 import json
 import os
 import psutil
-import signal
 import subprocess
 import time
 
 from termcolor import colored
 from os.path import exists
 from binance.client import Client
+from telegram import ParseMode
 
 
 # Custom Libs
@@ -77,7 +77,7 @@ def status_command(update, context):
     try:
         with open("TEMP/pidTmp", 'r', encoding="utf8") as f:
             pID = int(f.read())
-        if psutil.pid_exists(pID):
+        if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
             update.message.reply_text("🟢 Bot is alive and well, no worries! \nGive yourself a pat on the back! \nRelax and stay hydrated!")
         else:
             update.message.reply_text("💤 Bot is stopped. Help it get back on track! \nC'mon! Results, not excuses!")
@@ -215,7 +215,7 @@ def current_price_command(update, context):
         with open("TEMP/priceTmp", 'r', encoding="utf8") as f:
             with open("TEMP/pidTmp", 'r', encoding="utf8") as g:
                 pID = int(g.read())
-            if psutil.pid_exists(pID):
+            if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
                 current_price = float(f.read())
                 update.message.reply_text(f"🩺 Current USDT / EGLD is [{current_price}]")
             else:
@@ -228,7 +228,7 @@ def start_cmds_template(update, context, module):
     try:
         with open("TEMP/pidTmp", 'r', encoding="utf8") as f:
             pID = int(f.read())
-        if psutil.pid_exists(pID):
+        if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
             update.message.reply_text("🟢 Bot is already running! \nDo NOT start multiple instances, they'll corrupt each other's data!")
         else:
             update.message.reply_text("💤 Bot is indeed stopped at this moment.")
@@ -240,7 +240,7 @@ def start_cmds_template(update, context, module):
                         time.sleep(2*i)
                         with open("TEMP/pidTmp", 'r', encoding="utf8") as f:
                             pID = int(f.read())
-                            if psutil.pid_exists(pID):
+                            if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
                                 update.message.reply_text("✅ Bot got successfully started remotely!")
                                 break
                             elif i == 9:
@@ -267,16 +267,17 @@ def stop_software_command(update, context):
     try:
         with open("TEMP/pidTmp", 'r', encoding="utf8") as f:
             pID = int(f.read())
-        if psutil.pid_exists(pID):
+        if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
             update.message.reply_text("🟢 Bot is indeed currently running!")
             update.message.reply_text(f"🪓 Killing the process [pID:{str(pID)}]!\nPlease wait...")
             try:
                 psutil.Process(pID).kill()
                 time.sleep(5)
-                if psutil.pid_exists(pID):
+                if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
                     update.message.reply_text("❌ Bot could NOT be stopped remotely! Interesting, as the kill process cmd did complete just fine...")
                 else:
                     update.message.reply_text("🚮 Bot got successfully stopped remotely!")
+                    update.message.reply_text(text=" ⚠️ Please check out <a href='https://gitlab.com/Silviu_space/rybka/-/issues/262'>[ISSUE NR 262]</a> for this command!", parse_mode=ParseMode.HTML)
                     update.message.reply_text("Too bad 🥺, go make profit somewhere else now!")
             except Exception as e:
                 update.message.reply_text(f"Could not kill process [pID:{str(pID)}]. Exception raised:\n{e}")

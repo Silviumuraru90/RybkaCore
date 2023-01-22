@@ -216,9 +216,10 @@ pages:
   script:
     - echo "Updating Gitlab Pages"
   artifacts:
+    expire_in: never
     paths:
       - public
   rules:
     - if: $CI_DEFAULT_BRANCH
       when: always
-    - when: always
+    - when: never

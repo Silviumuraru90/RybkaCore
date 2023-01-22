@@ -116,27 +116,28 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 | VARIABLE | TYPE | DESCRIPTION | MANDATORY OR NOT | DEFAULT VALUE | 
 |:-------------------------------------------|:------:|:------:|:----------------------------------------------------------------------------------:| :--------:|
-|`RYBKA_DEBUG_LVL`                      | integer | Values ➡️ `1`, `2` or `3`,<br>otherwise leave it `blank`<br>1️⃣ ➜ <b>Debug</b> &emsp; &emsp; &emsp;&nbsp;<br> 2️⃣ ➜ <b>Verbose</b> &emsp; &emsp; &nbsp;&nbsp; <br> 3️⃣ ➜ <b>High Verbosity</b><br> (Get from environment / config file)                           | ❌        | ❌ | 
-|`RYBKA_TRADING_BOOST_LVL`                      | integer | Values ➡️ `1`, `2`, `3`, `4` or `5` <br>&emsp;1️⃣ ➜ <b>Less Greediness</b> &emsp;<br>..... &emsp; &emsp; &nbsp;&nbsp; <br>5️⃣ ➜ <b>High Greediness</b><br> (Get from environment / config file)                           | ✅        | `2` | 
-|`RYBKA_MODE`                           | string | Values ➡️ `DEMO` or `LIVE` <br> (Get from cli args)                           | ❌        | ❌ | 
-|`BIN_KEY`                              | string | Binance <b>Auth</b>orization <b>KEY</b> <br> (Get from environment)                            | ✅ <br> if `RYBKA_MODE` is either `LIVE` or `DEMO`        | ❌ | 
-|`BIN_SECRET`                           | string | Binance <b>Auth</b>orization <b>SECRET</b> <br> (Get from environment)                           | ✅ <br> if `RYBKA_MODE` is either `LIVE` or `DEMO`      | ❌ | 
-|`RYBKA_RSI_FOR_BUY`                     | integer | <b>RSI threshold for BUY</b> actions <br> Values ➡️ (`0` ↔️ `50`) <br> The higher the value, the more sensitive the bot on buy actions <br> (Get from environment / config file)                           | ❌        | `30` | 
-|`RYBKA_RSI_FOR_SELL`                    | integer | <b>RSI threshold for SELL</b> actions <br> Values ➡️ (`50` ↔️ `100`) <br> The lower the value, the more sensitive the bot on sell actions <br> (Get from environment / config file)                           | ❌        | `70` | 
-|`RYBKA_TRADE_QUANTITY`                  | float | The <b>crypto-coin amount</b> to buy on each transaction <br> (Get from environment / config file)                           | ❌        | `0.4` | 
-|`RYBKA_MIN_PROFIT`                      | float | The `USDT` <b>minimum profit</b>, per transaction, that allows a SELL signal to complete <br> (Get from environment / config file)                           | ❌        | `0.3` | 
-|`RYBKA_EMAIL_SWITCH`                    | boolean | Values ➡️ `True` or `False` <br> (Get from environment / config file)                           | ❌        | `False` | 
-|`RYBKA_EMAIL_SENDER_EMAIL`              | string | <b>Email</b> for the account sending the email <br> (Get from environment / config file)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`       | ❌ | 
-|`RYBKA_EMAIL_SENDER_DEVICE_PASSWORD`    | string | <b>DEVICE password</b>, not the emailbox password, (tested only with @gmail.com accounts) of the account sending the email  <br> (Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`       | ❌ | 
-|`RYBKA_EMAIL_RECIPIENT_EMAIL`           | string | <b>Email</b> for the account receiving the email <br> (Get from environment / config file)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
-|`RYBKA_EMAIL_RECIPIENT_NAME`            | string | <b>Name</b> of the person receiving the email <br> (Get from environment / config file)                           | ❌        | `User` | 
-|`RYBKA_DISCLAIMER`                      | boolean | Values ➡️ `True` or `False` <br> (Get from environment / config file)                           | ❌        | `True` | 
-|`RYBKA_DEMO_BALANCE_USDT`                      | float | Amount of `USDT` the bot is provided with, in `DEMO` mode <br> (Get from environment / config file)                           | ❌        | `1500` | 
-|`RYBKA_DEMO_BALANCE_EGLD`                      | float | Amount of `EGLD` the bot is provided with, in `DEMO` mode <br> (Get from environment / config file)                           | ❌        | `100` | 
-|`RYBKA_DEMO_BALANCE_BNB`                      | float | Amount of `BNB` the bot is provided with, in `DEMO` mode <br> (Get from environment / config file)                           | ❌        | `0.2` | 
-|`RYBKA_TELEGRAM_SWITCH`                      | boolean | Values ➡️ `True` or `False` <br> (Get from environment / config file)                           | ❌        | `False` |  
-|`RYBKA_TELEGRAM_API_KEY`                      | string | Telegram bot's <b>Auth</b>orization <b>KEY</b> <br> (Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
-|`RYBKA_TELEGRAM_CHAT_ID`                      | string | Telegram bot's chat <b>id</b>entificator <br> (Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
+|`RYBKA_PYTHON_PATH`                      | string | The absolute path to the `python.exe` that contains the libraries listed in this `readme.md` for running the software.<br><br>Note that this is only needed for GUI-initiated flows and `RybkaSoft` executable file(s) will run under system's python installation <br><br> (Get from environment)                           | ✅ <br> Only for GUI-initiated flows <br>(`RybkaSoft` binary file(s))        | ❌ | 
+|`RYBKA_DEBUG_LVL`                      | integer | Values ➡️ `1`, `2` or `3`,<br>otherwise leave it `blank`<br>1️⃣ ➜ <b>Debug</b> &emsp; &emsp; &emsp;&nbsp;<br> 2️⃣ ➜ <b>Verbose</b> &emsp; &emsp; &nbsp;&nbsp; <br> 3️⃣ ➜ <b>High Verbosity</b><br> <br>(Get from environment / config file)                           | ❌        | ❌ | 
+|`RYBKA_TRADING_BOOST_LVL`                      | integer | Values ➡️ `1`, `2`, `3`, `4` or `5` <br>&emsp;<br>1️⃣ ➜ <b>Less</b> &emsp;<br>... <br>\<greediness\><br>...<br>5️⃣ ➜ <b>More</b><br> <br>(Get from environment / config file)                           | ✅        | `2` | 
+|`RYBKA_MODE`                           | string | Values ➡️ `DEMO` or `LIVE` <br> <br>(Get from cli args)                           | ❌        | ❌ | 
+|`BIN_KEY`                              | string | Binance <b>Auth</b>orization <b>KEY</b> <br> <br>(Get from environment)                            | ✅ <br> if `RYBKA_MODE` is either `LIVE` or `DEMO`        | ❌ | 
+|`BIN_SECRET`                           | string | Binance <b>Auth</b>orization <b>SECRET</b> <br> <br>(Get from environment)                           | ✅ <br> if `RYBKA_MODE` is either `LIVE` or `DEMO`      | ❌ | 
+|`RYBKA_RSI_FOR_BUY`                     | integer | <b>RSI threshold for BUY</b> actions <br> Values ➡️ (`0` ↔️ `50`) <br> The higher the value, the more sensitive the bot on buy actions <br> <br>(Get from environment / config file)                           | ❌        | `30` | 
+|`RYBKA_RSI_FOR_SELL`                    | integer | <b>RSI threshold for SELL</b> actions <br> Values ➡️ (`50` ↔️ `100`) <br> The lower the value, the more sensitive the bot on sell actions <br> <br>(Get from environment / config file)                           | ❌        | `70` | 
+|`RYBKA_TRADE_QUANTITY`                  | float | The <b>crypto-coin amount</b> to buy on each transaction <br> <br>(Get from environment / config file)                           | ❌        | `0.4` | 
+|`RYBKA_MIN_PROFIT`                      | float | The `USDT` <b>minimum profit</b>, per transaction, that allows a SELL signal to complete <br> <br>(Get from environment / config file)                           | ❌        | `0.3` | 
+|`RYBKA_EMAIL_SWITCH`                    | boolean | Values ➡️ `True` or `False` <br> <br>(Get from environment / config file)                           | ❌        | `False` | 
+|`RYBKA_EMAIL_SENDER_EMAIL`              | string | <b>Email</b> for the account sending the email <br> <br>(Get from environment / config file)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`       | ❌ | 
+|`RYBKA_EMAIL_SENDER_DEVICE_PASSWORD`    | string | <b>DEVICE password</b>, not the emailbox password, (tested only with @gmail.com accounts) of the account sending the email  <br> <br>(Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`       | ❌ | 
+|`RYBKA_EMAIL_RECIPIENT_EMAIL`           | string | <b>Email</b> for the account receiving the email <br> <br>(Get from environment / config file)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
+|`RYBKA_EMAIL_RECIPIENT_NAME`            | string | <b>Name</b> of the person receiving the email <br> <br>(Get from environment / config file)                           | ❌        | `User` | 
+|`RYBKA_DISCLAIMER`                      | boolean | Values ➡️ `True` or `False` <br> <br>(Get from environment / config file)                           | ❌        | `True` | 
+|`RYBKA_DEMO_BALANCE_USDT`                      | float | Amount of `USDT` the bot is provided with, in `DEMO` mode <br> <br>(Get from environment / config file)                           | ❌        | `1500` | 
+|`RYBKA_DEMO_BALANCE_EGLD`                      | float | Amount of `EGLD` the bot is provided with, in `DEMO` mode <br> <br>(Get from environment / config file)                           | ❌        | `100` | 
+|`RYBKA_DEMO_BALANCE_BNB`                      | float | Amount of `BNB` the bot is provided with, in `DEMO` mode <br> <br>(Get from environment / config file)                           | ❌        | `0.2` | 
+|`RYBKA_TELEGRAM_SWITCH`                      | boolean | Values ➡️ `True` or `False` <br> <br>(Get from environment / config file)                           | ❌        | `False` |  
+|`RYBKA_TELEGRAM_API_KEY`                      | string | Telegram bot's <b>Auth</b>orization <b>KEY</b> <br> <br>(Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
+|`RYBKA_TELEGRAM_CHAT_ID`                      | string | Telegram bot's chat <b>id</b>entificator <br> <br>(Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
 
 <br>
 
@@ -154,13 +155,16 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 <br><br>
 
-> ▶️ You can run the software directly (the `rybka.py` file) or via the `restarer.py` module that will automatically start the bot, but also restart the bot if it exits on a not-hardcoded error (such as a temporary internet drop / others) <br><br>
-▶️ The `telegram_engine.py` module (which is only the listener part where user can input commands and info. will be provided for each) has to be started into a sepparate shell as neither `rybka.py`, nor `restarter.py` will run this on their own!
+> ▶️ For Win -> you can run directly the `RybkaSoft.exe` file and start the needed process(es) from that GUI; <br><br>
+▶️ For Linux however -> you have to grant executable permissions via `chmod +x RybkaSoft` and then still run it via terminal with `./RybkaSoft` cmd, unfortunately, for it to boot correctly; <br><br>
+▶️ (Win / Linux) You can run the software directly (the `rybka.py` file) or via the `restarer.py` module that will automatically start the bot, but also restart the bot if it exits on a not-hardcoded error (such as a temporary internet drop / others); <br><br>
+▶️ (Win / Linux) The `telegram_engine.py` module (which is only the listener part where user can input commands and info. will be provided for each) has to be started into a sepparate shell as neither `rybka.py`, nor `restarter.py` will run this on their own! Still, there is a flip side to this coin. If you start the Telegram listener and then use the Telegram command to start remotely the `rybka` / `restarter`, you will then be able to have them all in the same shell;
 
 <br><br>
 
 ❗️ `Note:` Recommendation for having the best UI output - running `Rybka` software into a `cmd` shell within `Visual Studio Code` <br>
-❗️ `Note:` Recommendation for having the best uptime and better profit return (due to low electricity cost) - running `Rybka` software via the `restarter` module on a `Raspberry PI 4` connected directly to a `UPS` <br><br><br>
+❗️ `Note:` Recommendation for having the best uptime and better profit return (only due to low electricity cost) - running `Rybka` software via the `restarter` module on a `Raspberry PI 4` connected directly to a `UPS` <br>
+❗️ `Note:` Running the bot with higher trading quantities or lower will NOT mean the taxex - compared to your profits will vary, as tax is a percentage of the trading quantity moved around. Profit - taxes report can only be increased in your favor if you run the bot with a higher profit margin, per trade; <br><br><br>
 
 ***
 ***
