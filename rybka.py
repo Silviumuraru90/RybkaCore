@@ -1399,7 +1399,7 @@ if __name__ == '__main__':
         variables_reinitialization()
         from custom_modules.cfg import bootstrap
         
-        global WEIGHTS_DICT_OUTDATED, WEIGHTS_DICT_UPDATED
+        global WEIGHTS_DICT_OUTDATED, WEIGHTS_DICT_UPDATED, TELEGRAM_WEIGHTS
 
         global DEBUG_LVL, RSI_FOR_BUY, RSI_FOR_SELL, TRADING_BOOST_LVL
         global TRADE_QUANTITY, AUX_TRADE_QUANTITY, MIN_PROFIT
@@ -1430,18 +1430,18 @@ if __name__ == '__main__':
         SET_DISCLAIMER = bootstrap.SET_DISCLAIMER
 
         def parse_weights():
-            WEIGHTS_DICT_UPDATED.update({"DEBUG_LVL":DEBUG_LVL})
-            WEIGHTS_DICT_UPDATED.update({"TRADING_BOOST_LVL":TRADING_BOOST_LVL})
-            WEIGHTS_DICT_UPDATED.update({"RSI_FOR_BUY":RSI_FOR_BUY})
-            WEIGHTS_DICT_UPDATED.update({"RSI_FOR_SELL":RSI_FOR_SELL})
-            WEIGHTS_DICT_UPDATED.update({"TRADE_QUANTITY":TRADE_QUANTITY})
-            WEIGHTS_DICT_UPDATED.update({"MIN_PROFIT":MIN_PROFIT})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_DEBUG_LVL":DEBUG_LVL})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_TRADING_BOOST_LVL":TRADING_BOOST_LVL})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_RSI_FOR_BUY":RSI_FOR_BUY})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_RSI_FOR_SELL":RSI_FOR_SELL})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_TRADE_QUANTITY":TRADE_QUANTITY})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_MIN_PROFIT":MIN_PROFIT})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_SWITCH":RYBKA_EMAIL_SWITCH})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_SENDER_EMAIL":RYBKA_EMAIL_SENDER_EMAIL})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_RECIPIENT_EMAIL":RYBKA_EMAIL_RECIPIENT_EMAIL})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_RECIPIENT_NAME":RYBKA_EMAIL_RECIPIENT_NAME})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_TELEGRAM_SWITCH":RYBKA_TELEGRAM_SWITCH})
-            WEIGHTS_DICT_UPDATED.update({"SET_DISCLAIMER":SET_DISCLAIMER})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_DISCLAIMER":SET_DISCLAIMER})
 
         if not WEIGHTS_DICT_UPDATED:
             parse_weights()
@@ -1455,6 +1455,13 @@ if __name__ == '__main__':
                     telegram.LOG("INFO", f" ⚖️ Rybka's weight [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!")
                     log.INFO(" ")
                     WEIGHTS_DICT_OUTDATED.update({k:WEIGHTS_DICT_UPDATED[k]})
+
+        TELEGRAM_WEIGHTS = WEIGHTS_DICT_UPDATED.copy()
+        TELEGRAM_WEIGHTS.update({"RYBKA_TRADE_SYMBOL":bootstrap.TRADE_SYMBOL})
+        TELEGRAM_WEIGHTS.update({"RYBKA_RSI_PERIOD":bootstrap.RSI_PERIOD})
+        
+        with open("TEMP/weightsTmp", 'w', encoding="utf8") as f:
+            f.write(json.dumps((TELEGRAM_WEIGHTS)))
 
 
     bootstraping_vars()

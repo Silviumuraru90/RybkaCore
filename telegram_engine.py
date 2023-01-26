@@ -64,6 +64,9 @@ def help_command(update, context):
     {'/stop_software':20}- Stops Software
     {'/gpu':20}       - GPU temp
 
+👨‍💻 FUNdamental SUBmenu(s):
+    {'/weights_info':20}  - Bot's weights
+
 
     🔄 {'/help'}  -  Shows this help message
 
@@ -71,6 +74,37 @@ def help_command(update, context):
 ❕ These only apply to LIVE mode!
 ❕ Use with caution!
         """)
+
+
+def weights_info_command(update, context):
+    update.message.reply_text(f"""Available weights commands are ⤵️
+
+
+👨‍💻 Hard-coded weights:
+    {'/RYBKA_TRADE_SYMBOL'}
+    {'/RYBKA_RSI_PERIOD'}
+
+👨‍💻 Update-on-the-fly weights:
+    {'/RYBKA_DEBUG_LVL'}
+    {'/RYBKA_TRADING_BOOST_LVL'}
+    {'/RYBKA_RSI_FOR_BUY'}
+    {'/RYBKA_RSI_FOR_SELL'}
+    {'/RYBKA_TRADE_QUANTITY'}
+    {'/RYBKA_MIN_PROFIT'}
+    {'/RYBKA_EMAIL_SWITCH'}
+    {'/RYBKA_EMAIL_SENDER_EMAIL'}
+    {'/RYBKA_EMAIL_RECIPIENT_EMAIL'}
+    {'/RYBKA_EMAIL_RECIPIENT_NAME'}
+    {'/RYBKA_TELEGRAM_SWITCH'}
+    {'/RYBKA_DISCLAIMER'}
+
+
+    🔄 {'/weights_info'}  -  Shows this help message
+
+
+❕ Weights specific to DEMO mode are not included!
+        """)
+
 
 
 def status_command(update, context):
@@ -221,7 +255,7 @@ def current_price_command(update, context):
             else:
                 update.message.reply_text("💤 Bot is stopped. Help it get back on track for an accurate price of EGLD!")
     except Exception as e:
-        update.message.reply_text(f"The file for current price does NOT exist! Exception raised:\n{e}")
+        update.message.reply_text(f"The file for current price does NOT exist (most possible) or some other error occured! Exception raised:\n{e}")
 
 
 def start_cmds_template(update, context, module):
@@ -288,6 +322,22 @@ def stop_software_command(update, context):
         update.message.reply_text(f"The file for Rybka's PID does NOT exist! This needs to exist in order to check if software is already running! Exception raised:\n{e}")
 
 
+def weights_command(update, context):
+    try:
+        with open("TEMP/weightsTmp", 'r', encoding="utf8") as f:
+            with open("TEMP/pidTmp", 'r', encoding="utf8") as g:
+                pID = int(g.read())
+            if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
+                weights = json.loads(f.read())
+                for weight_key, weight_value in weights.items():
+                    if update['message']['text'][1:] == weight_key:
+                        update.message.reply_text(f"⚖️ [{weight_key}] ➛ [{weight_value}]")
+            else:
+                update.message.reply_text("💤 Bot is stopped. Help it get back on track for an accurate representation of weights!")
+    except Exception as e:
+        update.message.reply_text(f"The file for Rybka's weights does NOT exist (most possible) or some other error occured! Exception raised:\n{e}")
+
+
 
 ####################################################
 ##############     CORE Functions     ##############
@@ -322,6 +372,23 @@ def main():
     dp.add_handler(CommandHandler("start_restarter", start_restarter_command))
     dp.add_handler(CommandHandler("start_rybka", start_rybka_command))
     dp.add_handler(CommandHandler("stop_software", stop_software_command))
+
+    dp.add_handler(CommandHandler("weights_info", weights_info_command))
+
+    dp.add_handler(CommandHandler("RYBKA_TRADE_SYMBOL", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_PERIOD", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_DEBUG_LVL", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_BUY", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_SELL", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_EMAIL_SWITCH", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_EMAIL_SENDER_EMAIL", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_EMAIL_RECIPIENT_EMAIL", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_EMAIL_RECIPIENT_NAME", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_TELEGRAM_SWITCH", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_DISCLAIMER", weights_command))
 
     dp.add_handler(MessageHandler(Filters.text, handle_message))
     
