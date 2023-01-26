@@ -40,7 +40,7 @@ class RybkaLogging:
             with open(f"{os.environ.get('RYBKA_MODE')}/errors_thrown", 'a', encoding="utf8") as f:
                 f.write(f"\nError / warn thrown was: \n{error_message}\n")
         except Exception as e:
-            print(f"{bcolors.WARNING}⚠️  WARN {self.logging_time()} > Could not update 'errors_thrown' file due to error: \n{e}{bcolors.ENDC}")
+            print(f"{bcolors.WARNING}⚠️  [{os.environ.get('RYBKA_MODE')}] [WARN] {self.logging_time()} > Could not update 'errors_thrown' file due to error: \n{e}{bcolors.ENDC}")
 
     #####  Usage  ################################
     #                                            #
@@ -65,48 +65,48 @@ class RybkaLogging:
         print(colored.fg(202) + f"{message}")
 
     def INFO(self, message):
-        print(f"{bcolors.DARKGRAY}◻️ INFO {self.logging_time()}        > {message}{bcolors.ENDC}")
+        print(f"{bcolors.DARKGRAY}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {message}{bcolors.ENDC}")
 
     def INFO_BOLD(self, message):
-        print(f"{bcolors.DARKGRAY}{bcolors.BOLD}◻️ INFO {self.logging_time()}        > {message}{bcolors.ENDC}")
+        print(f"{bcolors.DARKGRAY}{bcolors.BOLD}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {message}{bcolors.ENDC}")
 
     def INFO_UNDERLINE(self, message):
-        print(f"{bcolors.DARKGRAY}◻️ INFO {self.logging_time()}        > {bcolors.UNDERLINE}{message}{bcolors.ENDC}")
+        print(f"{bcolors.DARKGRAY}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {bcolors.UNDERLINE}{message}{bcolors.ENDC}")
 
     def INFO_BOLD_UNDERLINE(self, message):
-        print(f"{bcolors.DARKGRAY}{bcolors.BOLD}◻️ INFO {self.logging_time()}        > {bcolors.UNDERLINE}{message}{bcolors.ENDC}")
+        print(f"{bcolors.DARKGRAY}{bcolors.BOLD}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {bcolors.UNDERLINE}{message}{bcolors.ENDC}")
 
     def INFO_SPECIAL(self, message):
-        print(f"{bcolors.OKGREEN}◻️ INFO {self.logging_time()}        > {message}{bcolors.ENDC}")
+        print(f"{bcolors.OKGREEN}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {message}{bcolors.ENDC}")
 
     def DEBUG(self, message):
         self.refresh_bootstrap_object()
         if bootstrap.DEBUG_LVL == 1 or bootstrap.DEBUG_LVL == 2 or bootstrap.DEBUG_LVL == 3:
-            print(f"{bcolors.OKCYAN}🛠️  DEBUG {self.logging_time()}      > {message}{bcolors.ENDC}")
+            print(f"{bcolors.OKCYAN}🛠️  [{os.environ.get('RYBKA_MODE')}] [DEBUG] {self.logging_time()}      > {message}{bcolors.ENDC}")
 
     def VERBOSE(self, message):
         self.refresh_bootstrap_object()
         if bootstrap.DEBUG_LVL == 2 or bootstrap.DEBUG_LVL == 3:
-            print(f"{bcolors.OKBLUE}🛠️ 🛠️  VERBOSE {self.logging_time()}  > {message}{bcolors.ENDC}")
+            print(f"{bcolors.OKBLUE}🛠️ 🛠️  [{os.environ.get('RYBKA_MODE')}] [VERBOSE] {self.logging_time()}  > {message}{bcolors.ENDC}")
 
     def HIGH_VERBOSITY(self, message):
         self.refresh_bootstrap_object()
         if bootstrap.DEBUG_LVL == 3:
-            print(f"{bcolors.HEADER}🛠️ 🛠️ 🛠️  HV {self.logging_time()}     > {message}{bcolors.ENDC}")
+            print(f"{bcolors.HEADER}🛠️ 🛠️ 🛠️  [{os.environ.get('RYBKA_MODE')}] [HV] {self.logging_time()}     > {message}{bcolors.ENDC}")
 
     def WARN(self, message):
-        print(f"{bcolors.WARNING}⚠️  WARN {self.logging_time()}       > {message}{bcolors.ENDC}")
-        self.all_errors_file_update(f"⚠️ WARN {self.logging_time()}       > {message}")
+        print(f"{bcolors.WARNING}⚠️  [{os.environ.get('RYBKA_MODE')}] [WARN] {self.logging_time()}       > {message}{bcolors.ENDC}")
+        self.all_errors_file_update(f"⚠️  [{os.environ.get('RYBKA_MODE')}] [WARN] {self.logging_time()}       > {message}")
 
     def FATAL(self, message):
-        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {self.logging_time()}      > {message}{bcolors.ENDC}")
-        self.all_errors_file_update(f"❌ FATAL (1) {self.logging_time()}      > {message}")
+        print(f"{bcolors.CRED}{bcolors.BOLD}❌ [{os.environ.get('RYBKA_MODE')}] [FATAL] {self.logging_time()}      > {message}{bcolors.ENDC}")
+        self.all_errors_file_update(f"❌ [{os.environ.get('RYBKA_MODE')}] [FATAL (1)] {self.logging_time()}      > {message}")
         telegram.LOG("FATAL", message)
         exit(1)
 
     def FATAL_7(self, message):
-        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL (7) {self.logging_time()}  > {message}{bcolors.ENDC}")
-        self.all_errors_file_update(f"❌ FATAL (7) {self.logging_time()}  > {message}")
+        print(f"{bcolors.CRED}{bcolors.BOLD}❌ [{os.environ.get('RYBKA_MODE')}] [FATAL (7)] {self.logging_time()}  > {message}{bcolors.ENDC}")
+        self.all_errors_file_update(f"❌ [{os.environ.get('RYBKA_MODE')}] [FATAL (7)] {self.logging_time()}  > {message}")
         telegram.LOG("FATAL", message)
         exit(7)
 

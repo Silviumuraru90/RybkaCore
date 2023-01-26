@@ -586,8 +586,8 @@ def on_open(ws):
     
 
 def on_close(ws, close_status_code, close_msg):
-    print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.{bcolors.ENDC}")
-    log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.")
+    print(f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.{bcolors.ENDC}")
+    log.all_errors_file_update(f"❌ [{RYBKA_MODE}] [FATAL (1)] {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.")
     telegram.LOG("FATAL", f"🏴‍☠️ Bot is shutting down... [{RYBKA_MODE}]")
 
     archive_folder = 'archived_logs'
@@ -596,10 +596,10 @@ def on_close(ws, close_status_code, close_msg):
     shutil.move(current_export_dir, archive_folder)
 
     if close_status_code or close_msg:
-        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}      > Close status code: {str(close_status_code)}{bcolors.ENDC}")
-        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}      > Close message: {str(close_msg)}{bcolors.ENDC}")
-        log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}      > Close status code: {str(close_status_code)}")
-        log.all_errors_file_update(f"❌ FATAL (1) {log.logging_time()}      > Close message: {str(close_msg)}")
+        print(f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Close status code: {str(close_status_code)}{bcolors.ENDC}")
+        print(f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Close message: {str(close_msg)}{bcolors.ENDC}")
+        log.all_errors_file_update(f"❌ [{RYBKA_MODE}] [FATAL (1)] {log.logging_time()}      > Close status code: {str(close_status_code)}")
+        log.all_errors_file_update(f"❌ [{RYBKA_MODE}] [FATAL (1)] {log.logging_time()}      > Close message: {str(close_msg)}")
         telegram.LOG("FATAL", f"[RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working.\n\n Close Status Code: {str(close_status_code)}\n Close Message: {str(close_msg)}")
         email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working.\n\n Close Status Code: {str(close_status_code)}\n Close Message: {str(close_msg)}")
     else:
@@ -1451,7 +1451,7 @@ if __name__ == '__main__':
             for k in WEIGHTS_DICT_UPDATED.keys():
                 if WEIGHTS_DICT_UPDATED[k] !=  WEIGHTS_DICT_OUTDATED[k]:
                     log.INFO(" ")
-                    log.INFO_BOLD(f" ⚖️  Rybka's weight [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!")
+                    log.INFO_SPECIAL(f" ⚖️  Rybka's weight [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!")
                     telegram.LOG("INFO", f" ⚖️ Rybka's weight [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!")
                     log.INFO(" ")
                     WEIGHTS_DICT_OUTDATED.update({k:WEIGHTS_DICT_UPDATED[k]})
