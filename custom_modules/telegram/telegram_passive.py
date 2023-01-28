@@ -95,9 +95,9 @@ class TelegramEngine:
             self.WARN("Local image could not be sent via TELEGRAM!")
             self.LOG_EXCEPTION(e)
 
-    def WEB_PIC(self, image):
+    def WEB_PIC(self, image_url):
         try:
-            response = requests.post(self.photo_url, json={'chat_id': self.chatId, 'photo': f"https://source.unsplash.com/daily?{image}"})
+            response = requests.post(self.photo_url, json={'chat_id': self.chatId, 'photo': f"{image_url}"})
             self.HIGH_VERBOSITY(response.json())
         except Exception as e:
             self.WARN("Web image could not be sent via TELEGRAM!")
