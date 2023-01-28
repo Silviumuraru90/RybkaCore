@@ -87,22 +87,20 @@ class TelegramEngine:
                 self.WARN(f"[{type}] message could not be sent via TELEGRAM!")
                 self.LOG_EXCEPTION(e)
                 
-            
     def LOCAL_PIC(self, image):
         try:
             bot = telepot.Bot(self.apiKey)
             bot.sendPhoto(self.chatId, photo=open(f'custom_modules/telegram/data/pics/{image}.jpg', 'rb'))
         except Exception as e:
-            self.LOG_EXCEPTION(e)
             self.WARN("Local image could not be sent via TELEGRAM!")
+            self.LOG_EXCEPTION(e)
 
     def WEB_PIC(self, image):
         try:
             response = requests.post(self.photo_url, json={'chat_id': self.chatId, 'photo': f"https://source.unsplash.com/daily?{image}"})
             self.HIGH_VERBOSITY(response.json())
         except Exception as e:
-            self.LOG_EXCEPTION(e)
             self.WARN("Web image could not be sent via TELEGRAM!")
-
+            self.LOG_EXCEPTION(e)
 
 telegram = TelegramEngine()
