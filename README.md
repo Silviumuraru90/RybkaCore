@@ -1,5 +1,11 @@
 # 💱 Rybka
 
+<div align="center">
+  <img width="450" height="400" src="MEDIA/rybka_GUI.PNG">
+</div>
+
+
+
 <br>
 
 ## &emsp;&emsp; **Description**
@@ -41,6 +47,7 @@
 ✅ Individual buys tracking <br>
 ✅ Errors catch mechanism and exception management <br>
 ✅ Uptime tracking <br>
+✅ CLI-initiated / Telegram-initiated / GUI-initiated start <br>
 ✅ Some weights can be set from ENV, others from a `env_var_config` file. This gave possibility for some vars to be updated on the fly, while the bot is running, and alter its behavior <br>
 ✅ CLI args for `RYBKA_MODE` values, to avoid faulty runs if `RYBKA_MODE` was to remain cached from ENV, even after the user had changed it <br>
 ✅ Email notif. module. Informs the user about being low on BNB, or on USDT, or if an error occured and bot got shutdown. Also sends emails on start / restart actions <br>
@@ -164,14 +171,71 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 ❗️ `Note:` Recommendation for having the best UI output - running `Rybka` software into a `cmd` shell within `Visual Studio Code` <br>
 ❗️ `Note:` Recommendation for having the best uptime and better profit return (only due to low electricity cost) - running `Rybka` software via the `restarter` module on a `Raspberry PI 4` connected directly to a `UPS` <br>
+<div align="center">
+  <img width="300" height="270" src="MEDIA/raspberry_pi.jpeg">
+</div>
 ❗️ `Note:` Running the bot with higher trading quantities or lower will NOT mean the taxex - compared to your profits will vary, as tax is a percentage of the trading quantity moved around. Profit - taxes report can only be increased in your favor if you run the bot with a higher profit margin, per trade; <br><br><br>
 
+***
+***
+
+# <center> **Let's have a sneak peek into it, shall we? 🖥** </center> 
+
+## 🗃 Booting up the bot:
+
+<div align="center">
+  <img src="MEDIA/rybka_live_start1.mp4">
+</div>
+<br>
+<div align="center">
+  <img src="MEDIA/rybka_DEMO_mode_log_capture1.PNG">
+</div>
+<br>
+<div align="center">
+  <img src="MEDIA/uptime.PNG">
+</div>
+<br><br>
+
+## 🗃 Booting up the Telegram Listener / active module:
+
+<div align="center">
+  <img src="MEDIA/telegram_active_mode.PNG">
+</div>
+<br><br>
+
+## 🗃 Telegram logs on mobile:
+
+<p align="center">
+  <img width="200" height="400" src="MEDIA/Telegram_main_commands.jpg" />
+  <img width="200" height="400" src="MEDIA/Screenshot_subcommands.jpg" /> 
+  <img width="200" height="400" src="MEDIA/Telegram_logs_1.jpg" />
+  <img width="200" height="400" src="MEDIA/Telegram_logs_2.jpg" />
+</p>
+
+<br><br>
 ***
 ***
 
 # <center> **More to know** </center> 
 
 
+## 🟣 Contributors
+
+If you are willing to have your stress level increased by: <br>
+&emsp; ☢️ fixing the stuff in here <br>
+&emsp; ☣️ optimizing those lines of code <br>
+&emsp; 💡 coming up with bright ideas for new features <br>
+
+=> Send me an email to `silviumuraru90@yahoo.com` and I'll consider your request.<br><br>
+
+
+...but remember, The [BOARD-FOR-ROADMAP](https://gitlab.com/Silviu_space/rybka/-/boards) is full!
+
+And the night is long and full of tERRORs!
+
+<br>
+
+***
 ## 🟣 ![](https://img.shields.io/badge/Author%20and%20Acknowledgement-Questions-brightgreen)
 <br>
 
@@ -207,15 +271,14 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 <b>🔜 There are still some pieces to move and cards to play:</b> <br>
 
 &emsp;&emsp; ♦︎ &nbsp;Switch to `binance-unicorn` instead of `python-binance`, in order to optimize more the uptime and be a reliable trait <br>
-&emsp;&emsp; ♞ &nbsp;Making the bot a `binary` file with all python modules packaged in <br>
+&emsp;&emsp; ♞ &nbsp;`Stock` analysis module and tracking tool for all your shares <br>
 &emsp;&emsp; ♡ &nbsp;&nbsp;Additional `reports` <br>
 &emsp;&emsp; ♛ &nbsp;`Price alerts`, via inputs <br>
-&emsp;&emsp; ♣︎ &nbsp;&nbsp;UI, perhaps through `Tkinter` lib <br>
 &emsp;&emsp; ♥︎ &nbsp;`Safety net` implementation for USDT <br>
 &emsp;&emsp; ♔ &nbsp;More `trade pairs` supported <br>
 &emsp;&emsp; ♙ &nbsp;`Graphs` provided as output <br>
 &emsp;&emsp; ♘ &nbsp;`Profit tracking` over specific periods of time, for better assesing the better / worse periods and adjust weights <br>
-&emsp;&emsp; ♧ &nbsp;Addition `RSI` periods and `candlestick` periods, not only for scalping <br>
+&emsp;&emsp; ♧ &nbsp;Additional `RSI` periods and `candlestick` periods, not only for scalping <br>
 &emsp;&emsp; ♤&nbsp;`Orders` on demand <br>
 &emsp;&emsp; ♠︎ &nbsp;&nbsp;&nbsp;Control the resulted `output files`' size <br>
 &emsp;&emsp; ♗ &nbsp;`Code style` checks and `unit testing` + `coverage`, for a better integrity and stability / quicker testing <br>
