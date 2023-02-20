@@ -206,7 +206,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 <b>🔜 There are still some pieces to move and cards to play:</b> <br>
 
-&emsp;&emsp; ♦︎ &nbsp;Switch to `binance-unicorn` instead of `python-binance`, in order to optime more the uptime <br>
+&emsp;&emsp; ♦︎ &nbsp;Switch to `binance-unicorn` instead of `python-binance`, in order to optimize more the uptime and be a reliable trait <br>
 &emsp;&emsp; ♞ &nbsp;Making the bot a `binary` file with all python modules packaged in <br>
 &emsp;&emsp; ♡ &nbsp;&nbsp;Additional `reports` <br>
 &emsp;&emsp; ♛ &nbsp;`Price alerts`, via inputs <br>

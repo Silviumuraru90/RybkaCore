@@ -8,6 +8,7 @@ stages:
   - ☢️ functional testing
   - 🗂 binaries creation
   - 🟪.🟪.🟩 patch versioning
+  - 🎖badges
   - 🌐 public
 
 variables:
@@ -63,7 +64,7 @@ docker-build:
     - if: '$CI_COMMIT_BRANCH == "master_shadow" || $CI_COMMIT_BRANCH == "v.[0-9]+.[0-9]+.*" || $CI_PIPELINE_SOURCE == "schedule"'
       when: never
     - if: '$CI_COMMIT_BRANCH == "master"'
-      when: manual
+      when: never
     - if: $CI_PIPELINE_SOURCE == "push"
       when: manual
 
@@ -93,6 +94,7 @@ docker-build:
 #######  Functional Testing #######
 ###################################
 
+#TODO: to be enabled here when docker image is well packaged with deps locally
 .DEMO_rybka_run:
   extends: .testing_template
   stage: ☢️ functional testing
@@ -111,6 +113,7 @@ docker-build:
   when: manual
   timeout: 30 m
 
+#TODO: to be enabled here when docker image is well packaged with deps locally
 .DEMO_restarter_run:
   extends: .DEMO_rybka_run
   script:
@@ -123,6 +126,7 @@ docker-build:
 #######  Scheduled Testing  #######
 ###################################
 
+#TODO: to be enabled here when docker image is well packaged with deps locally
 .DEMO_rybka_daily_24h_run:
   extends: .DEMO_rybka_run
   timeout: 1d
@@ -131,9 +135,11 @@ docker-build:
       when: always
     - when: never
 
+#TODO: to be enabled here when docker image is well packaged with deps locally
 .DEMO_restarter_daily_24h_run:
   extends: .DEMO_rybka_daily_24h_run
 
+#TODO: to be enabled here when docker image is well packaged with deps locally
 .DEMO_rybka_weekly_7d_run:
   extends: .DEMO_rybka_run
   timeout: 7d
@@ -142,6 +148,7 @@ docker-build:
       when: always
     - when: never
 
+#TODO: to be enabled here when docker image is well packaged with deps locally
 .DEMO_restarter_weekly_7d_run:
   extends: .DEMO_rybka_weekly_7d_run
 
@@ -204,6 +211,31 @@ patch_versioning:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
     - when: never
+
+
+##############################################
+#######             Badges             #######
+##############################################
+
+lines_of_code_badge:
+  stage: 🎖badges
+  needs: []
+  script:
+    - !reference [.debug_template, script]
+    - |
+      curl -Ss --request GET "https://api.codetabs.com/v1/loc/?gitlab=Silviu_space/rybka"
+      total_lines_of_code=$(curl -Ss --request GET "https://api.codetabs.com/v1/loc/?gitlab=Silviu_space/rybka" | jq -r '.[8] | .linesOfCode')
+    - anybadge -l CodeLines -v $total_lines_of_code -f lines_of_code.svg -c green
+    - echo "Lines of code count is [${total_lines_of_code}]"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+    - when: never
+  artifacts:
+    paths:
+      - lines_of_code.svg
+    when: always
+    expire_in: never
 
 
 ##############################################
