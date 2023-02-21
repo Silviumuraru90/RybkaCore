@@ -41,19 +41,19 @@
 > ✅ Automated technical analysis (scalping mode) (based on a relative strength index - RSI) <br>
 ✅ Automatic `rybka.py` bot `restarter.py` add-on in case of network failures, local software failures <br>
 ✅ Supports a `LIVE` MODE with connection to the actual Binance wallet of the user, as well as a `DEMO` MODE of the product, with fake data of a virtualized wallet <br>
-✅ Creates separate local logs, considering the MODE the bot is in and tracks those independent of each other across multiple runs <br>
+✅ Creates separate local logs, considering the MODE the bot is in and tracks those independently of each other across multiple runs <br>
 ✅ File exports for a variety of useful information, logs or configuration data needed for the time it might restart via `restarter.py` - so to always grab back the work from where it left it <br>
-✅ Regular back-ups of imp. files <br>
-✅ Individual buys tracking <br>
-✅ Errors catch mechanism and exception management <br>
+✅ Regular back-ups of important files <br>
+✅ Individual buy tracking <br>
+✅ Error catch mechanism and exception management <br>
 ✅ Uptime tracking <br>
 ✅ CLI-initiated / Telegram-initiated / GUI-initiated start <br>
-✅ Some weights can be set from ENV, others from a `env_var_config` file. This gave possibility for some vars to be updated on the fly, while the bot is running, and alter its behavior <br>
-✅ CLI args for `RYBKA_MODE` values, to avoid faulty runs if `RYBKA_MODE` was to remain cached from ENV, even after the user had changed it <br>
-✅ Email notif. module. Informs the user about being low on BNB, or on USDT, or if an error occured and bot got shutdown. Also sends emails on start / restart actions <br>
+✅ Some weights can be set from ENV, others from an `env_var_config` file. This gives possibility for some vars to be updated on the fly, while the bot is running and alter its behavior <br>
+✅ CLI args for `RYBKA_MODE` values, to avoid faulty runs if `RYBKA_MODE` was to remain cached from ENV, even after the user had previously changed it <br>
+✅ Email notif. module. Informs the user about being low on BNB, or on USDT, or if an error occured and bot got a shutdown. Also sends emails on start / restart actions <br>
 ✅ Dynamic adjustment (greediness) for buy-sell math of the trading pair <br>
 ✅ Live wallet data displayed for the trade pair sides and commission, dynamic adjustment with each buy - sell <br>
-✅ Folder creation (name including date and hour) with files containing important data of the current run and auto-archive system once the run is finished <br>
+✅ Folder creation (timestamp included) with files containing important data of the current run and auto-archive system once the run is finished <br>
 ✅ Make bot sell multiple bought crypto-coins at once, if signal allows it (dynamically) <br>
 ✅ Upscale the trading quantity if user set it too low, so low that it hits the minimum 10💲 lower limit Binance imposed for a buy action <br>
 ✅ Clear profit tracked in time <br>
@@ -61,11 +61,11 @@
 ✅ Colored log output based on log-level types (INFO, WARN, FATAL and DEBUG / VERBOSE / HIGH_VERBOSITY) <br>
 ✅ Timestamp added on bot's actions - logs, back-ups, trades, etc <br>
 ✅ Cross-OS support (Win / Linux-based) <br>
-✅ Check which amount of the USDT is locked (in limit / stop orders, etc.) and avoids using it <br>
-✅ Local files check on each start / restart action, even integrity check for files' values <br>
+✅ Checks which amount of the USDT is locked (in limit / stop orders, etc.) and avoids using it <br>
+✅ Local files check-up on each start / restart action, even integrity check for files' values <br>
 ✅ Telegram notifier (passive mode) <br>
 ✅ Telegram listener (active mode) <br>
-✅ Implementation of an `always buy` policy in which it will always buy when price goes up and has nothing / close to nothing to sell <br>
+✅ Implementation of an `always buy` policy in which it will always buy when the price goes up and has nothing / close to nothing to sell for a better profitability over the same timeframe & graph positioning of the currency-to-stable-coin raport <br>
 
 <br><br>
 
@@ -80,7 +80,7 @@ As `rybka` is not a standalone executable software yet, for any of the aforement
 &emsp;&emsp;✅ Python 3.9 <br>
 &emsp;&emsp;✅ Python 3.10 <br><br><br>
 
-Hence, at the moment, you will need 🐍 `python` in your OS to run the software. Via `pip`, some modules would then come on top of your python installation: <br><br>
+Hence, at the moment, you will need 🐍 `python` in your OS to run the software. Via `pip`, some modules would then come on top of your on-prem python installation: <br><br>
 &emsp;&emsp;✅ python-binance <br>
 &emsp;&emsp;✅ websocket-client <br>
 &emsp;&emsp;✅ colored <br>
@@ -174,7 +174,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 <div align="center">
   <img width="300" height="270" src="MEDIA/raspberry_pi.jpeg">
 </div>
-❗️ `Note:` Running the bot with higher trading quantities or lower will NOT mean the taxex - compared to your profits will vary, as tax is a percentage of the trading quantity moved around. Profit - taxes report can only be increased in your favor if you run the bot with a higher profit margin, per trade; <br><br><br>
+❗️ `Note:` Running the bot with higher trading quantities or lower will NOT mean the taxes - compared to your profits will vary, as tax is a percentage of the trading quantity moved around. Profit - taxes report can only be increased in your favor if you run the bot with a higher profit margin, per trade; <br><br><br>
 
 ***
 ***
@@ -229,9 +229,9 @@ If you are willing to have your stress level increased by: <br>
 => Send me an email to `silviumuraru90@yahoo.com` and I'll consider your request.<br><br>
 
 
-...but remember, The [BOARD-FOR-ROADMAP](https://gitlab.com/Silviu_space/rybka/-/boards) is full!
+...but pay attention, the [BOARD-FOR-ROADMAP](https://gitlab.com/Silviu_space/rybka/-/boards) is full!
 
-And the night is long and full of tERRORs!
+And the road is long and full of tERRORs!
 
 <br>
 
