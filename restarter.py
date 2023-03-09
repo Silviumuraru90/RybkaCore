@@ -63,8 +63,13 @@ def main(version, mode, info):
             #             Change below line to: os.system("rybka")                #
             #######################################################################
             status = os.system(f"python3 rybka.py -m {mode.upper()}")
+            # 111 is a click-related stoppage
             if status == 111:
                 break
+            elif status == 2:
+                log.FATAL(f" 🔴 Rybka bot errored out with code [{status}],\n\nWhich is user stoppage. Closing both Rybka and Restarter.")
+            elif status == 1792:
+                log.FATAL(f" 🔴 Rybka bot errored out with code [{status}].\n\nClosing both Rybka and Restarter, it seems your API Key is outdated, make sure you update it / enable all permissions for it!")
             elif status == 7:
                 log.FATAL(f" 🔴 Rybka bot errored out with code [{status}].\n\nExit code '7' is a custom-set exit code within bot's mechanics. Manual action is required, both Rybka and restarter module are stopped.")
             else:
