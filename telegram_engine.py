@@ -326,9 +326,9 @@ def stop_software_command(update, context):
                 if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
                     update.message.reply_text("❌ Bot could NOT be stopped remotely! Interesting, as the kill process cmd did complete just fine...")
                 else:
-                    update.message.reply_text("🚮 Bot got successfully stopped remotely!")
                     update.message.reply_text(text=" ⚠️  Please check out <a href='https://gitlab.com/Silviu_space/rybka/-/issues/262'>[ISSUE NR 262]</a> for this command!", parse_mode=ParseMode.HTML)
                     update.message.reply_text("Too bad 🥺, go make profit somewhere else now!")
+                    update.message.reply_text("🚮 Bot got successfully stopped remotely!")
             except Exception as e:
                 update.message.reply_text(f"Could not kill process [pID:{str(pID)}]. Exception raised:\n{e}")
         else:
