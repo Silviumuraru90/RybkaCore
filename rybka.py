@@ -1240,6 +1240,18 @@ def main(version, mode):
 
     clear_terminal()
 
+    if platform == "linux" or platform == "linux2":
+        pass
+    elif platform == "win32":
+        log.ORANGE("\nChecking Rybka's permissions and syncing time...\n")
+        time.sleep(2)
+        log.ORANGE("Please wait!\n")
+        if isAdmin() != True:
+            log.FATAL_7("Please run the script with admin privileges, as bot needs access to auto-update HOST's time with NIST servers!")
+
+    re_sync_time()
+
+
     ###########  Prerequisites - start  ###########
     log.ORANGE("\nPREREQUISITE PROCESS...\n")
     time.sleep(1)
@@ -1265,12 +1277,6 @@ def main(version, mode):
 
     clear_terminal()
 
-    if platform == "linux" or platform == "linux2":
-        pass
-    elif platform == "win32":
-        if isAdmin() != True:
-            log.FATAL_7("Please run the script with admin privileges, as bot needs access to auto-update HOST's time with NIST servers!")
-    
     if RYBKA_MODE == "LIVE":
         log.INFO("====================================================================================================")
         log.INFO("====================================================================================================")
@@ -1309,7 +1315,6 @@ def main(version, mode):
         real_time_balances()
         back_up()
 
-    re_sync_time()
     software_config_params()
     user_initial_config()
     email_engine_params()
