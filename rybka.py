@@ -459,8 +459,9 @@ def telegram_engine_switch(direct_call="1"):
             log.INFO(" ")
 
 
-def bot_uptime_and_current_price(current_price):
+def bot_uptime_and_current_price(current_price, output):
     global uptime
+    
     check_time = time.time()
     uptime_seconds = round(check_time - start_time)
     uptime_minutes = math.floor(uptime_seconds / 60)
@@ -470,13 +471,20 @@ def bot_uptime_and_current_price(current_price):
     minutes_in_limit = math.floor(uptime_seconds / 60) % 60
     hours_in_limit = math.floor(uptime_minutes / 60) % 24
     days = math.floor(uptime_hours / 24)
-    
-    if days < 1:
-        price_and_uptime = f"◼️ [EGLD = {bcolors.PURPLE}{current_price:5}{bcolors.DARKGRAY} USDT]   ◼️⬛️◼️   [UPTIME = {bcolors.PURPLE}{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY}] ◼️" 
-    else:
-        price_and_uptime = f"◼️ [EGLD = {bcolors.PURPLE}{current_price:5}{bcolors.DARKGRAY} USDT]   ◼️⬛️◼️   [UPTIME = {bcolors.PURPLE}{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY}] ◼️"
+        
+    if output == "CLI":
+        if days < 1:
+            price_and_uptime = f"◼️ [EGLD = {bcolors.PURPLE}{current_price:5}{bcolors.DARKGRAY} USDT]   ◼️⬛️◼️   [UPTIME = {bcolors.PURPLE}{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY}] ◼️" 
+        else:
+            price_and_uptime = f"◼️ [EGLD = {bcolors.PURPLE}{current_price:5}{bcolors.DARKGRAY} USDT]   ◼️⬛️◼️   [UPTIME = {bcolors.PURPLE}{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY}] ◼️"
 
-    log.INFO(price_and_uptime)
+        log.INFO(price_and_uptime)
+    
+    elif output == "Telegram":
+        if days < 1:
+            return f"{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s"
+        else:
+            return f"{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s"
 
 
 def email_sender(email_message):
@@ -656,6 +664,9 @@ def on_message(ws, message):
         with open("TEMP/priceTmp", 'w', encoding="utf8") as f:
             f.write(str(candle_close_price))
 
+        with open("TEMP/uptimeTmp", 'w', encoding="utf8") as f:
+            f.write(str(bot_uptime_and_current_price(candle_close_price, "Telegram")))
+
         for i in range(0,10):
             try:
                 client.ping()
@@ -673,7 +684,7 @@ def on_message(ws, message):
             log.INFO(f"#####################################################################################################################################")
         log.DEBUG(f"History of target prices is {closed_candles}")
 
-        bot_uptime_and_current_price(candle_close_price)
+        bot_uptime_and_current_price(candle_close_price, "CLI")
 
         if len(closed_candles) > 30:
             closed_candles = closed_candles[10:]

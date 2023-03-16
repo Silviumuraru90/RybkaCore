@@ -52,6 +52,7 @@ def help_command(update, context):
     {'/deposits':20}    - Deposit history
     {'/balances':20}    - Acc. balances
     {'/current_price':20}  - USDT/EGLD
+    {'/current_uptime':20}- Bot's uptime
 
 👨‍💻 FUNds handling history via Rybka:
     {'/current_buys':20} - Tracked buys
@@ -259,6 +260,20 @@ def current_price_command(update, context):
         update.message.reply_text(f"The file for current price does NOT exist (most possible) or some other error occured! Exception raised:\n{e}")
 
 
+def current_uptime_command(update, context):
+    try:
+        with open("TEMP/uptimeTmp", 'r', encoding="utf8") as f:
+            with open("TEMP/pidTmp", 'r', encoding="utf8") as g:
+                pID = int(g.read())
+            if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
+                current_uptime = str(f.read())
+                update.message.reply_text(f"🔛 Current uptime is [{current_uptime}]")
+            else:
+                update.message.reply_text("💤 Bot is stopped. Help it get back on track for an accurate uptime!")
+    except Exception as e:
+        update.message.reply_text(f"The file for current uptime does NOT exist (most possible) or some other error occured! Exception raised:\n{e}")
+
+
 def start_cmds_template(update, context, module):
     try:
         with open("TEMP/pidTmp", 'r', encoding="utf8") as f:
@@ -383,6 +398,7 @@ def main():
     dp.add_handler(CommandHandler("profit", profit_command))
     dp.add_handler(CommandHandler("balances", balances_command))
     dp.add_handler(CommandHandler("current_price", current_price_command))
+    dp.add_handler(CommandHandler("current_uptime", current_uptime_command))
 
     dp.add_handler(CommandHandler("withdrawals", binance_withdrawal_history_command))
     dp.add_handler(CommandHandler("deposits", binance_deposit_history_command))
