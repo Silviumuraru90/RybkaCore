@@ -24,19 +24,20 @@ from telegram.ext import *
 ##############    Custom Functions    ##############
 ####################################################
 
-print(colored("""
-#########################################################
-#####        📡 Telegram listener activated!        #####
-#########################################################
-""", "magenta"), colored("""
-#########################################################
-#####                                               #####
-#####  1️⃣  Open `Telegram` app on your device        #####
-#####  2️⃣  Open your Rybka Telegram bot's chat       #####
-#####  3️⃣  Type `/help` for details on how to use    #####
-#####                                               #####
-#########################################################
-\n\n""", "cyan"))
+def initialization():
+    print(colored("""
+    #########################################################
+    #####        📡 Telegram listener activated!        #####
+    #########################################################
+    """, "magenta"), colored("""
+    #########################################################
+    #####                                               #####
+    #####  1️⃣  Open `Telegram` app on your device        #####
+    #####  2️⃣  Open your Rybka Telegram bot's chat       #####
+    #####  3️⃣  Type `/help` for details on how to use    #####
+    #####                                               #####
+    #########################################################
+    \n\n""", "cyan"))
 
 
 def help_command(update, context):
@@ -338,6 +339,19 @@ def weights_command(update, context):
         update.message.reply_text(f"The file for Rybka's weights does NOT exist (most possible) or some other error occured! Exception raised:\n{e}")
 
 
+def check_existing_bot_process():
+    try:
+        with open("TEMP/pidTmp", 'r', encoding="utf8") as f:
+            pID = int(f.read())
+        if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
+            print(colored(f"\n🟢 Connected to bot! Process [{str(pID)}]\n", "green"))
+        else:
+            print(colored("\n🔴 No bot process to connect to! Running this would be unnecessary...\n", "red"))
+            exit(0)
+    except Exception as e:
+        print(f"The file for Rybka's PID does NOT exist! This needs to exist in order to check if software is already running! Exception raised:\n{e}")
+
+
 
 ####################################################
 ##############     CORE Functions     ##############
@@ -353,6 +367,10 @@ def error(update, context):
     print(f"Update {update} caused error {context.error}")
     
 def main():
+    check_existing_bot_process()
+
+    initialization()
+
     updater = Updater(os.environ.get("RYBKA_TELEGRAM_API_KEY"), use_context=True)
     dp = updater.dispatcher
     
