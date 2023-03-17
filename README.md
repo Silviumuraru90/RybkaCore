@@ -64,7 +64,7 @@
 ✅ Checks which amount of the USDT is locked (in limit / stop orders, etc.) and avoids using it <br>
 ✅ Local files check-up on each start / restart action, even integrity check for files' values <br>
 ✅ Telegram notifier (passive mode) <br>
-✅ Telegram listener (active mode) <br>
+✅ Telegram listener (interactive mode) <br>
 ✅ Implementation of an `always buy` policy in which it will always buy when the price goes up and has nothing / close to nothing to sell for a better profitability over the same timeframe & graph positioning of the currency-to-stable-coin raport <br>
 
 <br><br>
@@ -154,7 +154,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 🔘 And, of course, an `internet connection` <br><br><br>
 
-### &emsp;&emsp;<b>Notes for Telegram Notifications</b>
+### &emsp;&emsp;<b>Notes</b>
 ❗️ `Note for the [BIN_KEY] / [BIN_SECRET] vars:` Make sure to hit the checkbox in order to `Enable Spot & Margin Trading` after you have those two values generated in Binance. Checkbox has to turn `yellow`.
 ❗️ `Note for the [RYBKA_TELEGRAM_API_KEY] var:` For Telegram notifications, you'll need to create your own Telegram bot in the `Telegram` app. Simply search for `BotFather` among "Contacts", then type in that chat `/newbot` and follow instructions to create one and grab the API KEY that you need to set in your env as a value for the `RYBKA_TELEGRAM_API_KEY` var. <br><br>
 ❗️ `Note for the [RYBKA_TELEGRAM_CHAT_ID] var:` In order to grab this value go to this link: `https://api.telegram.org/bot<replace_with_your_value_for_RYBKA_TELEGRAM_API_KEY>/getUpdates`, then type something in the chat of your newly created bot (not in the same chat for `BotFather`!). The message you typed should be visible there as an API payload. Grab the value for the `RYBKA_TELEGRAM_CHAT_ID` var from there - find it within such structure `"chat":{"id":<your_chat_id_value>,`. Add it to the ENV.
@@ -165,7 +165,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 > ▶️ For Win -> you can run directly the `RybkaSoft.exe` file and start the needed process(es) from that GUI; <br><br>
 ▶️ For Linux however -> you have to grant executable permissions via `chmod +x RybkaSoft` and then still run it via terminal with `./RybkaSoft` cmd, unfortunately, for it to boot correctly; <br><br>
 ▶️ (Win / Linux) You can run the software directly (the `rybka.py` file) or via the `restarer.py` module that will automatically start the bot, but also restart the bot if it exits on a not-hardcoded error (such as a temporary internet drop / others); <br><br>
-▶️ (Win / Linux) The `telegram_engine.py` module (which is only the listener part where user can input commands and info. will be provided for each) has to be started into a sepparate shell as neither `rybka.py`, nor `restarter.py` will run this on their own! Still, there is a flip side to this coin. If you start the Telegram listener and then use the Telegram command to start remotely the `rybka` / `restarter`, you will then be able to have them all in the same shell;
+▶️ (Win / Linux) The Telegram Listener (Telegram interactive part) module (which is only the listener part where user can input commands and info. will be provided for each) is to be started by Rybka bot directly when it runs, as a subshell, without any user action.
 
 <br><br>
 
@@ -196,7 +196,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 </div>
 <br><br>
 
-## 🗃 Booting up the Telegram Listener / active module:
+## 🗃 Booting up the Telegram Listener (interactive) module:
 
 <div align="center">
   <img src="MEDIA/telegram_active_mode.PNG">

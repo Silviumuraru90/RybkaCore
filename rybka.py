@@ -18,6 +18,7 @@ import math
 import subprocess
 import ctypes
 import click
+import psutil
 
 import string as string_str
 
@@ -348,6 +349,17 @@ def all_errors_file():
         except Exception as e:
             log.FATAL_7(f"[{RYBKA_MODE}/errors_thrown] file could NOT be created!\nFailing with error:\n{e}")
     log.INFO("==============================================")
+
+def create_telegram_and_restarter_tmp_files_if_not_created():
+    if not exists("TEMP/pid_restarterTmp"):
+        with open("TEMP/pid_restarterTmp", 'w', encoding="utf8") as f:
+            f.write(str("99999999"))
+    if not exists("TEMP/rybka_runsTmp"):
+        with open("TEMP/rybka_runsTmp", 'w', encoding="utf8") as f:
+            f.write(str("99999999"))
+    if not exists("TEMP/telegram_pidTmp"):
+        with open("TEMP/telegram_pidTmp", 'w', encoding="utf8") as f:
+            f.write(str("99999999"))
 
 
 ###############################################
@@ -1377,6 +1389,41 @@ def main(version, mode):
 
     telegram.LOG("INFO", f"🏁 Bot started! [{RYBKA_MODE}]")
     email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot is starting up. Find logs into the local folder: \n\t[{current_export_dir}]")
+
+    if RYBKA_TELEGRAM_SWITCH.upper() == "TRUE":
+
+        create_telegram_and_restarter_tmp_files_if_not_created()
+        try:
+            with open("TEMP/pid_restarterTmp", 'r', encoding="utf8") as file1:
+                pID = int(file1.read())
+                with open("TEMP/rybka_runsTmp", 'r', encoding="utf8") as file2:
+                    rybka_runs = int(file2.read())
+                if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name() and rybka_runs == 1:
+                    with open("TEMP/telegram_pidTmp", 'r', encoding="utf8") as file3:
+                        telegram_process = int(file3.read())
+                        if not psutil.pid_exists(telegram_process):
+                            telegram_pid = subprocess.Popen(["python", "telegram_engine.py"])
+                        else:
+                            telegram_pid = "placeholder"
+                elif not psutil.pid_exists(pID):
+                    with open("TEMP/telegram_pidTmp", 'r', encoding="utf8") as file3:
+                        telegram_process = int(file3.read())
+                        if not psutil.pid_exists(telegram_process):
+                            telegram_pid = subprocess.Popen(["python", "telegram_engine.py"])
+                        else:
+                            telegram_pid = "placeholder"
+        except Exception as e:
+            log.INFO(f"Some helper files do not exist. They are needed in order for the Telegram Listener to work well\n{e}")
+    else:
+        log.INFO(" ")
+        log.WARN("Telegram Listener is turned [OFF]. Set [RYBKA_TELEGRAM_SWITCH] var as 'True' in env. if you want Telegram notifications enabled!")
+        log.INFO(" ")
+
+    time.sleep(1)
+
+    if telegram_pid != "placeholder":
+        with open("TEMP/telegram_pidTmp", 'w', encoding="utf8") as f:
+            f.write(str(telegram_pid.pid))
 
     ws = websocket.WebSocketApp(SOCKET, on_open=on_open, on_close=on_close, on_message=on_message, on_error = on_error)
     ws.run_forever()

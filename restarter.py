@@ -39,6 +39,25 @@ def main(version, mode, info):
     running_in_ci = os.environ.get("CI", False)
     runs = 0
 
+    def TMP_folder(folder):
+        if os.path.isdir(folder) is False:
+            try:
+                os.makedirs(folder)
+            except Exception as e:
+                log.FATAL_7(f"Attempt to create local folder [{folder}] - FAILED with error:\n{e}")
+    
+    process_pid = os.getpid()
+    log.ORANGE(f"RESTARTER Software got allocated PID [{process_pid}]\n")
+    TMP_folder("TEMP")
+    with open("TEMP/pid_restarterTmp", 'w', encoding="utf8") as f:
+        f.write(str(process_pid))
+    time.sleep(1)
+
+    rybka_runs=0
+    with open("TEMP/rybka_runsTmp", 'w', encoding="utf8") as f:
+        f.write(str(rybka_runs))
+    time.sleep(1)
+
     if not version and not mode and not info:
         click.echo(click.get_current_context().get_help())
         exit(0)
@@ -57,6 +76,10 @@ def main(version, mode, info):
 
     if mode:
         while True:
+            rybka_runs+=1
+            log.ORANGE(f"Run nr. [{rybka_runs}] of Rybka Software\n\n")
+            with open("TEMP/rybka_runsTmp", 'w', encoding="utf8") as f:
+                f.write(str(rybka_runs))
             log.INFO(" 📡 Rybka bot is being started...")
             time.sleep(2)
             #######################################################################

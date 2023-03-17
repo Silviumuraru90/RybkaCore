@@ -359,9 +359,9 @@ def check_existing_bot_process():
         with open("TEMP/pidTmp", 'r', encoding="utf8") as f:
             pID = int(f.read())
         if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
-            print(colored(f"\n🟢 Connected to bot! Process [{str(pID)}]\n", "green"))
+            print(colored(f"\n🟢 Telegram Listener started and connected to bot! Process [{str(pID)}]\n", "green"))
         else:
-            print(colored("\n🔴 No bot process to connect to! Running this would be unnecessary...\n", "red"))
+            print(colored("\n🔴 No bot process for the Telegram Listener to connect to! Running this would be unnecessary...\n", "red"))
             exit(0)
     except Exception as e:
         print(f"The file for Rybka's PID does NOT exist! This needs to exist in order to check if software is already running! Exception raised:\n{e}")
