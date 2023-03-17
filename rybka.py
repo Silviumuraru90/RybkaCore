@@ -628,12 +628,12 @@ def on_close(ws, close_status_code, close_msg):
 
 def on_error(ws, message):
     if str(message).strip():
-        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}      > Software encountered an error and got shutdown! Additional error message provided:\n{message}{bcolors.ENDC}")
+        print(f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Software encountered an error and got shutdown! Additional error message provided:\n{message}{bcolors.ENDC}")
         log.all_errors_file_update(f"❌ FATAL {log.logging_time()}      > Software encountered an error and got shutdown! Additional error message provided:\n{message}")
         if str(message).strip() == "7":
             exit(7)
     else:
-        print(f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {log.logging_time()}      > Software encountered an error and got shutdown! No additional error message provided{bcolors.ENDC}")
+        print(f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Software encountered an error and got shutdown! No additional error message provided{bcolors.ENDC}")
         log.all_errors_file_update(f"❌ FATAL {log.logging_time()}      > Software encountered an error and got shutdown! No additional error message provided")
         if str(message).strip() == "7":
             exit(7)
@@ -665,7 +665,7 @@ def on_message(ws, message):
     candle = json.loads(message)['k']
     is_candle_closed = candle['x']
     candle_close_price = round(float(candle['c']), 4)
-    
+
     if is_candle_closed:
         closed_candles.append(candle_close_price)
 
