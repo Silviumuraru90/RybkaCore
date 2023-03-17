@@ -1515,7 +1515,7 @@ if __name__ == '__main__':
                 if WEIGHTS_DICT_UPDATED[k] !=  WEIGHTS_DICT_OUTDATED[k]:
                     log.INFO(" ")
                     log.INFO_SPECIAL(f" ⚖️  Rybka's weight [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!")
-                    telegram.LOG("INFO", f" ⚖️ Rybka's weight [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!")
+                    telegram.LOG("INFO", f" 🟢 Rybka's weight [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!")
                     log.INFO(" ")
                     WEIGHTS_DICT_OUTDATED.update({k:WEIGHTS_DICT_UPDATED[k]})
 

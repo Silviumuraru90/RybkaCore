@@ -7,6 +7,8 @@ import os
 import psutil
 import subprocess
 import time
+import fileinput
+import re
 
 from termcolor import colored
 from os.path import exists
@@ -21,7 +23,7 @@ from telegram.ext import *
 
 
 ####################################################
-##############    Custom Functions    ##############
+##############     Initialization     ##############
 ####################################################
 
 def initialization():
@@ -40,34 +42,45 @@ def initialization():
     \n\n""", "cyan"))
 
 
+
+####################################################
+##############        Main Menu       ##############
+####################################################
+
 def help_command(update, context):
     update.message.reply_text(f"""Available commands are ⤵️
 
 
-👨‍💻 FUN commands:
+🟣 FUN commands:
     {'who are you?':20} - Who are you talking to?
 
-👨‍💻 FUNds info on Binance commands:
-    {'/withdrawals':20} - Withdrawal history
-    {'/deposits':20}    - Deposit history
-    {'/balances':20}    - Acc. balances
+🟣 FUNds info on Binance commands:
+    {'/deposits':20}    - Deposit History
+    {'/withdrawals':20} - Withdrawal H.
+    {'/balances':20}    - Acc. Balances
     {'/current_price':20}  - USDT/EGLD
-    {'/current_uptime':20}- Bot's uptime
 
-👨‍💻 FUNds handling history via Rybka:
-    {'/current_buys':20} - Tracked buys
-    {'/lifetime_buys_nr':20}- Total nr. of buys
-    {'/profit':20}        - Lifetime profit
+🟣 FUNd handling history of Rybka:
+    {'/current_buys':20} - Tracked Buys
+    {'/lifetime_buys_nr':20}- Total Nr. of Buys
+    {'/profit':20}        - Lifetime Profit
 
-👨‍💻 FUNctional commands:
-    {'/status':20}      - Bot's status
+🟣 FUNctional commands:
+    {'/status':20}      - Bot's Status
+    {'/current_uptime':20}- Bot's Uptime
     {'/start_restarter':20}  - Starts Restarter
     {'/start_rybka':20}   - Starts Rybka
     {'/stop_software':20}- Stops Software
-    {'/gpu':20}       - GPU temp
+    {'/gpu':20}       - GPU Temp.
 
-👨‍💻 FUNdamental SUBmenu(s):
-    {'/weights_info':20}  - Bot's weights
+🟣 FUNctor commands:
+    {'/roadmap':20}   - Bot's Roadmap
+    {'/stock_bot':20}    - Stockfish
+    {'/contribute':20}    - Contribute
+
+🟣 FUNdamental SUBmenu(s):
+    {'/weights_info':20}  - Bot's Weights
+    {'/modify_weights':20}- Modify Weights
 
 
     🔄 {'/help'}  -  Shows this help message
@@ -78,15 +91,20 @@ def help_command(update, context):
         """)
 
 
+
+####################################################
+##############        Sub-menus       ##############
+####################################################
+
 def weights_info_command(update, context):
     update.message.reply_text(f"""Available weights commands are ⤵️
 
 
-👨‍💻 Hard-coded weights:
+🟪 Hard-coded weights:
     {'/RYBKA_TRADE_SYMBOL'}
     {'/RYBKA_RSI_PERIOD'}
 
-👨‍💻 Update-on-the-fly weights:
+🟪 Update-on-the-fly weights:
     {'/RYBKA_DEBUG_LVL'}
     {'/RYBKA_TRADING_BOOST_LVL'}
     {'/RYBKA_RSI_FOR_BUY'}
@@ -108,6 +126,29 @@ def weights_info_command(update, context):
         """)
 
 
+def weight_modification_command(update, context):
+    update.message.reply_text(f"""Available weight modification commands are ⤵️
+
+
+🟪 Modify weights:
+    {'/m_RYBKA_TRADING_BOOST_LVL'}
+    {'/m_RYBKA_TRADE_QUANTITY'}
+    {'/m_RYBKA_MIN_PROFIT'}
+    {'/m_RYBKA_EMAIL_SWITCH'}
+    {'/m_RYBKA_TELEGRAM_SWITCH'}
+
+
+    🔄 {'/modify_weights'}  -  Shows this help message
+
+
+❕ Weights specific to DEMO mode are not included!
+        """)
+
+
+
+####################################################
+#########    Command-specific functions    #########
+####################################################
 
 def status_command(update, context):
     try:
@@ -214,9 +255,6 @@ def user_initial_config():
         print(f"Client config  -  FAILED\nError encountered at setting user config. via API KEY and API SECRET. Please check error below:\n{e}")
 
 
-
-
-
 def binance_withdrawal_history_command(update, context):
     user_initial_config()
 
@@ -319,18 +357,27 @@ def stop_software_command(update, context):
             pID = int(f.read())
         if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
             update.message.reply_text("🟢 Bot is indeed currently running!")
+            if exists("TEMP/pid_restarterTmp"):
+                with open("TEMP/pid_restarterTmp", 'r', encoding="utf8") as g:
+                    restarter_pID = int(g.read())
             update.message.reply_text(f"🪓 Killing the process [pID:{str(pID)}]!\nPlease wait...")
+            if psutil.pid_exists(restarter_pID) and "python" in psutil.Process(pID).name():
+                restarter_run = True
+                update.message.reply_text(f"🪓 Killing a secondary process [pID:{str(restarter_pID)}]!\nPlease wait...")
+            else:
+                restarter_run = False
             try:
+                if restarter_run:
+                    psutil.Process(restarter_pID).kill()
                 psutil.Process(pID).kill()
                 time.sleep(5)
                 if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
                     update.message.reply_text("❌ Bot could NOT be stopped remotely! Interesting, as the kill process cmd did complete just fine...")
                 else:
-                    update.message.reply_text(text=" ⚠️  Please check out <a href='https://gitlab.com/Silviu_space/rybka/-/issues/262'>[ISSUE NR 262]</a> for this command!", parse_mode=ParseMode.HTML)
                     update.message.reply_text("Too bad 🥺, go make profit somewhere else now!")
                     update.message.reply_text("🚮 Bot got successfully stopped remotely!")
             except Exception as e:
-                update.message.reply_text(f"Could not kill process [pID:{str(pID)}]. Exception raised:\n{e}")
+                update.message.reply_text(f"Exception raised:\n{e}")
         else:
             update.message.reply_text(f"💤 Bot is already stopped at this moment. Last known [pID:{str(pID)}]")
             update.message.reply_text("🪓 No process to kill!")
@@ -347,7 +394,7 @@ def weights_command(update, context):
                 weights = json.loads(f.read())
                 for weight_key, weight_value in weights.items():
                     if update['message']['text'][1:] == weight_key:
-                        update.message.reply_text(f"⚖️ [{weight_key}] ➛ [{weight_value}]")
+                        update.message.reply_text(f"🟢 [{weight_key}] ➛ [{weight_value}]")
             else:
                 update.message.reply_text("💤 Bot is stopped. Help it get back on track for an accurate representation of weights!")
     except Exception as e:
@@ -359,13 +406,502 @@ def check_existing_bot_process():
         with open("TEMP/pidTmp", 'r', encoding="utf8") as f:
             pID = int(f.read())
         if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
-            print(colored(f"\n🟢 Telegram Listener started and connected to bot! Process [{str(pID)}]\n", "green"))
+            print(colored(f"\n🟢 Telegram Listener started and connected to bot! Bot's Process [{str(pID)}]\n", "green"))
         else:
             print(colored("\n🔴 No bot process for the Telegram Listener to connect to! Running this would be unnecessary...\n", "red"))
             exit(0)
     except Exception as e:
         print(f"The file for Rybka's PID does NOT exist! This needs to exist in order to check if software is already running! Exception raised:\n{e}")
 
+
+def roadmap_command(update, context):
+    update.message.reply_text(text=" 🎯 Please check out <a href='https://gitlab.com/Silviu_space/rybka/-/boards'>[ROADMAP]</a>", parse_mode=ParseMode.HTML)
+
+
+def stock_bot_command(update, context):
+    update.message.reply_text(text=" 🎯 Please check out <a href='https://gitlab.com/Silviu_space/stockfish'>[STOCKFISH]</a>", parse_mode=ParseMode.HTML)
+
+
+def contribute_command(update, context):
+    update.message.reply_text(text=" 🎯 Please check out <a href='https://silviu_space.gitlab.io/rybka/'>[CONTRIBUTORS]</a>", parse_mode=ParseMode.HTML)
+
+
+
+####################################################
+##  Command-specific functions for sub-menus P.1  ##
+####################################################
+
+def modify_config_ini(weight, value):
+    if weight == "RYBKA_TRADING_BOOST_LVL":
+
+        pattern = r"RYBKA_TRADING_BOOST_LVL = \d+"
+        replacement = f"RYBKA_TRADING_BOOST_LVL = {value}"
+
+        for line in fileinput.input("config.ini", inplace=True):
+            new_line = re.sub(pattern, replacement, line)
+            print(new_line, end="")
+    
+    elif weight == "RYBKA_TRADE_QUANTITY":
+
+        pattern = r"RYBKA_TRADE_QUANTITY = \d+.*"
+        replacement = f"RYBKA_TRADE_QUANTITY = {value}"
+
+        for line in fileinput.input("config.ini", inplace=True):
+            new_line = re.sub(pattern, replacement, line)
+            print(new_line, end="")
+    
+    elif weight == "RYBKA_MIN_PROFIT":
+
+        pattern = r"RYBKA_MIN_PROFIT = \d+.*"
+        replacement = f"RYBKA_MIN_PROFIT = {value}"
+
+        for line in fileinput.input("config.ini", inplace=True):
+            new_line = re.sub(pattern, replacement, line)
+            print(new_line, end="")
+    
+    elif weight == "RYBKA_EMAIL_SWITCH":
+
+        pattern = r"RYBKA_EMAIL_SWITCH = .*"
+        replacement = f"RYBKA_EMAIL_SWITCH = {value}"
+
+        for line in fileinput.input("config.ini", inplace=True):
+            new_line = re.sub(pattern, replacement, line)
+            print(new_line, end="")
+    
+    elif weight == "RYBKA_TELEGRAM_SWITCH":
+
+        pattern = r"RYBKA_TELEGRAM_SWITCH = .*"
+        replacement = f"RYBKA_TELEGRAM_SWITCH = {value}"
+
+        for line in fileinput.input("config.ini", inplace=True):
+            new_line = re.sub(pattern, replacement, line)
+            print(new_line, end="")
+
+    time.sleep(1)
+
+
+
+####################################################
+##   RYBKA_TRADING_BOOST_LVL-specific functions   ##
+####################################################
+
+def m_RYBKA_TRADING_BOOST_LVL_1_command(update, context):
+    modify_config_ini("RYBKA_TRADING_BOOST_LVL", "1")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+
+def m_RYBKA_TRADING_BOOST_LVL_2_command(update, context):
+    modify_config_ini("RYBKA_TRADING_BOOST_LVL", "2")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+
+def m_RYBKA_TRADING_BOOST_LVL_3_command(update, context):
+    modify_config_ini("RYBKA_TRADING_BOOST_LVL", "3")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+
+def m_RYBKA_TRADING_BOOST_LVL_4_command(update, context):
+    modify_config_ini("RYBKA_TRADING_BOOST_LVL", "4")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+
+def m_RYBKA_TRADING_BOOST_LVL_5_command(update, context):
+    modify_config_ini("RYBKA_TRADING_BOOST_LVL", "5")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+
+
+####################################################
+##     RYBKA_TRADE_QUANTITY-specific functions    ##
+####################################################
+
+def m_RYBKA_TRADE_QUANTITY_0_1_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "0.1")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+
+def m_RYBKA_TRADE_QUANTITY_0_2_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "0.2")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_0_3_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "0.3")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_0_4_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "0.4")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_0_5_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "0.5")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_0_6_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "0.6")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_0_7_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "0.7")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_0_8_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "0.8")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_0_9_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "0.9")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_1_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "1")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_1_2_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "1.2")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_1_5_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "1.5")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_1_8_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "1.8")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_2_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "2")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_2_2_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "2.2")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_2_5_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "2.5")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_2_8_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "2.8")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_3_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "3")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_3_5_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "3.5")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_4_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "4")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_TRADE_QUANTITY_5_command(update, context):
+    modify_config_ini("RYBKA_TRADE_QUANTITY", "5")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+
+####################################################
+##       RYBKA_MIN_PROFIT-specific functions      ##
+####################################################
+
+def m_RYBKA_MIN_PROFIT_0_1_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "0.1")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_0_2_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "0.2")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_0_3_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "0.3")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_0_4_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "0.4")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_0_5_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "0.5")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_0_6_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "0.6")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_0_7_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "0.7")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_0_8_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "0.8")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_0_9_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "0.9")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_1_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "1")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_1_2_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "1.2")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_1_5_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "1.5")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_1_8_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "1.8")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_2_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "2")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_2_2_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "2.2")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_2_5_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "2.5")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_2_8_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "2.8")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_3_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "3")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_3_5_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "3.5")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+    
+def m_RYBKA_MIN_PROFIT_4_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "4")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+
+def m_RYBKA_MIN_PROFIT_5_command(update, context):
+    modify_config_ini("RYBKA_MIN_PROFIT", "5")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+
+
+####################################################
+##     RYBKA_EMAIL_SWITCH-specific functions      ##
+####################################################
+
+def m_RYBKA_EMAIL_SWITCH_true_command(update, context):
+    modify_config_ini("RYBKA_EMAIL_SWITCH", "True")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+
+def m_RYBKA_EMAIL_SWITCH_false_command(update, context):
+    modify_config_ini("RYBKA_EMAIL_SWITCH", "False")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+
+####################################################
+##    RYBKA_TELEGRAM_SWITCH-specific functions    ##
+####################################################
+
+def m_RYBKA_TELEGRAM_SWITCH_true_command(update, context):
+    modify_config_ini("RYBKA_TELEGRAM_SWITCH", "True")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+
+def m_RYBKA_TELEGRAM_SWITCH_false_command(update, context):
+    modify_config_ini("RYBKA_TELEGRAM_SWITCH", "False")
+    update.message.reply_text("Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!")
+
+
+
+####################################################
+##  Command-specific functions for sub-menus P.2  ##
+####################################################
+
+def call_submenu_of_weight(update, context, weight):
+    if weight == "RYBKA_TRADING_BOOST_LVL":
+        update.message.reply_text(f"""Available [RYBKA_TRADING_BOOST_LVL] weight modification commands are ⤵️
+
+
+❔ Firstly you may want to check the current value of this weight:
+    {'/RYBKA_TRADING_BOOST_LVL'} - Checks current value  
+
+🟫 Choose the value you want to set for this weight:
+    {'/RYBKA_TRADING_BOOST_LVL_1'} - Set value "1"
+    {'/RYBKA_TRADING_BOOST_LVL_2'} - Set value "2"
+    {'/RYBKA_TRADING_BOOST_LVL_3'} - Set value "3"
+    {'/RYBKA_TRADING_BOOST_LVL_4'} - Set value "4"
+    {'/RYBKA_TRADING_BOOST_LVL_5'} - Set value "5"
+
+
+    🔄 {f'/m_{weight}'}  -  Shows this help message
+
+
+❕ Weights specific to DEMO mode are not included!
+        """)
+    
+    elif weight == "RYBKA_TRADE_QUANTITY":
+        update.message.reply_text(f"""Available [RYBKA_TRADE_QUANTITY] weight modification commands are ⤵️
+
+
+❔ Firstly you may want to check the current value of this weight:
+    {'/RYBKA_TRADE_QUANTITY'} - Checks current value  
+
+🟫 Choose the value you want to set for this weight:
+    {'/RYBKA_TRADE_QUANTITY_0_1'} - Set value "0.1"
+    {'/RYBKA_TRADE_QUANTITY_0_2'} - Set value "0.2"
+    {'/RYBKA_TRADE_QUANTITY_0_3'} - Set value "0.3"
+    {'/RYBKA_TRADE_QUANTITY_0_4'} - Set value "0.4"
+    {'/RYBKA_TRADE_QUANTITY_0_5'} - Set value "0.5"
+    {'/RYBKA_TRADE_QUANTITY_0_6'} - Set value "0.6"
+    {'/RYBKA_TRADE_QUANTITY_0_7'} - Set value "0.7"
+    {'/RYBKA_TRADE_QUANTITY_0_8'} - Set value "0.8"
+    {'/RYBKA_TRADE_QUANTITY_0_9'} - Set value "0.9"
+    {'/RYBKA_TRADE_QUANTITY_1'}   - Set value "1"
+    {'/RYBKA_TRADE_QUANTITY_1_2'} - Set value "1.2"
+    {'/RYBKA_TRADE_QUANTITY_1_5'} - Set value "1.5"
+    {'/RYBKA_TRADE_QUANTITY_1_8'} - Set value "1.8"
+    {'/RYBKA_TRADE_QUANTITY_2'}   - Set value "2"
+    {'/RYBKA_TRADE_QUANTITY_2_2'} - Set value "2.2"
+    {'/RYBKA_TRADE_QUANTITY_2_5'} - Set value "2.5"
+    {'/RYBKA_TRADE_QUANTITY_2_8'} - Set value "2.8"
+    {'/RYBKA_TRADE_QUANTITY_3'}   - Set value "3"
+    {'/RYBKA_TRADE_QUANTITY_3_5'} - Set value "3.5"
+    {'/RYBKA_TRADE_QUANTITY_4'}   - Set value "4"
+    {'/RYBKA_TRADE_QUANTITY_5'}   - Set value "5"
+
+
+    🔄 {f'/m_{weight}'}  -  Shows this help message
+
+
+❕ Weights specific to DEMO mode are not included!
+        """)
+
+    elif weight == "RYBKA_MIN_PROFIT":
+        update.message.reply_text(f"""Available [RYBKA_MIN_PROFIT] weight modification commands are ⤵️
+
+
+❔ Firstly you may want to check the current value of this weight:
+    {'/RYBKA_MIN_PROFIT'} - Checks current value  
+
+🟫 Choose the value you want to set for this weight:
+    {'/RYBKA_MIN_PROFIT_0_1'} - Set value "0.1"
+    {'/RYBKA_MIN_PROFIT_0_2'} - Set value "0.2"
+    {'/RYBKA_MIN_PROFIT_0_3'} - Set value "0.3"
+    {'/RYBKA_MIN_PROFIT_0_4'} - Set value "0.4"
+    {'/RYBKA_MIN_PROFIT_0_5'} - Set value "0.5"
+    {'/RYBKA_MIN_PROFIT_0_6'} - Set value "0.6"
+    {'/RYBKA_MIN_PROFIT_0_7'} - Set value "0.7"
+    {'/RYBKA_MIN_PROFIT_0_8'} - Set value "0.8"
+    {'/RYBKA_MIN_PROFIT_0_9'} - Set value "0.9"
+    {'/RYBKA_MIN_PROFIT_1'}   - Set value "1"
+    {'/RYBKA_MIN_PROFIT_1_2'} - Set value "1.2"
+    {'/RYBKA_MIN_PROFIT_1_5'} - Set value "1.5"
+    {'/RYBKA_MIN_PROFIT_1_8'} - Set value "1.8"
+    {'/RYBKA_MIN_PROFIT_2'}   - Set value "2"
+    {'/RYBKA_MIN_PROFIT_2_2'} - Set value "2.2"
+    {'/RYBKA_MIN_PROFIT_2_5'} - Set value "2.5"
+    {'/RYBKA_MIN_PROFIT_2_8'} - Set value "2.8"
+    {'/RYBKA_MIN_PROFIT_3'}   - Set value "3"
+    {'/RYBKA_MIN_PROFIT_3_5'} - Set value "3.5"
+    {'/RYBKA_MIN_PROFIT_4'}   - Set value "4"
+    {'/RYBKA_MIN_PROFIT_5'}   - Set value "5"
+
+
+    🔄 {f'/m_{weight}'}  -  Shows this help message
+
+
+❕ Weights specific to DEMO mode are not included!
+        """)
+
+    elif weight == "RYBKA_EMAIL_SWITCH":
+        update.message.reply_text(f"""Available [RYBKA_EMAIL_SWITCH] weight modification commands are ⤵️
+
+
+❔ Firstly you may want to check the current value of this weight:
+    {'/RYBKA_EMAIL_SWITCH'} - Checks current value  
+
+🟫 Choose the value you want to set for this weight:
+    {'/RYBKA_EMAIL_SWITCH_true'} - Set value "True"
+    {'/RYBKA_EMAIL_SWITCH_false'} - Set value "False"
+
+
+    🔄 {f'/m_{weight}'}  -  Shows this help message
+
+
+❕ Weights specific to DEMO mode are not included!
+        """)
+
+    elif weight == "RYBKA_TELEGRAM_SWITCH":
+        update.message.reply_text(f"""Available [RYBKA_TELEGRAM_SWITCH] weight modification commands are ⤵️
+
+
+❔ Firstly you may want to check the current value of this weight:
+    {'/RYBKA_TELEGRAM_SWITCH'} - Checks current value  
+
+🟫 Choose the value you want to set for this weight:
+    {'/RYBKA_TELEGRAM_SWITCH_true'} - Set value "True"
+    {'/RYBKA_TELEGRAM_SWITCH_false'} - Set value "False"
+
+
+    🔄 {f'/m_{weight}'}  -  Shows this help message
+
+
+❕ Weights specific to DEMO mode are not included!
+        """)
+
+
+def modify_weights_command(update, context):
+
+    if exists("config.ini"):
+        call_submenu_of_weight(update, context, update['message']['text'][3:])
+        
 
 
 ####################################################
@@ -375,7 +911,7 @@ def check_existing_bot_process():
 def handle_message(update, context):
     text = str(update.message.text).lower()
     response = R.sample_responses(text)
-    
+
     update.message.reply_text(response)
     
 def error(update, context):
@@ -407,6 +943,10 @@ def main():
     dp.add_handler(CommandHandler("start_rybka", start_rybka_command))
     dp.add_handler(CommandHandler("stop_software", stop_software_command))
 
+    dp.add_handler(CommandHandler("roadmap", roadmap_command))
+    dp.add_handler(CommandHandler("stock_bot", stock_bot_command))
+    dp.add_handler(CommandHandler("contribute", contribute_command))
+
     dp.add_handler(CommandHandler("weights_info", weights_info_command))
 
     dp.add_handler(CommandHandler("RYBKA_TRADE_SYMBOL", weights_command))
@@ -424,6 +964,69 @@ def main():
     dp.add_handler(CommandHandler("RYBKA_TELEGRAM_SWITCH", weights_command))
     dp.add_handler(CommandHandler("RYBKA_DISCLAIMER", weights_command))
 
+    dp.add_handler(CommandHandler("modify_weights", weight_modification_command))
+
+    dp.add_handler(CommandHandler("m_RYBKA_TRADING_BOOST_LVL", modify_weights_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL_1", m_RYBKA_TRADING_BOOST_LVL_1_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL_2", m_RYBKA_TRADING_BOOST_LVL_2_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL_3", m_RYBKA_TRADING_BOOST_LVL_3_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL_4", m_RYBKA_TRADING_BOOST_LVL_4_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL_5", m_RYBKA_TRADING_BOOST_LVL_5_command))
+
+    dp.add_handler(CommandHandler("m_RYBKA_TRADE_QUANTITY", modify_weights_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_1", m_RYBKA_TRADE_QUANTITY_0_1_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_2", m_RYBKA_TRADE_QUANTITY_0_2_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_3", m_RYBKA_TRADE_QUANTITY_0_3_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_4", m_RYBKA_TRADE_QUANTITY_0_4_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_5", m_RYBKA_TRADE_QUANTITY_0_5_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_6", m_RYBKA_TRADE_QUANTITY_0_6_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_7", m_RYBKA_TRADE_QUANTITY_0_7_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_8", m_RYBKA_TRADE_QUANTITY_0_8_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_9", m_RYBKA_TRADE_QUANTITY_0_9_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_1", m_RYBKA_TRADE_QUANTITY_1_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_1_2", m_RYBKA_TRADE_QUANTITY_1_2_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_1_5", m_RYBKA_TRADE_QUANTITY_1_5_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_1_8", m_RYBKA_TRADE_QUANTITY_1_8_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_2", m_RYBKA_TRADE_QUANTITY_2_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_2_2", m_RYBKA_TRADE_QUANTITY_2_2_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_2_5", m_RYBKA_TRADE_QUANTITY_2_5_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_2_8", m_RYBKA_TRADE_QUANTITY_2_8_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_3", m_RYBKA_TRADE_QUANTITY_3_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_3_5", m_RYBKA_TRADE_QUANTITY_3_5_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_4", m_RYBKA_TRADE_QUANTITY_4_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_5", m_RYBKA_TRADE_QUANTITY_5_command))
+
+    dp.add_handler(CommandHandler("m_RYBKA_MIN_PROFIT", modify_weights_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_1", m_RYBKA_MIN_PROFIT_0_1_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_2", m_RYBKA_MIN_PROFIT_0_2_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_3", m_RYBKA_MIN_PROFIT_0_3_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_4", m_RYBKA_MIN_PROFIT_0_4_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_5", m_RYBKA_MIN_PROFIT_0_5_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_6", m_RYBKA_MIN_PROFIT_0_6_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_7", m_RYBKA_MIN_PROFIT_0_7_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_8", m_RYBKA_MIN_PROFIT_0_8_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_9", m_RYBKA_MIN_PROFIT_0_9_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_1", m_RYBKA_MIN_PROFIT_1_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_1_2", m_RYBKA_MIN_PROFIT_1_2_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_1_5", m_RYBKA_MIN_PROFIT_1_5_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_1_8", m_RYBKA_MIN_PROFIT_1_8_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_2", m_RYBKA_MIN_PROFIT_2_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_2_2", m_RYBKA_MIN_PROFIT_2_2_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_2_5", m_RYBKA_MIN_PROFIT_2_5_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_2_8", m_RYBKA_MIN_PROFIT_2_8_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_3", m_RYBKA_MIN_PROFIT_3_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_3_5", m_RYBKA_MIN_PROFIT_3_5_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_4", m_RYBKA_MIN_PROFIT_4_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_5", m_RYBKA_MIN_PROFIT_5_command))
+    
+    dp.add_handler(CommandHandler("m_RYBKA_EMAIL_SWITCH", modify_weights_command))
+    dp.add_handler(CommandHandler("RYBKA_EMAIL_SWITCH_true", m_RYBKA_EMAIL_SWITCH_true_command))
+    dp.add_handler(CommandHandler("RYBKA_EMAIL_SWITCH_false", m_RYBKA_EMAIL_SWITCH_false_command))
+
+    dp.add_handler(CommandHandler("m_RYBKA_TELEGRAM_SWITCH", modify_weights_command))
+    dp.add_handler(CommandHandler("RYBKA_TELEGRAM_SWITCH_true", m_RYBKA_TELEGRAM_SWITCH_true_command))
+    dp.add_handler(CommandHandler("RYBKA_TELEGRAM_SWITCH_false", m_RYBKA_TELEGRAM_SWITCH_false_command))
+
     dp.add_handler(MessageHandler(Filters.text, handle_message))
     
     dp.add_error_handler(error)
@@ -432,7 +1035,7 @@ def main():
     
     updater.idle()
     
-    print("Telegram listener stopped!")
+    print(colored("\n 🔴 Telegram listener stopped!\n", "red"))
     
     
 main()
