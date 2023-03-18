@@ -1,0 +1,19 @@
+[flake8]
+ignore =
+    E722,
+    E402,
+    E403,
+    E266,
+    W503,
+    E501,
+    F811,
+    F401,
+    F403,
+    F405,
+    F634,
+    E265
+exclude =
+    env
+    .venv
+max-complexity = 86
+accept-encodings = utf-8

@@ -102,13 +102,13 @@ class RybkaLogging:
         print(f"{bcolors.CRED}{bcolors.BOLD}❌ [{os.environ.get('RYBKA_MODE')}] [FATAL] {self.logging_time()}      > {message}{bcolors.ENDC}")
         self.all_errors_file_update(f"❌ [{os.environ.get('RYBKA_MODE')}] [FATAL (1)] {self.logging_time()}      > {message}")
         telegram.LOG("FATAL", message)
-        exit(1)
+        sys.exit(1)
 
     def FATAL_7(self, message):
         print(f"{bcolors.CRED}{bcolors.BOLD}❌ [{os.environ.get('RYBKA_MODE')}] [FATAL (7)] {self.logging_time()}  > {message}{bcolors.ENDC}")
         self.all_errors_file_update(f"❌ [{os.environ.get('RYBKA_MODE')}] [FATAL (7)] {self.logging_time()}  > {message}")
         telegram.LOG("FATAL", message)
-        exit(7)
+        sys.exit(7)
 
     @staticmethod
     def refresh_bootstrap_object():

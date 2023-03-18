@@ -3,12 +3,21 @@ $(info Running Makefile commands under shell: $(SHELL))
 $(info ===============================================)
 
 
+# ===============================================
+#	Do-it-all functions
+# ===============================================
+
+sc: style check
+
+
 
 # ===============================================
 #	Variables
 # ===============================================
 
 PYINSTALLER=$(shell which pyinstaller)
+MODULES:=../rybka
+PYTHON:="C:\Users\MSI\.pyenv\pyenv-win-master\pyenv-win\versions\3.10.6\python.exe"
 
 
 
@@ -27,3 +36,37 @@ tk_linux:
 	mv "binarization/dist/RybkaSoft" "."
 	rm -rf binarization/build binarization/dist binarization/__pycache__
 	rm -f binarization/RybkaSoft.spec
+
+
+
+# ===============================================
+#	Code Reformatting
+# ===============================================
+
+style: black isort
+
+isort:
+	( isort *.py )
+
+black:
+	( black --line-length 100 *.py )
+
+format: style
+
+
+# ===============================================
+#	Static Code Analysis
+# ===============================================
+
+checks: pylint pydocstyle flake8
+
+pylint:
+	( pylint --rcfile=.pylintrc --output-format=parseable *.py )
+
+pydocstyle:
+	( pydocstyle *.py )
+
+flake8:
+	( flake8 *.py )
+
+check: checks

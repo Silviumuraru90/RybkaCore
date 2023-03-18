@@ -3,7 +3,7 @@
 
 def sample_responses(input_text):
     user_message = str(input_text).lower()
-    
+
     if user_message in ("who are you", "who are you?", "who are you?!"):
         return """I am Rybka bot!
 
@@ -13,5 +13,5 @@ def sample_responses(input_text):
 
         Let automation take your crypto-wallet to the next level!
         """
-  
+
     return "Sorry, but I don't understand you! \nType '/help' for a list of supported commands."
