@@ -16,8 +16,6 @@ sc: style check
 # ===============================================
 
 PYINSTALLER=$(shell which pyinstaller)
-MODULES:=../rybka
-PYTHON:="C:\Users\MSI\.pyenv\pyenv-win-master\pyenv-win\versions\3.10.6\python.exe"
 
 
 

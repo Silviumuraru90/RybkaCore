@@ -190,24 +190,21 @@ patch_versioning:
     - git clone https://gitlab.com/Silviu_space/rybka.git RYBKA
     - pushd RYBKA
     - git checkout master
-    - |
-      if [[ ! $(git log -1 --pretty=%B) =~ new.*version ]]; then
-        project_version=$(head -n 1 project_version)
-        project_version=${project_version%-*}
-        patch_version=${project_version//*.}
-        patch_version=$((patch_version+1))
-        project_version=${project_version%.*}
-        project_version="${project_version}.${patch_version}-${RELEASE_LIFE_CYCLE}"
-        echo "$project_version" > project_version
-        git add project_version
-        git commit -m "[Versioning] Pushing a new patch version [${project_version}]"
-        git push -o ci.skip "https://git_bot:${GIT_BOT_TOKEN}@gitlab.com/Silviu_space/rybka.git/" master
-        popd
-        rm -rf RYBKA
-      else
-        echo "Previous commit already contains a patch versioning process. Nothing to do!"
-      fi
+    - project_version=$(head -n 1 project_version)
+    - project_version=${project_version%-*}
+    - patch_version=${project_version//*.}
+    - patch_version=$((patch_version+1))
+    - project_version=${project_version%.*}
+    - project_version="${project_version}.${patch_version}-${RELEASE_LIFE_CYCLE}"
+    - echo "$project_version" > project_version
+    - git add project_version
+    - git commit -m "[Versioning] Pushing a new patch version [${project_version}]"
+    - git push -o ci.skip "https://git_bot:${GIT_BOT_TOKEN}@gitlab.com/Silviu_space/rybka.git/" master
+    - popd
+    - rm -rf RYBKA
   rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && "Pushing a new" =~ $CI_COMMIT_MESSAGE'
+      when: never
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
     - when: never
