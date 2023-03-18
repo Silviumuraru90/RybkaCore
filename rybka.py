@@ -155,6 +155,7 @@ def log_files_creation(direct_call="1"):
             f.write(f"TRADE SYMBOL    set to: {TRADE_SYMBOL:>50}\n")
             f.write(f"TRADE QUANTITY  set to: {TRADE_QUANTITY:>50} coins per transaction\n")
             f.write(f"MIN PROFIT      set to: {MIN_PROFIT:>50} USDT per transaction\n")
+            f.write(f"USDT SAFETY NET set to: {str(USDT_SAFETY_NET):>50} USDT\n")
             f.write(f"RSI PERIOD      set to: {RSI_PERIOD:>50} minutes\n")
             f.write(f"RSI FOR BUY     set to: {RSI_FOR_BUY:>50} threshold\n")
             f.write(f"RSI FOR SELL    set to: {RSI_FOR_SELL:>50} threshold\n")
@@ -399,6 +400,7 @@ def software_config_params():
     log.INFO_BOLD(f" 🔘 TRADE SYMBOL    set to: {bcolors.PURPLE}{TRADE_SYMBOL:>50}")
     log.INFO_BOLD(f" 🔘 TRADE QUANTITY  set to: {bcolors.PURPLE}{TRADE_QUANTITY:>50}{bcolors.DARKGRAY} coins per transaction")
     log.INFO_BOLD(f" 🔘 MIN PROFIT      set to: {bcolors.PURPLE}{MIN_PROFIT:>50}{bcolors.DARKGRAY} USDT per transaction")
+    log.INFO_BOLD(f" 🔘 USDT SAFETY NET set to: {bcolors.PURPLE}{str(USDT_SAFETY_NET):>50}{bcolors.DARKGRAY} USDT")
     log.INFO_BOLD(f" 🔘 RSI PERIOD      set to: {bcolors.PURPLE}{RSI_PERIOD:>50}{bcolors.DARKGRAY} minutes")
     log.INFO_BOLD(f" 🔘 RSI FOR BUY     set to: {bcolors.PURPLE}{RSI_FOR_BUY:>50}{bcolors.DARKGRAY} threshold")
     log.INFO_BOLD(f" 🔘 RSI FOR SELL    set to: {bcolors.PURPLE}{RSI_FOR_SELL:>50}{bcolors.DARKGRAY} threshold")
@@ -606,14 +608,14 @@ def on_open(ws):
     
 
 def on_close(ws, close_status_code, close_msg):
-    print(f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.{bcolors.ENDC}")
-    log.all_errors_file_update(f"❌ [{RYBKA_MODE}] [FATAL (1)] {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.")
-    telegram.LOG("FATAL", f"🏴‍☠️ Bot is shutting down... [{RYBKA_MODE}]")
-
     archive_folder = 'archived_logs'
     if not os.path.isdir(archive_folder):
         os.makedirs(archive_folder)
     shutil.move(current_export_dir, archive_folder)
+    
+    print(f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.{bcolors.ENDC}")
+    log.all_errors_file_update(f"❌ [{RYBKA_MODE}] [FATAL (1)] {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.")
+    telegram.LOG("FATAL", f"🏴‍☠️ Bot is shutting down... [{RYBKA_MODE}]")
 
     if close_status_code or close_msg:
         print(f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Close status code: {str(close_status_code)}{bcolors.ENDC}")
@@ -660,6 +662,7 @@ def on_message(ws, message):
     global RSI_FOR_SELL
     global MIN_PROFIT
     global TRADING_BOOST_LVL
+    global USDT_SAFETY_NET
     
     log.HIGH_VERBOSITY(message)
     candle = json.loads(message)['k']
@@ -715,15 +718,6 @@ def on_message(ws, message):
             else:
                 if latest_rsi < RSI_FOR_BUY or len(ktbr_config) == 0 or len(ktbr_config) == 1:  
                     
-                    if len(ktbr_config) == 0 or len(ktbr_config) == 1:
-                        log.INFO("===============================")
-                        log.INFO(" ALWAYS BUY POLICY ACTIVATED!")
-                        log.INFO("===============================")
-                    else:
-                        log.INFO("===============================")
-                        log.INFO("          BUY SIGNAL!")
-                        log.INFO("===============================")
-
                     if RYBKA_MODE == "LIVE":
                         for i in range(1,11):
                             try:
@@ -737,278 +731,296 @@ def on_message(ws, message):
 
                     real_time_balances_update()
 
-                    with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
-                        f.write(f'\n\n\n{log.logging_time()} Within BUY (part I):\n')
-                        f.write(f'{log.logging_time()} {"Latest RSI (latest_rsi) is":90} {latest_rsi:40}\n')
-                        f.write(f"{log.logging_time()} {'BNB balance (balance_bnb) is':90} {balance_bnb:40}\n")
-                        f.write(f"{log.logging_time()} {'USDT balance (balance_usdt) is':90} {balance_usdt:40}\n")
-                        f.write(f"{log.logging_time()} {'EGLD balance (balance_egld) is':90} {balance_egld:40}\n")
-                        f.write(f"{log.logging_time()} {'BNB commission (bnb_commission) is':90} {bnb_commission:40}\n")
-                        f.write(f"{log.logging_time()} {'Total USDT profit (total_usdt_profit) is':90} {total_usdt_profit:40}\n")
-                        f.write(f"{log.logging_time()} {'Multiple sells (multiple_sells) set to':90} {multiple_sells:40}\n")
-                        f.write(f"{log.logging_time()} {'TRADE_QUANTITY (BEFORE processing) (TRADE_QUANTITY) is':90} {TRADE_QUANTITY:40}\n")
-                        f.write(f"\n{log.logging_time()} {'Closed candles (str(closed_candles)) are':90} {str(closed_candles)}\n")
-                        f.write(f"\n{log.logging_time()} {'KTBR config (BEFORE processing) (str(json.dumps(ktbr_config))) is':90} \n {str(json.dumps(ktbr_config))}\n\n")
+                    safety_net_check = balance_usdt - 2 - TRADE_QUANTITY * round(float(candle_close_price), 4)
 
-                    if balance_bnb / bnb_commission >= 100:
-                        log.DEBUG(f"BNB balance [{balance_bnb}] is enough for transactions.")
+                    if USDT_SAFETY_NET and safety_net_check < USDT_SAFETY_NET:
+                        log.INFO(f"Another buy may bring the safety net for USDT to [{str(safety_net_check)}]. Which is lower than the one imposed, of [{str(USDT_SAFETY_NET)}]. Hence, it's not permitted!")
+                    else:
+                        log.VERBOSE(f"safety_net_check is {str(safety_net_check)}")
+                        log.VERBOSE(f"USDT_SAFETY_NET is {str(USDT_SAFETY_NET)}")
+                        log.DEBUG(f"Another buy would NOT enter the safety net [{str(USDT_SAFETY_NET)}]. Permitted.")
 
-                        if balance_usdt / 12 > 1:
+                        if len(ktbr_config) == 0 or len(ktbr_config) == 1:
+                            log.INFO("===============================")
+                            log.INFO(" ALWAYS BUY POLICY ACTIVATED!")
+                            log.INFO("===============================")
+                        else:
+                            log.INFO("===============================")
+                            log.INFO("          BUY SIGNAL!")
+                            log.INFO("===============================")
+                        
+                        with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                            f.write(f'\n\n\n{log.logging_time()} Within BUY (part I):\n')
+                            f.write(f'{log.logging_time()} {"Latest RSI (latest_rsi) is":90} {latest_rsi:40}\n')
+                            f.write(f"{log.logging_time()} {'BNB balance (balance_bnb) is':90} {balance_bnb:40}\n")
+                            f.write(f"{log.logging_time()} {'USDT balance (balance_usdt) is':90} {balance_usdt:40}\n")
+                            f.write(f"{log.logging_time()} {'EGLD balance (balance_egld) is':90} {balance_egld:40}\n")
+                            f.write(f"{log.logging_time()} {'BNB commission (bnb_commission) is':90} {bnb_commission:40}\n")
+                            f.write(f"{log.logging_time()} {'Total USDT profit (total_usdt_profit) is':90} {total_usdt_profit:40}\n")
+                            f.write(f"{log.logging_time()} {'Multiple sells (multiple_sells) set to':90} {multiple_sells:40}\n")
+                            f.write(f"{log.logging_time()} {'TRADE_QUANTITY (BEFORE processing) (TRADE_QUANTITY) is':90} {TRADE_QUANTITY:40}\n")
+                            f.write(f"\n{log.logging_time()} {'Closed candles (str(closed_candles)) are':90} {str(closed_candles)}\n")
+                            f.write(f"\n{log.logging_time()} {'KTBR config (BEFORE processing) (str(json.dumps(ktbr_config))) is':90} \n {str(json.dumps(ktbr_config))}\n\n")
 
-                            min_buy_share = candle_close_price / 12
-                            min_order_quantity = round(float(1 / min_buy_share), 2)
+                        if balance_bnb / bnb_commission >= 100:
+                            log.DEBUG(f"BNB balance [{balance_bnb}] is enough for transactions.")
 
-                            TRADE_QUANTITY = AUX_TRADE_QUANTITY
+                            if balance_usdt / 12 > 1:
 
-                            if min_order_quantity > TRADE_QUANTITY:
-                                log.WARN(f"We can NOT trade at this quantity: [{TRADE_QUANTITY}]. Enforcing a min quantity (per buy action) of [{min_order_quantity}] EGLD coins.")
-                                TRADE_QUANTITY = min_order_quantity
-                            else:
-                                log.DEBUG(f"We CAN trade at this quantity: [{TRADE_QUANTITY}]. No need to enforce a higher min trading limit.")
-                            
-                            possible_nr_of_trades = math.floor(balance_usdt / (TRADE_QUANTITY * candle_close_price))
-                            log.INFO(f"Remaining possible nr. of buy orders: {possible_nr_of_trades}\n")
+                                min_buy_share = candle_close_price / 12
+                                min_order_quantity = round(float(1 / min_buy_share), 2)
 
-                            if possible_nr_of_trades != 0:
+                                TRADE_QUANTITY = AUX_TRADE_QUANTITY
 
-                                if len(ktbr_config) > 5:
-                                    if possible_nr_of_trades < len(ktbr_config) * 0.8:
-                                        multiple_sells = "enabled"
+                                if min_order_quantity > TRADE_QUANTITY:
+                                    log.WARN(f"We can NOT trade at this quantity: [{TRADE_QUANTITY}]. Enforcing a min quantity (per buy action) of [{min_order_quantity}] EGLD coins.")
+                                    TRADE_QUANTITY = min_order_quantity
+                                else:
+                                    log.DEBUG(f"We CAN trade at this quantity: [{TRADE_QUANTITY}]. No need to enforce a higher min trading limit.")
+                                
+                                possible_nr_of_trades = math.floor(balance_usdt / (TRADE_QUANTITY * candle_close_price))
+                                log.INFO(f"Remaining possible nr. of buy orders: {possible_nr_of_trades}\n")
+
+                                if possible_nr_of_trades != 0:
+
+                                    if len(ktbr_config) > 5:
+                                        if possible_nr_of_trades < len(ktbr_config) * 0.8:
+                                            multiple_sells = "enabled"
+                                        else:
+                                            multiple_sells = "disabled"
                                     else:
                                         multiple_sells = "disabled"
-                                else:
-                                    multiple_sells = "disabled"
-                                
-                                ########   Make sure `division by 0` is not hit when editing the weights in here   ########
-                                if possible_nr_of_trades == 1:
-                                    heatmap_actions = 1
-                                    heatmap_size = 2
-                                    heatmap_limit = 1
-                                else:
-                                    if int(TRADING_BOOST_LVL) == 1:
-                                        heatmap_actions = round(float(possible_nr_of_trades * 0.4))
-                                    elif int(TRADING_BOOST_LVL) == 2:
-                                        heatmap_actions = round(float(possible_nr_of_trades * 0.6))
-                                    elif int(TRADING_BOOST_LVL) == 3:
-                                        heatmap_actions = round(float(possible_nr_of_trades * 0.75))
-                                    elif int(TRADING_BOOST_LVL) == 4:
-                                        heatmap_actions = round(float(possible_nr_of_trades * 0.9))
-                                    elif int(TRADING_BOOST_LVL) == 5:
-                                        heatmap_actions = possible_nr_of_trades
-                                    if heatmap_actions == 0 or heatmap_actions == 1:
+                                    
+                                    ########   Make sure `division by 0` is not hit when editing the weights in here   ########
+                                    if possible_nr_of_trades == 1:
+                                        heatmap_actions = 1
                                         heatmap_size = 2
                                         heatmap_limit = 1
                                     else:
                                         if int(TRADING_BOOST_LVL) == 1:
-                                            heatmap_size = round(float(heatmap_actions * 0.65))
+                                            heatmap_actions = round(float(possible_nr_of_trades * 0.4))
                                         elif int(TRADING_BOOST_LVL) == 2:
-                                            heatmap_size = round(float(heatmap_actions * 0.4))
+                                            heatmap_actions = round(float(possible_nr_of_trades * 0.6))
                                         elif int(TRADING_BOOST_LVL) == 3:
-                                            heatmap_size = round(float(heatmap_actions * 0.25))
+                                            heatmap_actions = round(float(possible_nr_of_trades * 0.75))
                                         elif int(TRADING_BOOST_LVL) == 4:
-                                            heatmap_size = 3
+                                            heatmap_actions = round(float(possible_nr_of_trades * 0.9))
                                         elif int(TRADING_BOOST_LVL) == 5:
+                                            heatmap_actions = possible_nr_of_trades
+                                        if heatmap_actions == 0 or heatmap_actions == 1:
                                             heatmap_size = 2
-                                        if heatmap_size == 0 or heatmap_size == 1:
-                                            heatmap_size = 2
-                                        if int(TRADING_BOOST_LVL) == 1:
-                                            heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.15))
-                                        elif int(TRADING_BOOST_LVL) == 2:
-                                            heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.3))
-                                        elif int(TRADING_BOOST_LVL) == 3:
-                                            heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.5))
-                                        elif int(TRADING_BOOST_LVL) == 4:
-                                            heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.85))
-                                        elif int(TRADING_BOOST_LVL) == 5:
-                                            heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 1.5))
-                                ############################################################################################
+                                            heatmap_limit = 1
+                                        else:
+                                            if int(TRADING_BOOST_LVL) == 1:
+                                                heatmap_size = round(float(heatmap_actions * 0.65))
+                                            elif int(TRADING_BOOST_LVL) == 2:
+                                                heatmap_size = round(float(heatmap_actions * 0.4))
+                                            elif int(TRADING_BOOST_LVL) == 3:
+                                                heatmap_size = round(float(heatmap_actions * 0.25))
+                                            elif int(TRADING_BOOST_LVL) == 4:
+                                                heatmap_size = 3
+                                            elif int(TRADING_BOOST_LVL) == 5:
+                                                heatmap_size = 2
+                                            if heatmap_size == 0 or heatmap_size == 1:
+                                                heatmap_size = 2
+                                            if int(TRADING_BOOST_LVL) == 1:
+                                                heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.15))
+                                            elif int(TRADING_BOOST_LVL) == 2:
+                                                heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.3))
+                                            elif int(TRADING_BOOST_LVL) == 3:
+                                                heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.5))
+                                            elif int(TRADING_BOOST_LVL) == 4:
+                                                heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 0.85))
+                                            elif int(TRADING_BOOST_LVL) == 5:
+                                                heatmap_limit = round(float((heatmap_actions / heatmap_size) + heatmap_size * 1.5))
+                                    ############################################################################################
 
-                                log.VERBOSE(f"possible_nr_of_trades is {possible_nr_of_trades}")
-                                log.VERBOSE(f"heatmap_actions is {heatmap_actions}")
-                                log.VERBOSE(f"heatmap_size is {heatmap_size}")
-                                log.VERBOSE(f"heatmap_limit is {heatmap_limit}")
-                                log.DEBUG(f"TRADING_BOOST_LVL is {str(TRADING_BOOST_LVL)}")
+                                    log.VERBOSE(f"possible_nr_of_trades is {possible_nr_of_trades}")
+                                    log.VERBOSE(f"heatmap_actions is {heatmap_actions}")
+                                    log.VERBOSE(f"heatmap_size is {heatmap_size}")
+                                    log.VERBOSE(f"heatmap_limit is {heatmap_limit}")
+                                    log.DEBUG(f"TRADING_BOOST_LVL is {str(TRADING_BOOST_LVL)}")
 
-                                current_price_rounded_down = math.floor(round(float(candle_close_price), 4))
+                                    current_price_rounded_down = math.floor(round(float(candle_close_price), 4))
 
-                                heatmap_counter = 0
-                                ktbr_config_array_of_prices = []
+                                    heatmap_counter = 0
+                                    ktbr_config_array_of_prices = []
 
-                                for v in ktbr_config.values():
-                                    ktbr_config_array_of_prices.append(math.floor(float(v[1])))
+                                    for v in ktbr_config.values():
+                                        ktbr_config_array_of_prices.append(math.floor(float(v[1])))
 
-                                for n in range(-round(float(heatmap_size/2)), round(float(heatmap_size/2))):
-                                    if current_price_rounded_down + n in ktbr_config_array_of_prices:
-                                        heatmap_counter += ktbr_config_array_of_prices.count(current_price_rounded_down + n)
+                                    for n in range(-round(float(heatmap_size/2)), round(float(heatmap_size/2))):
+                                        if current_price_rounded_down + n in ktbr_config_array_of_prices:
+                                            heatmap_counter += ktbr_config_array_of_prices.count(current_price_rounded_down + n)
 
-                                heatmap_center_coin_counter = ktbr_config_array_of_prices.count(current_price_rounded_down)  
+                                    heatmap_center_coin_counter = ktbr_config_array_of_prices.count(current_price_rounded_down)  
 
-                                with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
-                                    f.write(f'\n\n{log.logging_time()} Within BUY (part III):\n')
-                                    f.write(f"{log.logging_time()} {'HEATMAP actions (heatmap_actions) is':90} {heatmap_actions:40}\n")
-                                    f.write(f"{log.logging_time()} {'HEATMAP size (heatmap_size) is':90} {heatmap_size:40}\n")
-                                    f.write(f"{log.logging_time()} {'HEATMAP limit (heatmap_limit) is':90} {heatmap_limit:40}\n")
-                                    f.write(f"{log.logging_time()} {'HEATMAP counter (heatmap_counter) is':90} {heatmap_counter:40}\n")
-                                    f.write(f"{log.logging_time()} {'HEATMAP center coin counter (heatmap_center_coin_counter) is':90} {heatmap_center_coin_counter:40}\n")
-                                    f.write(f"{log.logging_time()} {'TRADING BOOST LVL (TRADING_BOOST_LVL) is':90} {str(TRADING_BOOST_LVL):40}\n")
-                                    f.write(f"{log.logging_time()} {'Min Buy share (min_buy_share) is':90} {min_buy_share:40}\n")
-                                    f.write(f"{log.logging_time()} {'Min Order QTTY (min_order_quantity) is':90} {min_order_quantity:40}\n")
-                                    f.write(f"{log.logging_time()} {'Current price rounded down (current_price_rounded_down) set to':90} {current_price_rounded_down:40}\n")
-                                    f.write(f"{log.logging_time()} {'TRADE_QUANTITY (AFTER processing) (TRADE_QUANTITY) is':90} {TRADE_QUANTITY:40}\n")
-                                    f.write(f"{log.logging_time()} {'Possible Nr. of trades (possible_nr_of_trades) is':90} {possible_nr_of_trades:40}\n")
-                                    f.write(f"{log.logging_time()} KTBR array of prices (str(ktbr_config_array_of_prices)) is {str(ktbr_config_array_of_prices)}\n\n\n")
-
-                                if heatmap_center_coin_counter >= heatmap_limit or heatmap_counter >= heatmap_actions:
-                                    log.INFO(f"HEATMAP DOES NOT ALLOW BUYING!")
-                                    log.DEBUG(f"heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]\n\n\n\n")
                                     with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
-                                        f.write(f'\n\n{log.logging_time()} Within BUY (part IV):\n')
-                                        f.write(f"{log.logging_time()} HEATMAP DOES NOT ALLOW BUYING!")
-                                        f.write(f"{log.logging_time()} heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]")
-                                elif float(balance_usdt) < float(TRADE_QUANTITY) * float(candle_close_price) + 2:
-                                    log.INFO("Way too low diff between acc. balance and current price * trade quantity. Not allowing buy.")
-                                else:
-                                    log.VERBOSE(f"HEATMAP ALLOWS BUYING!\n")
-                                    try:
-                                        back_up()
-                                        if RYBKA_MODE == "LIVE":
-                                            log.VERBOSE(f"Before BUY. USDT balance is [{balance_usdt}]")
-                                            log.VERBOSE(f"Before BUY. EGLD balance is [{balance_egld}]")
-                                            log.VERBOSE(f"Before BUY. BNB  balance is [{balance_bnb}]")
-                                            order = client.order_market_buy(symbol=TRADE_SYMBOL, quantity=TRADE_QUANTITY)
-                                        elif RYBKA_MODE == "DEMO":
-                                            order_id_tmp = id_generator()
-                                            order = {'symbol': 'EGLDUSDT', 'orderId': '', 'orderListId': -1, 'clientOrderId': 'TXgNl8RNNipASGTrleH6ZY', 'transactTime': 1661098548719, 'price': '0.00000000', 'origQty': '0.19000000', 'executedQty': '0.19000000', 'cummulativeQuoteQty': '10.20300000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'BUY', 'fills': [{'price': '', 'qty': '0.19000000', 'commission': '', 'commissionAsset': 'EGLD', 'tradeId': 75747997}]}
-                                            order["orderId"] = order_id_tmp
-                                            order['executedQty'] = TRADE_QUANTITY
-                                            order['fills'][0]['price'] = candle_close_price
-                                            order['fills'][0]['commission'] = bnb_commission
+                                        f.write(f'\n\n{log.logging_time()} Within BUY (part III):\n')
+                                        f.write(f"{log.logging_time()} {'HEATMAP actions (heatmap_actions) is':90} {heatmap_actions:40}\n")
+                                        f.write(f"{log.logging_time()} {'HEATMAP size (heatmap_size) is':90} {heatmap_size:40}\n")
+                                        f.write(f"{log.logging_time()} {'HEATMAP limit (heatmap_limit) is':90} {heatmap_limit:40}\n")
+                                        f.write(f"{log.logging_time()} {'HEATMAP counter (heatmap_counter) is':90} {heatmap_counter:40}\n")
+                                        f.write(f"{log.logging_time()} {'HEATMAP center coin counter (heatmap_center_coin_counter) is':90} {heatmap_center_coin_counter:40}\n")
+                                        f.write(f"{log.logging_time()} {'TRADING BOOST LVL (TRADING_BOOST_LVL) is':90} {str(TRADING_BOOST_LVL):40}\n")
+                                        f.write(f"{log.logging_time()} {'Min Buy share (min_buy_share) is':90} {min_buy_share:40}\n")
+                                        f.write(f"{log.logging_time()} {'Min Order QTTY (min_order_quantity) is':90} {min_order_quantity:40}\n")
+                                        f.write(f"{log.logging_time()} {'Current price rounded down (current_price_rounded_down) set to':90} {current_price_rounded_down:40}\n")
+                                        f.write(f"{log.logging_time()} {'TRADE_QUANTITY (AFTER processing) (TRADE_QUANTITY) is':90} {TRADE_QUANTITY:40}\n")
+                                        f.write(f"{log.logging_time()} {'Possible Nr. of trades (possible_nr_of_trades) is':90} {possible_nr_of_trades:40}\n")
+                                        f.write(f"{log.logging_time()} KTBR array of prices (str(ktbr_config_array_of_prices)) is {str(ktbr_config_array_of_prices)}\n\n\n")
 
-                                            balance_usdt -= candle_close_price * TRADE_QUANTITY
-                                            balance_usdt = round(balance_usdt, 4)
-                                            balance_egld += TRADE_QUANTITY
-                                            balance_egld = round(balance_egld, 4)
-                                            balance_bnb -= bnb_commission
-                                            balance_bnb = round(balance_bnb, 6)
-
-                                        order_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                                        log.DEBUG(f'BUY Order placed now at [{order_time}]\n')
-                                        time.sleep(3)
-                                        
-                                        if RYBKA_MODE == "LIVE":
-                                            order_status = client.get_order(symbol = TRADE_SYMBOL, orderId = order["orderId"])
-                                        elif RYBKA_MODE == "DEMO":
-                                            order_status = {'symbol': 'EGLDUSDT', 'orderId': 0, 'orderListId': -1, 'clientOrderId': 'TXgNl8RNNipASGTrleH6ZY', 'price': '0.00000000', 'origQty': '0.19000000', 'executedQty': '0.19000000', 'cummulativeQuoteQty': '10.20300000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'BUY', 'stopPrice': '0.00000000', 'icebergQty': '0.00000000', 'time': 1661098548719, 'updateTime': 1661098548719, 'isWorking': True, 'origQuoteOrderQty': '0.00000000'}
-                                            order_status['orderId'] = order_id_tmp
-
-                                        if order_status['status'] == "FILLED":
-                                            log.INFO_BOLD_UNDERLINE(" ✅ BUY Order filled successfully!\n")
-
-                                            # avoid rounding up on quantity & price bought
-                                            log.INFO_SPECIAL(f"🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT")
-                                            telegram.LOG("INFO", f" 🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT/EGLD")
-
-                                            usdt_trade_fee = round(float(0.08 / 100 * round(float(order['cummulativeQuoteQty']), 4)), 4)
-                                            log.VERBOSE(f"BUY action's usdt trade fee is {usdt_trade_fee}")
-
-                                            total_usdt_profit = round(total_usdt_profit - usdt_trade_fee, 4)
-                                            with open(f"{RYBKA_MODE}/usdt_profit", 'w', encoding="utf8") as f:
-                                                f.write(str(total_usdt_profit))
-
-                                            bnb_commission = float(order['fills'][0]['commission'])
-                                            with open(f"{RYBKA_MODE}/most_recent_commission", 'w', encoding="utf8") as f:
-                                                f.write(str(order['fills'][0]['commission']))
-
-                                            ktbr_config[order['orderId']] = [int(float(order['executedQty']) * 10 ** 4) / 10 ** 4, int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4]
-                                            with open(f"{RYBKA_MODE}/ktbr", 'w', encoding="utf8") as f:
-                                                f.write(str(json.dumps(ktbr_config)))
-
-                                            nr_of_trades += 1
-
-                                            with open(f"{RYBKA_MODE}/number_of_buy_trades", 'w', encoding="utf8") as f:
-                                                f.write(str(nr_of_trades))
-
-                                            with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
-                                                f.write(f'\n\n{log.logging_time()} Within BUY (part V):\n')
-                                                f.write(f"{log.logging_time()} HEATMAP ALLOWS BUYING!\n")
-                                                f.write(f"{log.logging_time()} {'Order time (order_time) is':90} {str(order_time):40}")
-                                                f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n")
-                                                f.write(f"{log.logging_time()} {'Order (order) is':90} {str(json.dumps(order))}\n")
-                                                f.write(f"{log.logging_time()} {'Order status (order_status) is':90} {str(json.dumps(order_status))}\n")
-                                                f.write(f"{log.logging_time()} {'USDT trade fee (usdt_trade_fee) is':90} {str(usdt_trade_fee)}\n")
-                                                f.write(f"{log.logging_time()} {'Order commission is':90} {str(order['fills'][0]['commission']):40}\n")
-                                                f.write(f"{log.logging_time()} KTBR config (AFTER processing) (str(json.dumps(ktbr_config))) is {str(json.dumps(ktbr_config)):40}\n")
-                                            
+                                    if heatmap_center_coin_counter >= heatmap_limit or heatmap_counter >= heatmap_actions:
+                                        log.INFO(f"HEATMAP DOES NOT ALLOW BUYING!")
+                                        log.DEBUG(f"heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]\n\n\n\n")
+                                        with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                            f.write(f'\n\n{log.logging_time()} Within BUY (part IV):\n')
+                                            f.write(f"{log.logging_time()} HEATMAP DOES NOT ALLOW BUYING!")
+                                            f.write(f"{log.logging_time()} heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]")
+                                    elif float(balance_usdt) < float(TRADE_QUANTITY) * float(candle_close_price) + 2:
+                                        log.INFO("Way too low diff between acc. balance and current price * trade quantity. Not allowing buy.")
+                                    else:
+                                        log.VERBOSE(f"HEATMAP ALLOWS BUYING!\n")
+                                        try:
                                             back_up()
+                                            if RYBKA_MODE == "LIVE":
+                                                log.VERBOSE(f"Before BUY. USDT balance is [{balance_usdt}]")
+                                                log.VERBOSE(f"Before BUY. EGLD balance is [{balance_egld}]")
+                                                log.VERBOSE(f"Before BUY. BNB  balance is [{balance_bnb}]")
+                                                order = client.order_market_buy(symbol=TRADE_SYMBOL, quantity=TRADE_QUANTITY)
+                                            elif RYBKA_MODE == "DEMO":
+                                                order_id_tmp = id_generator()
+                                                order = {'symbol': 'EGLDUSDT', 'orderId': '', 'orderListId': -1, 'clientOrderId': 'TXgNl8RNNipASGTrleH6ZY', 'transactTime': 1661098548719, 'price': '0.00000000', 'origQty': '0.19000000', 'executedQty': '0.19000000', 'cummulativeQuoteQty': '10.20300000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'BUY', 'fills': [{'price': '', 'qty': '0.19000000', 'commission': '', 'commissionAsset': 'EGLD', 'tradeId': 75747997}]}
+                                                order["orderId"] = order_id_tmp
+                                                order['executedQty'] = TRADE_QUANTITY
+                                                order['fills'][0]['price'] = candle_close_price
+                                                order['fills'][0]['commission'] = bnb_commission
+
+                                                balance_usdt -= candle_close_price * TRADE_QUANTITY
+                                                balance_usdt = round(balance_usdt, 4)
+                                                balance_egld += TRADE_QUANTITY
+                                                balance_egld = round(balance_egld, 4)
+                                                balance_bnb -= bnb_commission
+                                                balance_bnb = round(balance_bnb, 6)
+
+                                            order_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                            log.DEBUG(f'BUY Order placed now at [{order_time}]\n')
+                                            time.sleep(3)
                                             
                                             if RYBKA_MODE == "LIVE":
-                                                for i in range(1,11):
-                                                    try:
-                                                        account_balance_update()
-                                                        log.DEBUG(f"Account Balance Sync. - Successful")
-                                                        break
-                                                    except Exception as e:
-                                                        if i == 10:
-                                                            log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
-                                                        time.sleep(3)
+                                                order_status = client.get_order(symbol = TRADE_SYMBOL, orderId = order["orderId"])
+                                            elif RYBKA_MODE == "DEMO":
+                                                order_status = {'symbol': 'EGLDUSDT', 'orderId': 0, 'orderListId': -1, 'clientOrderId': 'TXgNl8RNNipASGTrleH6ZY', 'price': '0.00000000', 'origQty': '0.19000000', 'executedQty': '0.19000000', 'cummulativeQuoteQty': '10.20300000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'BUY', 'stopPrice': '0.00000000', 'icebergQty': '0.00000000', 'time': 1661098548719, 'updateTime': 1661098548719, 'isWorking': True, 'origQuoteOrderQty': '0.00000000'}
+                                                order_status['orderId'] = order_id_tmp
 
-                                            real_time_balances_update()
+                                            if order_status['status'] == "FILLED":
+                                                log.INFO_BOLD_UNDERLINE(" ✅ BUY Order filled successfully!\n")
 
-                                            if not DEBUG_LVL == 3:
-                                                log.DEBUG(f"USDT balance is [{balance_usdt}]")
-                                                log.DEBUG(f"EGLD balance is [{balance_egld}]")
-                                                log.DEBUG(f"BNB  balance is [{balance_bnb}]")
+                                                # avoid rounding up on quantity & price bought
+                                                log.INFO_SPECIAL(f"🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT")
+                                                telegram.LOG("INFO", f" 🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT/EGLD")
 
-                                            log.VERBOSE(f"After BUY - balance update. USDT balance is [{balance_usdt}]")
-                                            log.VERBOSE(f"After BUY - balance update. EGLD balance is [{balance_egld}]")
-                                            log.VERBOSE(f"After BUY - balance update. BNB  balance is [{balance_bnb}]")
+                                                usdt_trade_fee = round(float(0.08 / 100 * round(float(order['cummulativeQuoteQty']), 4)), 4)
+                                                log.VERBOSE(f"BUY action's usdt trade fee is {usdt_trade_fee}")
 
-                                            ktbr_integrity()
+                                                total_usdt_profit = round(total_usdt_profit - usdt_trade_fee, 4)
+                                                with open(f"{RYBKA_MODE}/usdt_profit", 'w', encoding="utf8") as f:
+                                                    f.write(str(total_usdt_profit))
 
-                                            with open(f"{current_export_dir}/{TRADE_SYMBOL}_order_history", 'a', encoding="utf8") as f:
-                                                f.write(f'{log.logging_time()} Buy order done now at [{str(order_time)}]\n')
-                                                f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n\n\n")
-                                            with open(f"{RYBKA_MODE}/full_order_history", 'a', encoding="utf8") as f:
-                                                f.write(f'{log.logging_time()} Buy order done now at [{str(order_time)}]\n')
-                                                f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n\n\n")
-                                            
-                                            if int(heatmap_limit) > 12 or len(ktbr_config) < 2:
-                                                subsequent_valid_rsi_counter = 0
+                                                bnb_commission = float(order['fills'][0]['commission'])
+                                                with open(f"{RYBKA_MODE}/most_recent_commission", 'w', encoding="utf8") as f:
+                                                    f.write(str(order['fills'][0]['commission']))
+
+                                                ktbr_config[order['orderId']] = [int(float(order['executedQty']) * 10 ** 4) / 10 ** 4, int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4]
+                                                with open(f"{RYBKA_MODE}/ktbr", 'w', encoding="utf8") as f:
+                                                    f.write(str(json.dumps(ktbr_config)))
+
+                                                nr_of_trades += 1
+
+                                                with open(f"{RYBKA_MODE}/number_of_buy_trades", 'w', encoding="utf8") as f:
+                                                    f.write(str(nr_of_trades))
+
+                                                with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                                    f.write(f'\n\n{log.logging_time()} Within BUY (part V):\n')
+                                                    f.write(f"{log.logging_time()} HEATMAP ALLOWS BUYING!\n")
+                                                    f.write(f"{log.logging_time()} {'Order time (order_time) is':90} {str(order_time):40}")
+                                                    f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n")
+                                                    f.write(f"{log.logging_time()} {'Order (order) is':90} {str(json.dumps(order))}\n")
+                                                    f.write(f"{log.logging_time()} {'Order status (order_status) is':90} {str(json.dumps(order_status))}\n")
+                                                    f.write(f"{log.logging_time()} {'USDT trade fee (usdt_trade_fee) is':90} {str(usdt_trade_fee)}\n")
+                                                    f.write(f"{log.logging_time()} {'Order commission is':90} {str(order['fills'][0]['commission']):40}\n")
+                                                    f.write(f"{log.logging_time()} KTBR config (AFTER processing) (str(json.dumps(ktbr_config))) is {str(json.dumps(ktbr_config)):40}\n")
+                                                
+                                                back_up()
+                                                
+                                                if RYBKA_MODE == "LIVE":
+                                                    for i in range(1,11):
+                                                        try:
+                                                            account_balance_update()
+                                                            log.DEBUG(f"Account Balance Sync. - Successful")
+                                                            break
+                                                        except Exception as e:
+                                                            if i == 10:
+                                                                log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
+                                                            time.sleep(3)
+
+                                                real_time_balances_update()
+
+                                                if not DEBUG_LVL == 3:
+                                                    log.DEBUG(f"USDT balance is [{balance_usdt}]")
+                                                    log.DEBUG(f"EGLD balance is [{balance_egld}]")
+                                                    log.DEBUG(f"BNB  balance is [{balance_bnb}]")
+
+                                                log.VERBOSE(f"After BUY - balance update. USDT balance is [{balance_usdt}]")
+                                                log.VERBOSE(f"After BUY - balance update. EGLD balance is [{balance_egld}]")
+                                                log.VERBOSE(f"After BUY - balance update. BNB  balance is [{balance_bnb}]")
+
+                                                ktbr_integrity()
+
+                                                with open(f"{current_export_dir}/{TRADE_SYMBOL}_order_history", 'a', encoding="utf8") as f:
+                                                    f.write(f'{log.logging_time()} Buy order done now at [{str(order_time)}]\n')
+                                                    f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n\n\n")
+                                                with open(f"{RYBKA_MODE}/full_order_history", 'a', encoding="utf8") as f:
+                                                    f.write(f'{log.logging_time()} Buy order done now at [{str(order_time)}]\n')
+                                                    f.write(f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n\n\n")
+                                                
+                                                if int(heatmap_limit) > 12 or len(ktbr_config) < 2:
+                                                    subsequent_valid_rsi_counter = 0
+                                                else:
+                                                    subsequent_valid_rsi_counter = 1
+
+                                                re_sync_time()
                                             else:
-                                                subsequent_valid_rsi_counter = 1
-
-                                            re_sync_time()
-                                        else:
+                                                with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                                    f.write(f'\n\n{log.logging_time()} Within BUY (part VI):\n')
+                                                    f.write(f'{log.logging_time()} Buy order was NOT filled successfully! Please check the cause!\n')
+                                                    f.write(f"{log.logging_time()} Order (order) is {str(json.dumps(order))}\n")
+                                                    f.write(f"{log.logging_time()} Order status (order_status) is {str(json.dumps(order_status))}\n")
+                                                log.FATAL_7(f"Buy order was NOT filled successfully! Please check the cause!")
+                                        except Exception as e:
                                             with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
-                                                f.write(f'\n\n{log.logging_time()} Within BUY (part VI):\n')
-                                                f.write(f'{log.logging_time()} Buy order was NOT filled successfully! Please check the cause!\n')
-                                                f.write(f"{log.logging_time()} Order (order) is {str(json.dumps(order))}\n")
-                                                f.write(f"{log.logging_time()} Order status (order_status) is {str(json.dumps(order_status))}\n")
-                                            log.FATAL_7(f"Buy order was NOT filled successfully! Please check the cause!")
-                                    except Exception as e:
-                                        with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
-                                            f.write(f'\n\n{log.logging_time()} Within BUY (part VII):\n')
-                                            f.write(f'{log.logging_time()} Order could NOT be placed due to an error:\n{e}\n')
-                                        log.FATAL_7(f"Make sure the [BIN_KEY] and [BIN_SECRET] ENV vars have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}")
+                                                f.write(f'\n\n{log.logging_time()} Within BUY (part VII):\n')
+                                                f.write(f'{log.logging_time()} Order could NOT be placed due to an error:\n{e}\n')
+                                            log.FATAL_7(f"Make sure the [BIN_KEY] and [BIN_SECRET] ENV vars have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}")
+                                else:
+                                    log.WARN(f"Bot might still be able to buy some crypto, but only at a [{min_order_quantity}] EGLD trading quantity, not at the current one set of [{TRADE_QUANTITY}] EGLD per transaction!\n")
+                                    with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
+                                        f.write(f'\n\n{log.logging_time()} Within BUY (part VIII):\n')
+                                        f.write(f'{log.logging_time()} Bot might still be able to buy some crypto, but only at a [{min_order_quantity}] EGLD trading quantity, not at the current one set of [{TRADE_QUANTITY}] EGLD per transaction!\n')
                             else:
-                                log.WARN(f"Bot might still be able to buy some crypto, but only at a [{min_order_quantity}] EGLD trading quantity, not at the current one set of [{TRADE_QUANTITY}] EGLD per transaction!\n")
+                                log.WARN(f"Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].")
+                                #TODO add log.WARN message and email func within the same 'if' clause for enabling / disabling such emails
+                                #log.WARN(f"Notifying user (via email) that bot might need more money for buy actions, if possible.")
+                                #email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot might be able to buy more, but doesn't have enought USDT in balance [{balance_usdt}]\n\nTOP UP if possible!")
                                 with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
-                                    f.write(f'\n\n{log.logging_time()} Within BUY (part VIII):\n')
-                                    f.write(f'{log.logging_time()} Bot might still be able to buy some crypto, but only at a [{min_order_quantity}] EGLD trading quantity, not at the current one set of [{TRADE_QUANTITY}] EGLD per transaction!\n')
+                                    f.write(f'\n\n{log.logging_time()} Within BUY (part IX):\n')
+                                    f.write(f'{log.logging_time()} Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].\n')
                         else:
-                            log.WARN(f"Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].")
-                            #TODO add log.WARN message and email func within the same 'if' clause for enabling / disabling such emails
-                            #log.WARN(f"Notifying user (via email) that bot might need more money for buy actions, if possible.")
-                            #email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot might be able to buy more, but doesn't have enought USDT in balance [{balance_usdt}]\n\nTOP UP if possible!")
+                            email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enought BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, it will stop at this point. Please TOP UP!")
                             with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
-                                f.write(f'\n\n{log.logging_time()} Within BUY (part IX):\n')
-                                f.write(f'{log.logging_time()} Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].\n')
-                    else:
-                        email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enought BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, it will stop at this point. Please TOP UP!")
-                        with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", 'a', encoding="utf8") as f:
-                            f.write(f'\n\n{log.logging_time()} Within BUY (part X):\n')
-                            f.write(f'{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Please TOP UP!\n')
-                        log.FATAL_7(f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. Please TOP UP!")
+                                f.write(f'\n\n{log.logging_time()} Within BUY (part X):\n')
+                                f.write(f'{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Please TOP UP!\n')
+                            log.FATAL_7(f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. Please TOP UP!")
 
                 if latest_rsi > RSI_FOR_SELL:
 
@@ -1465,7 +1477,7 @@ if __name__ == '__main__':
         global WEIGHTS_DICT_OUTDATED, WEIGHTS_DICT_UPDATED, TELEGRAM_WEIGHTS
 
         global DEBUG_LVL, RSI_FOR_BUY, RSI_FOR_SELL, TRADING_BOOST_LVL
-        global TRADE_QUANTITY, AUX_TRADE_QUANTITY, MIN_PROFIT
+        global TRADE_QUANTITY, AUX_TRADE_QUANTITY, MIN_PROFIT, USDT_SAFETY_NET
         global RYBKA_EMAIL_SWITCH, RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_RECIPIENT_EMAIL, RYBKA_EMAIL_RECIPIENT_NAME
         global RYBKA_TELEGRAM_SWITCH
         global SET_DISCLAIMER
@@ -1482,6 +1494,7 @@ if __name__ == '__main__':
         TRADE_QUANTITY = round(bootstrap.TRADE_QUANTITY, 2)
         AUX_TRADE_QUANTITY = TRADE_QUANTITY
         MIN_PROFIT = bootstrap.MIN_PROFIT
+        USDT_SAFETY_NET = bootstrap.USDT_SAFETY_NET
 
         RYBKA_EMAIL_SWITCH = bootstrap.RYBKA_EMAIL_SWITCH
         RYBKA_EMAIL_SENDER_EMAIL = bootstrap.RYBKA_EMAIL_SENDER_EMAIL
@@ -1499,6 +1512,7 @@ if __name__ == '__main__':
             WEIGHTS_DICT_UPDATED.update({"RYBKA_RSI_FOR_SELL":RSI_FOR_SELL})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_TRADE_QUANTITY":TRADE_QUANTITY})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_MIN_PROFIT":MIN_PROFIT})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_USDT_SAFETY_NET":USDT_SAFETY_NET})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_SWITCH":RYBKA_EMAIL_SWITCH})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_SENDER_EMAIL":RYBKA_EMAIL_SENDER_EMAIL})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_RECIPIENT_EMAIL":RYBKA_EMAIL_RECIPIENT_EMAIL})

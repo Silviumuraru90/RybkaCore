@@ -112,6 +112,7 @@ def weights_info_command(update, context):
     {'/RYBKA_TRADE_QUANTITY'}
     {'/RYBKA_MIN_PROFIT'}
     {'/RYBKA_EMAIL_SWITCH'}
+    {'/RYBKA_USDT_SAFETY_NET'}
     {'/RYBKA_EMAIL_SENDER_EMAIL'}
     {'/RYBKA_EMAIL_RECIPIENT_EMAIL'}
     {'/RYBKA_EMAIL_RECIPIENT_NAME'}
@@ -957,6 +958,7 @@ def main():
     dp.add_handler(CommandHandler("RYBKA_RSI_FOR_SELL", weights_command))
     dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY", weights_command))
     dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET", weights_command))
     dp.add_handler(CommandHandler("RYBKA_EMAIL_SWITCH", weights_command))
     dp.add_handler(CommandHandler("RYBKA_EMAIL_SENDER_EMAIL", weights_command))
     dp.add_handler(CommandHandler("RYBKA_EMAIL_RECIPIENT_EMAIL", weights_command))

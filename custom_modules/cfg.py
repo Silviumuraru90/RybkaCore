@@ -66,7 +66,11 @@ class Rybka_py_env_bootstrap():
         self.RSI_FOR_SELL = int(config.get("Rybka Binance Configuration. For LIVE and DEMO modes", "RYBKA_RSI_FOR_SELL"))
         self.TRADE_QUANTITY = float(config.get("Rybka Binance Configuration. For LIVE and DEMO modes", "RYBKA_TRADE_QUANTITY"))
         self.MIN_PROFIT = float(config.get("Rybka Binance Configuration. For LIVE and DEMO modes", "RYBKA_MIN_PROFIT"))
-
+        try:
+            self.USDT_SAFETY_NET = float(config.get("Rybka Binance Configuration. For LIVE and DEMO modes", "RYBKA_USDT_SAFETY_NET"))
+        except:
+            self.USDT_SAFETY_NET = None
+        
         # DEMO mode related config.
         try:
             self.RYBKA_DEMO_BALANCE_USDT = int(config.get("Rybka Standalone Configuration. Only for DEMO mode", "RYBKA_DEMO_BALANCE_USDT")).strip("\n").strip()
