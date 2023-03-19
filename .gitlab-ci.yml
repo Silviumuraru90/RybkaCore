@@ -102,7 +102,7 @@ docker-build:
   script:
     - !reference [.debug_template, script]
     - sudo chmod +x rybka.py
-    - ./rybka.py
+    - ./rybka.py -m demo
   after_script:
     - ls -alH
   artifacts:
@@ -112,14 +112,6 @@ docker-build:
     when: always
   when: manual
   timeout: 30 m
-
-#TODO: to be enabled here when docker image is well packaged with deps locally
-.DEMO_restarter_run:
-  extends: .DEMO_rybka_run
-  script:
-    - !reference [.debug_template, script]
-    - sudo chmod +x restarter.py
-    - ./restarter.py
 
 
 ###################################
@@ -135,9 +127,6 @@ docker-build:
       when: always
     - when: never
 
-#TODO: to be enabled here when docker image is well packaged with deps locally
-.DEMO_restarter_daily_24h_run:
-  extends: .DEMO_rybka_daily_24h_run
 
 #TODO: to be enabled here when docker image is well packaged with deps locally
 .DEMO_rybka_weekly_7d_run:
@@ -147,10 +136,6 @@ docker-build:
     - if: '$WEEKLY_RUN && $CI_PIPELINE_SOURCE == "schedule"'
       when: always
     - when: never
-
-#TODO: to be enabled here when docker image is well packaged with deps locally
-.DEMO_restarter_weekly_7d_run:
-  extends: .DEMO_rybka_weekly_7d_run
 
 
 ###################################

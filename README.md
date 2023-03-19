@@ -1,7 +1,7 @@
 # 💱 Rybka
 
 <div align="center">
-  <img width="450" height="400" src="MEDIA/rybka_GUI.PNG">
+  <img width="450" height="300" src="MEDIA/rybka_GUI.PNG">
 </div>
 
 
@@ -39,10 +39,9 @@
 <br>
 
 > ✅ Automated technical analysis (scalping mode) (based on a relative strength index - RSI) <br>
-✅ Automatic `rybka.py` bot `restarter.py` add-on in case of network failures, local software failures <br>
+✅ Add-on in case of network failures, local software failures that will restart the bot. If internet drops and it restarts, it will always grab back the work from where it left it <br>
 ✅ Supports a `LIVE` MODE with connection to the actual Binance wallet of the user, as well as a `DEMO` MODE of the product, with fake data of a virtualized wallet <br>
 ✅ Creates separate local logs, considering the MODE the bot is in and tracks those independently of each other across multiple runs <br>
-✅ File exports for a variety of useful information, logs or configuration data needed for the time it might restart via `restarter.py` - so to always grab back the work from where it left it <br>
 ✅ Regular back-ups of important files <br>
 ✅ Individual buy tracking <br>
 ✅ Error catch mechanism and exception management <br>
@@ -166,13 +165,12 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 > ▶️ For Win -> you can run directly the `RybkaSoft.exe` file and start the needed process(es) from that GUI; <br><br>
 ▶️ For Linux however -> you have to grant executable permissions via `chmod +x RybkaSoft` and then still run it via terminal with `./RybkaSoft` cmd, unfortunately, for it to boot correctly; <br><br>
-▶️ (Win / Linux) You can run the software directly (the `rybka.py` file) or via the `restarer.py` module that will automatically start the bot, but also restart the bot if it exits on a not-hardcoded error (such as a temporary internet drop / others); <br><br>
 ▶️ (Win / Linux) The Telegram Listener (Telegram interactive part) module (which is only the listener part where user can input commands and info. will be provided for each) is to be started by Rybka bot directly when it runs, as a subshell, without any user action.
 
 <br><br>
 
 ❗️ `Note:` Recommendation for having the best UI output - running `Rybka` software into a `cmd` shell within `Visual Studio Code` <br>
-❗️ `Note:` Recommendation for having the best uptime and better profit return (only due to low electricity cost) - running `Rybka` software via the `restarter` module on a `Raspberry PI 4` connected directly to a `UPS` <br>
+❗️ `Note:` Recommendation for having the best uptime and better profit return (only due to low electricity cost) - running `Rybka` software on a `Raspberry PI 4` connected directly to a `UPS` <br>
 <div align="center">
   <img width="300" height="270" src="MEDIA/raspberry_pi.jpeg">
 </div>
