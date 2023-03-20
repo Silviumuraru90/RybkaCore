@@ -89,7 +89,7 @@ Hence, at the moment, you will need 🐍 `python` in your OS to run the software
 &emsp;&emsp;✅ psutil <br>
 &emsp;&emsp;✅ telepot <br>
 &emsp;&emsp;✅ termcolor <br>
-&emsp;&emsp;✅ python-telegram-bot <br>
+&emsp;&emsp;✅ python-telegram-bot==13.14 <br>
 &emsp;&emsp;✅ TA-Lib <br><br><br>
 
 ❗️ `Note:` while via `pip3` you are able to install the first modules, `TA-Lib` is not currently available to be installed from the official `pypi` list on Windows platforms, hence you can download the `wheel` file that matches your `python` version and then install it via `pip`. <br> Grab the file from 📦 [HERE](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib) <br><br>
@@ -155,17 +155,26 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 🔘 And, of course, an `internet connection` <br><br><br>
 
-### &emsp;&emsp;<b>Notes</b>
-❗️ `Note for the [BIN_KEY] / [BIN_SECRET] vars:` Make sure to hit the checkbox in order to `Enable Spot & Margin Trading` after you have those two values generated in Binance. Checkbox has to turn `yellow`.
-❗️ `Note for the [RYBKA_TELEGRAM_API_KEY] var:` For Telegram notifications, you'll need to create your own Telegram bot in the `Telegram` app. Simply search for `BotFather` among "Contacts", then type in that chat `/newbot` and follow instructions to create one and grab the API KEY that you need to set in your env as a value for the `RYBKA_TELEGRAM_API_KEY` var. <br><br>
-❗️ `Note for the [RYBKA_TELEGRAM_CHAT_ID] var:` In order to grab this value go to this link: `https://api.telegram.org/bot<replace_with_your_value_for_RYBKA_TELEGRAM_API_KEY>/getUpdates`, then type something in the chat of your newly created bot (not in the same chat for `BotFather`!). The message you typed should be visible there as an API payload. Grab the value for the `RYBKA_TELEGRAM_CHAT_ID` var from there - find it within such structure `"chat":{"id":<your_chat_id_value>,`. Add it to the ENV.
+### &emsp;&emsp;<b>Notes</b><br><br>
+❗️ Note for the [`RYBKA_TELEGRAM_API_KEY`] var: For Telegram notifications, you'll need to create your own Telegram bot in the `Telegram` app. Simply search for `BotFather` among "Contacts", then type in that chat `/newbot` and follow instructions to create one and grab the API KEY that you need to set in your env as a value for the `RYBKA_TELEGRAM_API_KEY` var. <br><br><br>
+❗️ Note for the [`RYBKA_TELEGRAM_CHAT_ID`] var: In order to grab this value go to this link: `https://api.telegram.org/bot<replace_with_your_value_for_RYBKA_TELEGRAM_API_KEY>/getUpdates`, then type something in the chat of your newly created bot (not in the same chat for `BotFather`!). The message you typed should be visible there as an API payload. Grab the value for the `RYBKA_TELEGRAM_CHAT_ID` var from there - find it within such structure `"chat":{"id":<your_chat_id_value>,`. Add it to the ENV.<br><br><br>
+❗️ Notes for the [`BIN_KEY`] / [`BIN_SECRET`] vars: <br><br>
 
+🔸 Opt out of Binance's `Default Security Controls` for their generated API Keys, if you don't want to have the API Key tied to your IP address in order to be able to give it permissions for `Spot & Margin Trading`. You will find the checkbox to be avoided while you will try to generate an API Key in Binance's GUI:
 
-<br><br>
+<div align="center">
+  <img src="MEDIA/binance_default_security_controls.PNG">
+</div>
+<br>
 
-> ▶️ For Win -> you can run directly the `RybkaSoft.exe` file and start the needed process(es) from that GUI; <br><br>
-▶️ For Linux however -> you have to grant executable permissions via `chmod +x RybkaSoft` and then still run it via terminal with `./RybkaSoft` cmd, unfortunately, for it to boot correctly; <br><br>
-▶️ (Win / Linux) The Telegram Listener (Telegram interactive part) module (which is only the listener part where user can input commands and info. will be provided for each) is to be started by Rybka bot directly when it runs, as a subshell, without any user action.
+🔸 Make sure to hit the checkbox in order to `Enable Spot & Margin Trading` after you have generated the `key` and `secret` in Binance. <b>Checkbox has to turn `yellow`</b>.<br>
+
+<div align="center">
+  <img src="MEDIA/spot_and_margin_trading.PNG">
+</div>
+<br>
+
+🔸 In Binance's GUI a white `tick` inside a black checkbox does not mean `checked`! Only a white `tick` on yellow background would mean enabled (as in the picture above). I know... confusing...
 
 <br><br>
 
@@ -175,6 +184,13 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
   <img width="300" height="270" src="MEDIA/raspberry_pi.jpeg">
 </div>
 ❗️ `Note:` Running the bot with higher trading quantities or lower will NOT mean the taxes - compared to your profits will vary, as tax is a percentage of the trading quantity moved around. Profit - taxes report can only be increased in your favor if you run the bot with a higher profit margin, per trade; <br><br><br>
+
+> ▶️ For Win -> you can run directly the `RybkaSoft.exe` file and start the needed process(es) from that GUI; or via a CLI (no GUI presentation screen) with admin priviledges with `python rybka.py -m <mode>`. Mode is either of "demo" or "live". <br><br>
+▶️ For Linux however -> you have to grant executable permissions via `chmod +x RybkaSoft` and then still run it via terminal with `./RybkaSoft` cmd, unfortunately, for it to boot correctly; or via a CLI (no GUI presentation screen) without sudo / root priviledges with `python rybka.py -m <mode>`. Mode is either of "demo" or "live". <br><br>
+▶️ (Win / Linux) The Telegram Listener (Telegram interactive part) module (which is only the listener part where user can input commands and info. will be provided for each) is to be started by Rybka bot directly when it runs, as a subshell, without any user action.
+
+<br><br>
+
 
 ***
 ***

@@ -19,7 +19,7 @@ RUN     pip3 install multidict anybadge
 RUN     pip3 install attrs yarl
 RUN     pip3 install async_timeout charset_normalizer aiosignal cython
 RUN     pip3 install websocket-client numpy click colored requests GPUtil psutil telepot termcolor
-RUN     pip3 install python-binance python-telegram-bot
+RUN     pip3 install python-binance python-telegram-bot==13.14
 
 RUN	sudo apt install build-essential wget -y && \
         wget https://artiya4u.keybase.pub/TA-lib/ta-lib-0.4.0-src.tar.gz && \

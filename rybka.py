@@ -94,7 +94,7 @@ def main(version, mode):
                 )
             elif status == 1792:
                 log.FATAL(
-                    f" 🔴 Rybka bot errored out with code [{status}].\n\nShutting down Rybka, it seems your API Key is outdated, make sure you update it / enable all permissions for it!"
+                    f" 🔴 Rybka bot errored out with code [{status}].\n\nShutting down Rybka, it seems your API Key is either outdated or it doesn't have the permissions for [Spot & Margin Trading] enabled on it"
                 )
             elif status == 7:
                 log.FATAL(

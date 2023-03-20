@@ -458,12 +458,21 @@ def create_telegram_and_rybka_tmp_files_if_not_created():
     if not exists("TEMP/pid_rybkaTmp"):
         with open("TEMP/pid_rybkaTmp", "w", encoding="utf8") as f:
             f.write(str("99999999"))
+    elif exists("TEMP/pid_rybkaTmp") and os.stat("TEMP/pid_rybkaTmp").st_size == 0:
+        with open("TEMP/pid_rybkaTmp", "w", encoding="utf8") as f:
+            f.write(str("99999999"))
     if not exists("TEMP/core_runsTmp"):
-        with open("TEMP/core_runsTmp", "w", encoding="utf8") as f:
-            f.write(str("99999999"))
+        with open("TEMP/core_runsTmp", "w", encoding="utf8") as g:
+            g.write(str("99999999"))
+    elif exists("TEMP/core_runsTmp") and os.stat("TEMP/core_runsTmp").st_size == 0:
+        with open("TEMP/core_runsTmp", "w", encoding="utf8") as g:
+            g.write(str("99999999"))
     if not exists("TEMP/telegram_pidTmp"):
-        with open("TEMP/telegram_pidTmp", "w", encoding="utf8") as f:
-            f.write(str("99999999"))
+        with open("TEMP/telegram_pidTmp", "w", encoding="utf8") as h:
+            h.write(str("99999999"))
+    elif exists("TEMP/telegram_pidTmp") and os.stat("TEMP/telegram_pidTmp").st_size == 0:
+        with open("TEMP/telegram_pidTmp", "w", encoding="utf8") as h:
+            h.write(str("99999999"))
 
 
 ###############################################
@@ -2393,7 +2402,7 @@ def main(version, mode, head):
                         else:
                             telegram_pid = "placeholder"
         except Exception as e:
-            log.INFO(
+            log.FATAL_7(
                 f"Some helper files do not exist. They are needed in order for the Telegram Listener to work well\n{e}"
             )
     else:

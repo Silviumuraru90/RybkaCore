@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 # Built-in and Third-Party Libs
+import colored as colored_2
 import fileinput
 import json
 import os
+import logging
 import re
 import subprocess
 import sys
@@ -20,6 +22,18 @@ from telegram.ext import *
 from termcolor import colored
 
 from custom_modules.telegram import telegram_active_commands as R
+
+
+####################################################
+##############    Logging Handlers    ##############
+####################################################
+
+logging.getLogger().setLevel(logging.CRITICAL)
+
+
+def ORANGE(message):
+    print(colored_2.fg(202) + f"{message}")
+
 
 ####################################################
 ##############     Initialization     ##############
@@ -493,7 +507,7 @@ def check_existing_bot_process():
         if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
             print(
                 colored(
-                    f"\n🟢 Telegram Listener started and connected to bot! Bot's Process [{str(pID)}]\n",
+                    f"\n🟢 Telegram Listener started and connected to bot!\n",
                     "green",
                 )
             )
@@ -1033,7 +1047,15 @@ def handle_message(update, context):
 
 
 def error(update, context):
-    print(f"Update {update} caused error {context.error}")
+    if "make sure that only one bot instance is running" in str(context.error):
+        ORANGE("\n=========================================================================================")
+        ORANGE(f" 🔀 There was identified another Telegram Listener already active. Perhaps on another PC?\n ⚠️  Shutting down the session in here, while keeping the other one alive!")
+        ORANGE("=========================================================================================\n")
+        if exists("TEMP/telegram_pidTmp"):
+            with open("TEMP/telegram_pidTmp", "r", encoding="utf8") as f:
+                telegram_pID = int(f.read())
+                if psutil.pid_exists(telegram_pID) and "python" in psutil.Process(telegram_pID).name():
+                    psutil.Process(telegram_pID).kill()
 
 
 def main():
