@@ -156,15 +156,14 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 🔘 And, of course, an `internet connection` <br><br><br>
 
 ### &emsp;&emsp;<b>Notes</b><br><br>
-❗️ Note for the actual run of the software. You are `allowed` to run two instances of the bot in different parts of the system / different PCs (`one` in `DEMO` mode, `one` in `LIVE` mode). You can even run `N` instances of `DEMO` bots or `1` x `LIVE` and `N` `DEMO` bots, but please:
-<br><b>&emsp;&emsp;`Never` run more than `1` `LIVE` version of the bot as it will corrupt each other's data!</b><br>
-<b>&emsp;&emsp;`Never` run 2 instances of the bot within the same directory (by opening terminals in the same path or by executable / binary file)
+❗️ Note for the actual run of the software. You are `allowed` to run two instances of the bot in different parts of the system / different PCs (`one` in `DEMO` mode, `one` in `LIVE` mode and in different paths within the system / folders). You can even run `N` instances of `DEMO` bots or `1` x `LIVE` and `N` `DEMO` bots, but please:
+<br><b>&emsp;&emsp;`Never` run more than `1` `LIVE` version of the bot, as it will corrupt each other's data!</b>
 <br><br><br>
 ❗️ Note for the [`RYBKA_TELEGRAM_API_KEY`] var: For Telegram notifications, you'll need to create your own Telegram bot in the `Telegram` app. Simply search for `BotFather` among "Contacts", then type in that chat `/newbot` and follow instructions to create one and grab the API KEY that you need to set in your env as a value for the `RYBKA_TELEGRAM_API_KEY` var. <br><br><br>
 ❗️ Note for the [`RYBKA_TELEGRAM_CHAT_ID`] var: In order to grab this value go to this link: `https://api.telegram.org/bot<replace_with_your_value_for_RYBKA_TELEGRAM_API_KEY>/getUpdates`, then type something in the chat of your newly created bot (not in the same chat for `BotFather`!). The message you typed should be visible there as an API payload. Grab the value for the `RYBKA_TELEGRAM_CHAT_ID` var from there - find it within such structure `"chat":{"id":<your_chat_id_value>,`. Add it to the ENV.<br><br><br>
-❗️ Notes for the [`BIN_KEY`] / [`BIN_SECRET`] vars: <br><br>
+❗️ Notes for the [`BIN_KEY`] / [`BIN_SECRET`] vars: <br>
 
-🔸 Opt out of Binance's `Default Security Controls` for their generated API Keys, if you don't want to have the API Key tied to your IP address in order to be able to give it permissions for `Spot & Margin Trading`. You will find the checkbox to be avoided while you will try to generate an API Key in Binance's GUI:
+🔸 Opt out of Binance's `Default Security Controls` policy for their generated API Keys, if you don't want to have the API Key tied to your IP address in order to be able to give it permissions for `Spot & Margin Trading`. You will find the checkbox to be avoided while you will try to generate an API Key in Binance's GUI:
 
 <div align="center">
   <img src="MEDIA/binance_default_security_controls.PNG">
@@ -183,7 +182,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 <br><br>
 
 ❗️ `Note:` Recommendation for having the best UI output - running `Rybka` software into a `cmd` shell within `Visual Studio Code` <br>
-❗️ `Note:` Recommendation for having the best uptime and better profit return (only due to low electricity cost) - running `Rybka` software on a `Raspberry PI 4` connected directly to a `UPS` <br>
+❗️ `Note:` Recommendation for having the best uptime (this includes opting out of Binance's `Default Security Controls` policy, to be sure your Public IP won't change, as unfortunately, Binance does NOT offer the variant of having a dynamic DNS, which would've solved this part otherwise) and better profit return (only due to low electricity cost) - running `Rybka` software on a `Raspberry PI 4` connected directly to a `UPS` <br>
 <div align="center">
   <img width="300" height="270" src="MEDIA/raspberry_pi.jpeg">
 </div>

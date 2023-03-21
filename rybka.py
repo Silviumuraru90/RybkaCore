@@ -7,6 +7,9 @@ import time
 
 import click
 import requests
+import psutil
+
+from os.path import exists
 
 # custom libs
 from core import current_dir_path_export
@@ -54,16 +57,29 @@ def main(version, mode):
                     f"Attempt to create local folder [{folder}] - FAILED with error:\n{e}"
                 )
 
-    process_pid = os.getpid()
-    log.DEBUG(f"Allocating PID [{process_pid}]\n")
     TMP_folder("TEMP")
-    with open("TEMP/pid_rybkaTmp", "w", encoding="utf8") as f:
-        f.write(str(process_pid))
+
+    kill_secondary_start_of_bot=False
+    if exists("TEMP/pid_rybkaTmp") and os.stat("TEMP/pid_rybkaTmp").st_size != 0:
+        with open("TEMP/pid_rybkaTmp", "r", encoding="utf8") as f:
+            previous_pID = int(f.read())
+            if psutil.pid_exists(previous_pID) and "python" in psutil.Process(previous_pID).name():
+                kill_secondary_start_of_bot = True
+                    
+    process_pid = os.getpid()
+    if kill_secondary_start_of_bot:
+        log.ORANGE(f" 🔮 Rybka bot is already running in this workspace [PID:{previous_pID}].\n 🔪 Killing current run [PID:{process_pid}]!")
+        psutil.Process(process_pid).kill()
+
+    log.DEBUG(f"Allocating PID [{process_pid}]\n")
+    
+    with open("TEMP/pid_rybkaTmp", "w", encoding="utf8") as z:
+        z.write(str(process_pid))
     time.sleep(1)
 
     core_runs = 0
-    with open("TEMP/core_runsTmp", "w", encoding="utf8") as f:
-        f.write(str(core_runs))
+    with open("TEMP/core_runsTmp", "w", encoding="utf8") as y:
+        y.write(str(core_runs))
     time.sleep(1)
 
     if not version and not mode:
@@ -78,8 +94,8 @@ def main(version, mode):
         while True:
             core_runs += 1
             log.DEBUG(f"Run nr. [{core_runs}] of Rybka Software\n\n")
-            with open("TEMP/core_runsTmp", "w", encoding="utf8") as f:
-                f.write(str(core_runs))
+            with open("TEMP/core_runsTmp", "w", encoding="utf8") as x:
+                x.write(str(core_runs))
             log.ORANGE(" 📡 Rybka bot is being started...")
             time.sleep(2)
 
