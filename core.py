@@ -2374,6 +2374,18 @@ def main(version, mode, head):
 
     if RYBKA_TELEGRAM_SWITCH.upper() == "TRUE":
         create_telegram_and_rybka_tmp_files_if_not_created()
+
+        def handling_open_of_telegram_listener():
+            with open("TEMP/telegram_pidTmp", "r", encoding="utf8") as file:
+                telegram_process = int(file.read())
+                if not psutil.pid_exists(telegram_process):
+                    telegram_pid = subprocess.Popen(
+                        ["python", "tlgrm_interactive.py"]
+                    )
+                else:
+                    telegram_pid = "placeholder"
+            return telegram_pid
+
         try:
             with open("TEMP/pid_rybkaTmp", "r", encoding="utf8") as file1:
                 pID = int(file1.read())
@@ -2384,23 +2396,14 @@ def main(version, mode, head):
                     and "python" in psutil.Process(pID).name()
                     and core_runs == 1
                 ):
-                    with open("TEMP/telegram_pidTmp", "r", encoding="utf8") as file3:
-                        telegram_process = int(file3.read())
-                        if not psutil.pid_exists(telegram_process):
-                            telegram_pid = subprocess.Popen(
-                                ["python", "tlgrm_interactive.py"]
-                            )
-                        else:
-                            telegram_pid = "placeholder"
+                    telegram_pid = handling_open_of_telegram_listener()
                 elif not psutil.pid_exists(pID):
-                    with open("TEMP/telegram_pidTmp", "r", encoding="utf8") as file3:
-                        telegram_process = int(file3.read())
-                        if not psutil.pid_exists(telegram_process):
-                            telegram_pid = subprocess.Popen(
-                                ["python", "tlgrm_interactive.py"]
-                            )
-                        else:
-                            telegram_pid = "placeholder"
+                    telegram_pid = handling_open_of_telegram_listener()
+                else:
+                    # case of "restarter" pid existing, but more than 1 core runs
+                    # likely for this case to happen on non-hardcoded-errors that restart the restarter
+                    # not so likely for Telegram PID to not still exist, but treating the case nonetheless
+                    telegram_pid = handling_open_of_telegram_listener()
         except Exception as e:
             log.FATAL_7(
                 f"Some helper files do not exist. They are needed in order for the Telegram Listener to work well\n{e}"
