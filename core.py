@@ -784,6 +784,23 @@ def real_time_balances_update():
         log.WARN(f"Could not update balance file due to error: \n{e}")
 
 
+def previous_runs_sanitation(target_folder):
+    pattern = r".*_.*_.*_.*_.*_.*_.*_.*_.*_.*"
+
+    folders = [f for f in os.listdir(".") if os.path.isdir(f)]
+
+    found_match = False
+    for folder in folders:
+        if re.match(pattern, folder):
+            found_match = True
+            shutil.move(folder, target_folder)
+
+    if found_match:
+        log.ORANGE(" ✅ Previous run(s)' folder(s) found and moved to the 'archived_logs' folder.\n")
+    else:
+        log.ORANGE(" ✅ Current dir is already sanitized.\n")
+
+
 ###############################################
 ###########   WEBSOCKET FUNCTIONS   ###########
 ###############################################
@@ -808,10 +825,11 @@ def on_open(ws):
 
 
 def on_close(ws, close_status_code, close_msg):
-    archive_folder = "archived_logs"
-    if not os.path.isdir(archive_folder):
-        os.makedirs(archive_folder)
-    shutil.move(current_export_dir, archive_folder)
+    global archived_logs_folder
+
+    if not os.path.isdir(archived_logs_folder):
+        os.makedirs(archived_logs_folder)
+    shutil.move(current_export_dir, archived_logs_folder)
 
     print(
         f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.{bcolors.ENDC}"
@@ -869,30 +887,18 @@ def on_error(ws, message):
 
 
 def on_message(ws, message):
-    global uptime
-    global start_time
-    global client
-    global closed_candles
+    global uptime, start_time
+    global client, closed_candles
     global ktbr_config
-    global balance_usdt
-    global balance_egld
-    global balance_bnb
-    global total_usdt_profit
-    global bnb_commission
-    global multiple_sells
-    global nr_of_trades
+    global balance_usdt, balance_egld, balance_bnb
+    global total_usdt_profit, bnb_commission
+    global multiple_sells, nr_of_trades
     global subsequent_valid_rsi_counter
-    global RYBKA_MODE
-    global TRADE_QUANTITY
-    global RSI_PERIOD
-    global TRADE_SYMBOL
-    global RSI_FOR_BUY
-    global RSI_FOR_SELL
-    global MIN_PROFIT
-    global TRADING_BOOST_LVL
-    global USDT_SAFETY_NET
-    global DEBUG_LVL
-    global AUX_TRADE_QUANTITY
+    global archived_logs_folder
+    global RYBKA_MODE, DEBUG_LVL
+    global RSI_PERIOD, RSI_FOR_BUY, RSI_FOR_SELL
+    global TRADING_BOOST_LVL, TRADE_QUANTITY, TRADE_SYMBOL, AUX_TRADE_QUANTITY
+    global USDT_SAFETY_NET, MIN_PROFIT
 
     log.HIGH_VERBOSITY(message)
     candle = json.loads(message)["k"]
@@ -2141,7 +2147,7 @@ def main(version, mode, head):
     global locked_balance_bnb
     global total_usdt_profit
 
-    global current_export_dir
+    global current_export_dir, archived_logs_folder
 
     if not version and not mode and not head:
         click.echo(click.get_current_context().get_help())
@@ -2177,6 +2183,17 @@ def main(version, mode, head):
     ###############################################
 
     clear_terminal()
+
+    try:
+        archived_logs_folder="archived_logs"
+        TMP_folder(archived_logs_folder)
+    except Exception as e:
+        log.FATAL_7(f"[{archived_logs_folder}] folder could not be created. Reason for failure:\n{e}")
+
+    try:
+        previous_runs_sanitation(archived_logs_folder)
+    except Exception as e:
+        log.FATAL_7(f"[SANITATION] process failed. Reason for failure:\n{e}")    
 
     if platform == "linux" or platform == "linux2":
         pass
