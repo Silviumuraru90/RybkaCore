@@ -6,6 +6,7 @@
 
 # Software's output
 archived_logs/
+BACK_UPS_FOR_*
 LIVE/
 DEMO/
 TEMP/

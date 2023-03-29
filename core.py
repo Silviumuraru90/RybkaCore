@@ -460,13 +460,10 @@ def create_telegram_and_rybka_tmp_files_if_not_created():
 def back_up():
     global RYBKA_MODE
 
-    back_up_dir = f'{current_export_dir}/{RYBKA_MODE}_BACK_UPS/LOGS_AT_{datetime.now().strftime("%d_%m_%Y")}_{datetime.now().strftime("%H_%M_%S")}'
+    back_up_dir = f'BACK_UPS_FOR_{RYBKA_MODE}'
     if os.path.isdir(back_up_dir) is False:
         os.makedirs(back_up_dir)
 
-    shutil.copyfile(f"{RYBKA_MODE}/number_of_buy_trades", f"{back_up_dir}/number_of_buy_trades")
-    shutil.copyfile(f"{RYBKA_MODE}/most_recent_commission", f"{back_up_dir}/most_recent_commission")
-    shutil.copyfile(f"{RYBKA_MODE}/usdt_profit", f"{back_up_dir}/usdt_profit")
     shutil.copyfile(f"{RYBKA_MODE}/ktbr", f"{back_up_dir}/ktbr")
 
 
@@ -765,6 +762,31 @@ def previous_runs_sanitation(target_folder):
         log.ORANGE(" ✅ Current dir is already sanitized.\n")
 
 
+def move_and_replace(target_folder, path=None):
+    original_dir = os.getcwd()
+
+    if path:
+        os.chdir(path)
+
+    with open(target_folder, encoding='utf-8') as f:
+        num_lines = sum(1 for line in f)
+
+    if num_lines > 10000:
+        log.INFO(f"File [${target_folder}] reached more than 10k lines. Archiving it and creating a fresher one.")
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename, extension = os.path.splitext(target_folder)
+        new_filename = f"{filename}_{timestamp}{extension}"
+        archive_path = os.path.join(os.getcwd(), "archive")
+        if not os.path.exists(archive_path):
+            os.makedirs(archive_path)
+        shutil.move(target_folder, os.path.join(archive_path, new_filename))
+        with open(target_folder, "w", encoding='utf-8') as f:
+            f.write("")
+        
+    if path:
+        os.chdir(original_dir)
+
+
 ###############################################
 ###########   WEBSOCKET FUNCTIONS   ###########
 ###############################################
@@ -856,7 +878,7 @@ def on_message(ws, message):
     global total_usdt_profit, bnb_commission
     global multiple_sells, nr_of_trades
     global subsequent_valid_rsi_counter
-    global archived_logs_folder
+    global archived_logs_folder, current_export_dir
     global RYBKA_MODE, DEBUG_LVL
     global RSI_PERIOD, RSI_FOR_BUY, RSI_FOR_SELL
     global TRADING_BOOST_LVL, TRADE_QUANTITY, TRADE_SYMBOL, AUX_TRADE_QUANTITY
@@ -1220,7 +1242,6 @@ def on_message(ws, message):
                                     else:
                                         log.VERBOSE("HEATMAP ALLOWS BUYING!\n")
                                         try:
-                                            back_up()
                                             if RYBKA_MODE == "LIVE":
                                                 log.VERBOSE(
                                                     f"Before BUY. USDT balance is [{balance_usdt}]"
@@ -1413,6 +1434,11 @@ def on_message(ws, message):
                                                     )
 
                                                 back_up()
+                                                move_and_replace("errors_thrown", RYBKA_MODE)
+                                                move_and_replace("full_order_history", RYBKA_MODE)
+                                                move_and_replace(f"{TRADE_SYMBOL}_DEBUG", current_export_dir)
+                                                move_and_replace(f"{TRADE_SYMBOL}_historical_prices", current_export_dir)
+                                                move_and_replace(f"{TRADE_SYMBOL}_order_history", current_export_dir)
 
                                                 if RYBKA_MODE == "LIVE":
                                                     for i in range(1, 11):
@@ -1646,7 +1672,6 @@ def on_message(ws, message):
                                 log.DEBUG(f"Selling buy [{sell}] of qtty [{ktbr_config[sell][0]}]")
 
                                 try:
-                                    back_up()
                                     if RYBKA_MODE == "LIVE":
                                         order = client.order_market_sell(
                                             symbol=TRADE_SYMBOL,
@@ -1834,6 +1859,11 @@ def on_message(ws, message):
                                             )
 
                                         back_up()
+                                        move_and_replace("errors_thrown", RYBKA_MODE)
+                                        move_and_replace("full_order_history", RYBKA_MODE)
+                                        move_and_replace(f"{TRADE_SYMBOL}_DEBUG", current_export_dir)
+                                        move_and_replace(f"{TRADE_SYMBOL}_historical_prices", current_export_dir)
+                                        move_and_replace(f"{TRADE_SYMBOL}_order_history", current_export_dir)
 
                                         if RYBKA_MODE == "LIVE":
                                             for i in range(1, 11):
@@ -2143,6 +2173,8 @@ def main(version, mode, head):
         full_order_history_file()
         real_time_balances()
         back_up()
+        move_and_replace("errors_thrown", RYBKA_MODE)
+        move_and_replace("full_order_history", RYBKA_MODE)
 
     software_config_params()
     user_initial_config()
