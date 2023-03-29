@@ -171,7 +171,7 @@ patch_versioning:
   script:
     - !reference [.debug_template, script]
     - git config --global user.email silviumuraru90@gmail.com
-    - git config --global user.name "RYBKA Software CI"
+    - git config --global user.name "RYBKACORE Software CI"
     - git clone https://gitlab.com/Silviu_space/rybka.git RYBKA
     - pushd RYBKA
     - git checkout master

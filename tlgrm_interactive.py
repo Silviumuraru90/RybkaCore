@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 
 # Built-in and Third-Party Libs
-import colored as colored_2
 import fileinput
 import json
-import os
 import logging
+import os
 import re
 import subprocess
 import sys
 import time
 from os.path import exists
 
+import colored as colored_2
 import GPUtil
 import psutil
 from binance.client import Client
@@ -22,7 +22,6 @@ from telegram.ext import *
 from termcolor import colored
 
 from custom_modules.telegram import telegram_active_commands as R
-
 
 ####################################################
 ##############    Logging Handlers    ##############
@@ -240,32 +239,22 @@ def lifetime_buys_nr_command(update, context):
     if exists("LIVE/number_of_buy_trades"):
         with open("LIVE/number_of_buy_trades", "r", encoding="utf8") as f:
             if os.stat("LIVE/number_of_buy_trades").st_size == 0:
-                update.message.reply_text(
-                    " ✅ [LIVE/number_of_buy_trades] file exists and is empty"
-                )
+                update.message.reply_text(" ✅ [LIVE/number_of_buy_trades] file exists and is empty")
             else:
                 nr_of_buys = int(f.read())
                 if not nr_of_buys or nr_of_buys == 0:
-                    update.message.reply_text(
-                        "There are no previous buys on Binance platform!"
-                    )
+                    update.message.reply_text("There are no previous buys on Binance platform!")
                 else:
-                    update.message.reply_text(
-                        f"🗃 Lifetime nr. of buy trades is [{nr_of_buys}]"
-                    )
+                    update.message.reply_text(f"🗃 Lifetime nr. of buy trades is [{nr_of_buys}]")
     else:
-        update.message.reply_text(
-            "The file for lifetime nr. of buy trades does NOT exist!"
-        )
+        update.message.reply_text("The file for lifetime nr. of buy trades does NOT exist!")
 
 
 def profit_command(update, context):
     if exists("LIVE/usdt_profit"):
         with open("LIVE/usdt_profit", "r", encoding="utf8") as f:
             if os.stat("LIVE/usdt_profit").st_size == 0:
-                update.message.reply_text(
-                    " ✅ [LIVE/usdt_profit] file exists and is empty"
-                )
+                update.message.reply_text(" ✅ [LIVE/usdt_profit] file exists and is empty")
             else:
                 profit = float(f.read())
                 if not profit or profit == 0:
@@ -280,9 +269,7 @@ def balances_command(update, context):
     if exists("LIVE/real_time_balances"):
         with open("LIVE/real_time_balances", "r", encoding="utf8") as f:
             if os.stat("LIVE/real_time_balances").st_size == 0:
-                update.message.reply_text(
-                    " ✅ [LIVE/real_time_balances] file exists and is empty"
-                )
+                update.message.reply_text(" ✅ [LIVE/real_time_balances] file exists and is empty")
             else:
                 balances = f.read()
                 if not balances:
@@ -386,28 +373,21 @@ def start_cmds_template(update, context):
             )
         else:
             update.message.reply_text("💤 Bot is indeed stopped at this moment.")
-            update.message.reply_text(
-                f"🚀 Starting Rybka bot!\nPlease wait..."
-            )
+            update.message.reply_text("🚀 Starting Rybka bot!\nPlease wait...")
             try:
-                subprocess.Popen(["python", f"rybka.py", "-m", "live"])
+                subprocess.Popen(["python", "rybka.py", "-m", "live"])
                 for i in range(0, 10):
                     try:
                         time.sleep(2 * i)
                         with open("TEMP/core_pidTmp", "r", encoding="utf8") as f:
                             pID = int(f.read())
-                            if (
-                                psutil.pid_exists(pID)
-                                and "python" in psutil.Process(pID).name()
-                            ):
+                            if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
                                 update.message.reply_text(
                                     "✅ Bot got successfully started remotely!"
                                 )
                                 break
                             elif i == 9:
-                                update.message.reply_text(
-                                    "❌ Bot could NOT be started remotely!"
-                                )
+                                update.message.reply_text("❌ Bot could NOT be started remotely!")
                     except Exception as e:
                         update.message.reply_text(
                             f"Error occured while checking if bot got started or not via a remote command. Exception raised:\n{e}"
@@ -439,10 +419,7 @@ def stop_software_command(update, context):
             update.message.reply_text(
                 f"🪓 Killing the process [pID:{str(core_pID)}]!\nPlease wait..."
             )
-            if (
-                psutil.pid_exists(rybka_pID)
-                and "python" in psutil.Process(rybka_pID).name()
-            ):
+            if psutil.pid_exists(rybka_pID) and "python" in psutil.Process(rybka_pID).name():
                 rybka_run = True
                 update.message.reply_text(
                     f"🪓 Killing a secondary process [pID:{str(rybka_pID)}]!\nPlease wait..."
@@ -459,12 +436,8 @@ def stop_software_command(update, context):
                         "❌ Bot could NOT be stopped remotely! Interesting, as the kill process cmd did complete just fine..."
                     )
                 else:
-                    update.message.reply_text(
-                        "Too bad 🥺, go make profit somewhere else now!"
-                    )
-                    update.message.reply_text(
-                        "🚮 Bot got successfully stopped remotely!"
-                    )
+                    update.message.reply_text("Too bad 🥺, go make profit somewhere else now!")
+                    update.message.reply_text("🚮 Bot got successfully stopped remotely!")
             except Exception as e:
                 update.message.reply_text(f"Exception raised:\n{e}")
         else:
@@ -487,9 +460,7 @@ def weights_command(update, context):
                 weights = json.loads(f.read())
                 for weight_key, weight_value in weights.items():
                     if update["message"]["text"][1:] == weight_key:
-                        update.message.reply_text(
-                            f"🟢 [{weight_key}] ➛ [{weight_value}]"
-                        )
+                        update.message.reply_text(f"🟢 [{weight_key}] ➛ [{weight_value}]")
             else:
                 update.message.reply_text(
                     "💤 Bot is stopped. Help it get back on track for an accurate representation of weights!"
@@ -507,7 +478,7 @@ def check_existing_bot_process():
         if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
             print(
                 colored(
-                    f"\n🟢 Telegram Listener started and connected to bot!\n",
+                    "\n🟢 Telegram Listener started and connected to bot!\n",
                     "green",
                 )
             )
@@ -1048,13 +1019,22 @@ def handle_message(update, context):
 
 def error(update, context):
     if "make sure that only one bot instance is running" in str(context.error):
-        ORANGE("\n=========================================================================================")
-        ORANGE(f" 🔀 There was identified another Telegram Listener already active. Perhaps on another PC?\n ⚠️  Shutting down the session in here, while keeping the other one alive!")
-        ORANGE("=========================================================================================\n")
+        ORANGE(
+            "\n========================================================================================="
+        )
+        ORANGE(
+            " 🔀 There was identified another Telegram Listener already active. Perhaps on another PC?\n ⚠️  Shutting down the session in here, while keeping the other one alive!"
+        )
+        ORANGE(
+            "=========================================================================================\n"
+        )
         if exists("TEMP/telegram_pidTmp"):
             with open("TEMP/telegram_pidTmp", "r", encoding="utf8") as f:
                 telegram_pID = int(f.read())
-                if psutil.pid_exists(telegram_pID) and "python" in psutil.Process(telegram_pID).name():
+                if (
+                    psutil.pid_exists(telegram_pID)
+                    and "python" in psutil.Process(telegram_pID).name()
+                ):
                     psutil.Process(telegram_pID).kill()
 
 
@@ -1108,160 +1088,68 @@ def main():
     dp.add_handler(CommandHandler("modify_weights", weight_modification_command))
 
     dp.add_handler(CommandHandler("m_RYBKA_TRADING_BOOST_LVL", modify_weights_command))
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADING_BOOST_LVL_1", m_RYBKA_TRADING_BOOST_LVL_1_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADING_BOOST_LVL_2", m_RYBKA_TRADING_BOOST_LVL_2_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADING_BOOST_LVL_3", m_RYBKA_TRADING_BOOST_LVL_3_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADING_BOOST_LVL_4", m_RYBKA_TRADING_BOOST_LVL_4_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADING_BOOST_LVL_5", m_RYBKA_TRADING_BOOST_LVL_5_command)
-    )
+    dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL_1", m_RYBKA_TRADING_BOOST_LVL_1_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL_2", m_RYBKA_TRADING_BOOST_LVL_2_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL_3", m_RYBKA_TRADING_BOOST_LVL_3_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL_4", m_RYBKA_TRADING_BOOST_LVL_4_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL_5", m_RYBKA_TRADING_BOOST_LVL_5_command))
 
     dp.add_handler(CommandHandler("m_RYBKA_TRADE_QUANTITY", modify_weights_command))
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_0_1", m_RYBKA_TRADE_QUANTITY_0_1_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_0_2", m_RYBKA_TRADE_QUANTITY_0_2_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_0_3", m_RYBKA_TRADE_QUANTITY_0_3_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_0_4", m_RYBKA_TRADE_QUANTITY_0_4_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_0_5", m_RYBKA_TRADE_QUANTITY_0_5_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_0_6", m_RYBKA_TRADE_QUANTITY_0_6_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_0_7", m_RYBKA_TRADE_QUANTITY_0_7_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_0_8", m_RYBKA_TRADE_QUANTITY_0_8_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_0_9", m_RYBKA_TRADE_QUANTITY_0_9_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_1", m_RYBKA_TRADE_QUANTITY_1_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_1_2", m_RYBKA_TRADE_QUANTITY_1_2_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_1_5", m_RYBKA_TRADE_QUANTITY_1_5_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_1_8", m_RYBKA_TRADE_QUANTITY_1_8_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_2", m_RYBKA_TRADE_QUANTITY_2_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_2_2", m_RYBKA_TRADE_QUANTITY_2_2_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_2_5", m_RYBKA_TRADE_QUANTITY_2_5_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_2_8", m_RYBKA_TRADE_QUANTITY_2_8_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_3", m_RYBKA_TRADE_QUANTITY_3_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_3_5", m_RYBKA_TRADE_QUANTITY_3_5_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_4", m_RYBKA_TRADE_QUANTITY_4_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_TRADE_QUANTITY_5", m_RYBKA_TRADE_QUANTITY_5_command)
-    )
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_1", m_RYBKA_TRADE_QUANTITY_0_1_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_2", m_RYBKA_TRADE_QUANTITY_0_2_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_3", m_RYBKA_TRADE_QUANTITY_0_3_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_4", m_RYBKA_TRADE_QUANTITY_0_4_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_5", m_RYBKA_TRADE_QUANTITY_0_5_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_6", m_RYBKA_TRADE_QUANTITY_0_6_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_7", m_RYBKA_TRADE_QUANTITY_0_7_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_8", m_RYBKA_TRADE_QUANTITY_0_8_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_9", m_RYBKA_TRADE_QUANTITY_0_9_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_1", m_RYBKA_TRADE_QUANTITY_1_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_1_2", m_RYBKA_TRADE_QUANTITY_1_2_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_1_5", m_RYBKA_TRADE_QUANTITY_1_5_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_1_8", m_RYBKA_TRADE_QUANTITY_1_8_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_2", m_RYBKA_TRADE_QUANTITY_2_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_2_2", m_RYBKA_TRADE_QUANTITY_2_2_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_2_5", m_RYBKA_TRADE_QUANTITY_2_5_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_2_8", m_RYBKA_TRADE_QUANTITY_2_8_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_3", m_RYBKA_TRADE_QUANTITY_3_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_3_5", m_RYBKA_TRADE_QUANTITY_3_5_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_4", m_RYBKA_TRADE_QUANTITY_4_command))
+    dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_5", m_RYBKA_TRADE_QUANTITY_5_command))
 
     dp.add_handler(CommandHandler("m_RYBKA_MIN_PROFIT", modify_weights_command))
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_0_1", m_RYBKA_MIN_PROFIT_0_1_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_0_2", m_RYBKA_MIN_PROFIT_0_2_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_0_3", m_RYBKA_MIN_PROFIT_0_3_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_0_4", m_RYBKA_MIN_PROFIT_0_4_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_0_5", m_RYBKA_MIN_PROFIT_0_5_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_0_6", m_RYBKA_MIN_PROFIT_0_6_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_0_7", m_RYBKA_MIN_PROFIT_0_7_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_0_8", m_RYBKA_MIN_PROFIT_0_8_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_0_9", m_RYBKA_MIN_PROFIT_0_9_command)
-    )
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_1", m_RYBKA_MIN_PROFIT_0_1_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_2", m_RYBKA_MIN_PROFIT_0_2_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_3", m_RYBKA_MIN_PROFIT_0_3_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_4", m_RYBKA_MIN_PROFIT_0_4_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_5", m_RYBKA_MIN_PROFIT_0_5_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_6", m_RYBKA_MIN_PROFIT_0_6_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_7", m_RYBKA_MIN_PROFIT_0_7_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_8", m_RYBKA_MIN_PROFIT_0_8_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_0_9", m_RYBKA_MIN_PROFIT_0_9_command))
     dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_1", m_RYBKA_MIN_PROFIT_1_command))
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_1_2", m_RYBKA_MIN_PROFIT_1_2_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_1_5", m_RYBKA_MIN_PROFIT_1_5_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_1_8", m_RYBKA_MIN_PROFIT_1_8_command)
-    )
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_1_2", m_RYBKA_MIN_PROFIT_1_2_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_1_5", m_RYBKA_MIN_PROFIT_1_5_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_1_8", m_RYBKA_MIN_PROFIT_1_8_command))
     dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_2", m_RYBKA_MIN_PROFIT_2_command))
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_2_2", m_RYBKA_MIN_PROFIT_2_2_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_2_5", m_RYBKA_MIN_PROFIT_2_5_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_2_8", m_RYBKA_MIN_PROFIT_2_8_command)
-    )
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_2_2", m_RYBKA_MIN_PROFIT_2_2_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_2_5", m_RYBKA_MIN_PROFIT_2_5_command))
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_2_8", m_RYBKA_MIN_PROFIT_2_8_command))
     dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_3", m_RYBKA_MIN_PROFIT_3_command))
-    dp.add_handler(
-        CommandHandler("RYBKA_MIN_PROFIT_3_5", m_RYBKA_MIN_PROFIT_3_5_command)
-    )
+    dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_3_5", m_RYBKA_MIN_PROFIT_3_5_command))
     dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_4", m_RYBKA_MIN_PROFIT_4_command))
     dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT_5", m_RYBKA_MIN_PROFIT_5_command))
 
     dp.add_handler(CommandHandler("m_RYBKA_EMAIL_SWITCH", modify_weights_command))
-    dp.add_handler(
-        CommandHandler("RYBKA_EMAIL_SWITCH_true", m_RYBKA_EMAIL_SWITCH_true_command)
-    )
-    dp.add_handler(
-        CommandHandler("RYBKA_EMAIL_SWITCH_false", m_RYBKA_EMAIL_SWITCH_false_command)
-    )
+    dp.add_handler(CommandHandler("RYBKA_EMAIL_SWITCH_true", m_RYBKA_EMAIL_SWITCH_true_command))
+    dp.add_handler(CommandHandler("RYBKA_EMAIL_SWITCH_false", m_RYBKA_EMAIL_SWITCH_false_command))
 
     dp.add_handler(CommandHandler("m_RYBKA_TELEGRAM_SWITCH", modify_weights_command))
     dp.add_handler(
-        CommandHandler(
-            "RYBKA_TELEGRAM_SWITCH_true", m_RYBKA_TELEGRAM_SWITCH_true_command
-        )
+        CommandHandler("RYBKA_TELEGRAM_SWITCH_true", m_RYBKA_TELEGRAM_SWITCH_true_command)
     )
     dp.add_handler(
-        CommandHandler(
-            "RYBKA_TELEGRAM_SWITCH_false", m_RYBKA_TELEGRAM_SWITCH_false_command
-        )
+        CommandHandler("RYBKA_TELEGRAM_SWITCH_false", m_RYBKA_TELEGRAM_SWITCH_false_command)
     )
 
     dp.add_handler(MessageHandler(Filters.text, handle_message))

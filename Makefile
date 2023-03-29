@@ -4,19 +4,17 @@ $(info ===============================================)
 
 
 # ===============================================
-#	Do-it-all functions
-# ===============================================
-
-sc: style check
-
-
-
-# ===============================================
 #	Variables
 # ===============================================
 
 PYINSTALLER=$(shell which pyinstaller)
 
+
+# ===============================================
+#	Do-it-all functions
+# ===============================================
+
+sc: style check
 
 
 # ===============================================
@@ -44,10 +42,10 @@ tk_linux:
 style: black isort
 
 isort:
-	( isort *.py )
+	( isort --recursive . )
 
 black:
-	( black --line-length 100 *.py )
+	( black --line-length 100 . )
 
 format: style
 
@@ -59,12 +57,12 @@ format: style
 checks: pylint pydocstyle flake8
 
 pylint:
-	( pylint --rcfile=.pylintrc --output-format=parseable *.py )
+	( pylint --rcfile=.pylintrc --output-format=parseable **/*.py )
 
 pydocstyle:
-	( pydocstyle *.py )
+	( pydocstyle --match-dir=. . )
 
 flake8:
-	( flake8 *.py )
+	( flake8 --exclude=.git,__pycache__,.mypy_cache --max-line-length=100 . )
 
 check: checks

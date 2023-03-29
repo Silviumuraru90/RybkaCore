@@ -84,9 +84,7 @@ def binance_account_status():
     global client
     acc_status = client.get_account_status()
     if acc_status["data"].upper() == "NORMAL":
-        log.INFO_BOLD(
-            f" ✅ Binance acc. status    -  {bcolors.PURPLE}{acc_status['data'].upper()}"
-        )
+        log.INFO_BOLD(f" ✅ Binance acc. status    -  {bcolors.PURPLE}{acc_status['data'].upper()}")
     else:
         log.FATAL_7(f"Binance acc. status    -  {acc_status['data'].upper()}")
 
@@ -163,14 +161,10 @@ def log_files_creation(direct_call="1"):
                 f.write(
                     f"Here is a detailed view of the history of orders done for the [{TRADE_SYMBOL}] currency pair:\n\n"
                 )
-            with open(
-                f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", "w", encoding="utf8"
-            ) as f:
+            with open(f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG", "w", encoding="utf8") as f:
                 f.write(f"DEBUG logs for the [{TRADE_SYMBOL}] currency pair:\n\n")
 
-        with open(
-            f"{current_export_dir}/{TRADE_SYMBOL}_weights", "w", encoding="utf8"
-        ) as f:
+        with open(f"{current_export_dir}/{TRADE_SYMBOL}_weights", "w", encoding="utf8") as f:
             f.write(
                 f"Here is a detailed view of weights set for the [{TRADE_SYMBOL}] currency pair:\n\n"
             )
@@ -179,9 +173,7 @@ def log_files_creation(direct_call="1"):
                 f.write(f"DEBUG_LVL       set to: {DEBUG_LVL:>50}")
             f.write(f"SOCKET          set to: {SOCKET:>50}\n")
             f.write(f"TRADE SYMBOL    set to: {TRADE_SYMBOL:>50}\n")
-            f.write(
-                f"TRADE QUANTITY  set to: {TRADE_QUANTITY:>50} coins per transaction\n"
-            )
+            f.write(f"TRADE QUANTITY  set to: {TRADE_QUANTITY:>50} coins per transaction\n")
             f.write(f"MIN PROFIT      set to: {MIN_PROFIT:>50} USDT per transaction\n")
             f.write(f"USDT SAFETY NET set to: {str(USDT_SAFETY_NET):>50} USDT\n")
             f.write(f"RSI PERIOD      set to: {RSI_PERIOD:>50} minutes\n")
@@ -219,9 +211,7 @@ def TMP_folder(folder):
         try:
             os.makedirs(folder)
         except Exception as e:
-            log.FATAL_7(
-                f"Attempt to create local folder [{folder}] - FAILED with error:\n{e}"
-            )
+            log.FATAL_7(f"Attempt to create local folder [{folder}] - FAILED with error:\n{e}")
 
 
 def ktbr_configuration():
@@ -253,9 +243,7 @@ def ktbr_configuration():
             open(f"{RYBKA_MODE}/ktbr", "w", encoding="utf8").close()
             log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/ktbr] file created!")
         except Exception as e:
-            log.FATAL_7(
-                f"[{RYBKA_MODE}/ktbr] file could NOT be created!\nFailing with error:\n{e}"
-            )
+            log.FATAL_7(f"[{RYBKA_MODE}/ktbr] file could NOT be created!\nFailing with error:\n{e}")
     log.INFO(
         "====================================================================================================================================="
     )
@@ -303,9 +291,7 @@ def commission_file():
     if exists(f"{RYBKA_MODE}/most_recent_commission"):
         with open(f"{RYBKA_MODE}/most_recent_commission", "r", encoding="utf8") as f:
             if os.stat(f"{RYBKA_MODE}/most_recent_commission").st_size == 0:
-                log.INFO_BOLD(
-                    f" ✅ [{RYBKA_MODE}/most_recent_commission] file exists and is empty"
-                )
+                log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/most_recent_commission] file exists and is empty")
             else:
                 try:
                     bnb_commission = float(f.read())
@@ -338,9 +324,7 @@ def nr_of_trades_file():
     if exists(f"{RYBKA_MODE}/number_of_buy_trades"):
         with open(f"{RYBKA_MODE}/number_of_buy_trades", "r", encoding="utf8") as f:
             if os.stat(f"{RYBKA_MODE}/number_of_buy_trades").st_size == 0:
-                log.INFO_BOLD(
-                    f" ✅ [{RYBKA_MODE}/number_of_buy_trades] file exists and is empty"
-                )
+                log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/number_of_buy_trades] file exists and is empty")
             else:
                 try:
                     nr_of_trades = int(f.read())
@@ -372,9 +356,7 @@ def full_order_history_file():
     if exists(f"{RYBKA_MODE}/full_order_history"):
         with open(f"{RYBKA_MODE}/full_order_history", "r", encoding="utf8"):
             if os.stat(f"{RYBKA_MODE}/full_order_history").st_size == 0:
-                log.INFO_BOLD(
-                    f" ✅ [{RYBKA_MODE}/full_order_history] file exists and is empty"
-                )
+                log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/full_order_history] file exists and is empty")
             else:
                 log.INFO_BOLD(
                     f" ✅ [{RYBKA_MODE}/full_order_history] file exists and contains past information!"
@@ -425,9 +407,7 @@ def ktbr_integrity():
             sum_of_ktbr_cryptocurrency += v[0]
 
         log.VERBOSE(f"ktbr_config_check is {ktbr_config_check}")
-        log.VERBOSE(
-            f"sum_of_ktbr_cryptocurrency rounded is {round(sum_of_ktbr_cryptocurrency, 4)}"
-        )
+        log.VERBOSE(f"sum_of_ktbr_cryptocurrency rounded is {round(sum_of_ktbr_cryptocurrency, 4)}")
         log.VERBOSE(f"ktbr_integrity()'s egld balance is {balance_egld}")
 
         if round(sum_of_ktbr_cryptocurrency, 4) <= balance_egld:
@@ -455,13 +435,19 @@ def all_errors_file():
 
 
 def create_telegram_and_rybka_tmp_files_if_not_created():
-    if not exists("TEMP/pid_rybkaTmp") or (exists("TEMP/pid_rybkaTmp") and os.stat("TEMP/pid_rybkaTmp").st_size == 0):
+    if not exists("TEMP/pid_rybkaTmp") or (
+        exists("TEMP/pid_rybkaTmp") and os.stat("TEMP/pid_rybkaTmp").st_size == 0
+    ):
         with open("TEMP/pid_rybkaTmp", "w", encoding="utf8") as f:
             f.write(str("99999999"))
-    if not exists("TEMP/core_runsTmp") or (exists("TEMP/core_runsTmp") and os.stat("TEMP/core_runsTmp").st_size == 0):
+    if not exists("TEMP/core_runsTmp") or (
+        exists("TEMP/core_runsTmp") and os.stat("TEMP/core_runsTmp").st_size == 0
+    ):
         with open("TEMP/core_runsTmp", "w", encoding="utf8") as g:
             g.write(str("99999999"))
-    if not exists("TEMP/telegram_pidTmp") or (exists("TEMP/telegram_pidTmp") and os.stat("TEMP/telegram_pidTmp").st_size == 0):
+    if not exists("TEMP/telegram_pidTmp") or (
+        exists("TEMP/telegram_pidTmp") and os.stat("TEMP/telegram_pidTmp").st_size == 0
+    ):
         with open("TEMP/telegram_pidTmp", "w", encoding="utf8") as h:
             h.write(str("99999999"))
 
@@ -478,12 +464,8 @@ def back_up():
     if os.path.isdir(back_up_dir) is False:
         os.makedirs(back_up_dir)
 
-    shutil.copyfile(
-        f"{RYBKA_MODE}/number_of_buy_trades", f"{back_up_dir}/number_of_buy_trades"
-    )
-    shutil.copyfile(
-        f"{RYBKA_MODE}/most_recent_commission", f"{back_up_dir}/most_recent_commission"
-    )
+    shutil.copyfile(f"{RYBKA_MODE}/number_of_buy_trades", f"{back_up_dir}/number_of_buy_trades")
+    shutil.copyfile(f"{RYBKA_MODE}/most_recent_commission", f"{back_up_dir}/most_recent_commission")
     shutil.copyfile(f"{RYBKA_MODE}/usdt_profit", f"{back_up_dir}/usdt_profit")
     shutil.copyfile(f"{RYBKA_MODE}/ktbr", f"{back_up_dir}/ktbr")
 
@@ -501,12 +483,10 @@ def software_config_params():
     log.ORANGE("\t\t\t\t╚═╝░░╚═╝░░░╚═╝░░░╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝\n")
     log.ORANGE(f"\t\t\t\t             - MODE: {RYBKA_MODE} -           \n\n")
 
-    log.INFO("Rybka software started with the following parameters:\n")
+    log.INFO("RybkaCore software started with the following parameters:\n")
     log.INFO_BOLD(f" 🔘 RYBKA_MODE      set to: {bcolors.PURPLE}{RYBKA_MODE:>50}")
     if DEBUG_LVL:
-        log.INFO_BOLD(
-            f"{bcolors.OKCYAN} 🔘 DEBUG_LVL       set to: {DEBUG_LVL:>50}{bcolors.ENDC}"
-        )
+        log.INFO_BOLD(f"{bcolors.OKCYAN} 🔘 DEBUG_LVL       set to: {DEBUG_LVL:>50}{bcolors.ENDC}")
     log.INFO_BOLD(f" 🔘 SOCKET          set to: {bcolors.PURPLE}{SOCKET:>50}")
     log.INFO_BOLD(f" 🔘 TRADE SYMBOL    set to: {bcolors.PURPLE}{TRADE_SYMBOL:>50}")
     log.INFO_BOLD(
@@ -527,16 +507,10 @@ def software_config_params():
     log.INFO_BOLD(
         f" 🔘 RSI FOR SELL    set to: {bcolors.PURPLE}{RSI_FOR_SELL:>50}{bcolors.DARKGRAY} threshold"
     )
-    log.INFO_BOLD(
-        f" 🔘 EMAIL SWITCH    set to: {bcolors.PURPLE}{str(RYBKA_EMAIL_SWITCH):>50}"
-    )
-    log.INFO_BOLD(
-        f" 🔘 Telegram SWITCH set to: {bcolors.PURPLE}{str(RYBKA_TELEGRAM_SWITCH):>50}"
-    )
+    log.INFO_BOLD(f" 🔘 EMAIL SWITCH    set to: {bcolors.PURPLE}{str(RYBKA_EMAIL_SWITCH):>50}")
+    log.INFO_BOLD(f" 🔘 Telegram SWITCH set to: {bcolors.PURPLE}{str(RYBKA_TELEGRAM_SWITCH):>50}")
     if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_RECIPIENT_EMAIL:
-        log.INFO_BOLD(
-            f" 🔘 SENDER EMAIL    set to: {bcolors.PURPLE}{RYBKA_EMAIL_SENDER_EMAIL:>50}"
-        )
+        log.INFO_BOLD(f" 🔘 SENDER EMAIL    set to: {bcolors.PURPLE}{RYBKA_EMAIL_SENDER_EMAIL:>50}")
         log.INFO_BOLD(
             f" 🔘 RECIPIENT EMAIL set to: {bcolors.PURPLE}{RYBKA_EMAIL_RECIPIENT_EMAIL:>50}"
         )
@@ -550,9 +524,7 @@ def disclaimer():
     time.sleep(1)
     print("\n\n\n\t\t\t\t\t  =====  DISCLAIMER!  =====  \n\n\n\n\n")
     time.sleep(2)
-    print(
-        "\t\t  FOR AS LONG AS YOU INTEND TO USE THIS BOT (even when it does NOT run): \n"
-    )
+    print("\t\t  FOR AS LONG AS YOU INTEND TO USE THIS BOT (even when it does NOT run): \n")
     time.sleep(5)
     print(
         f"\t  ❌ DO NOT SET MANUALLY ANY OTHER ORDERS WITH THE TRADING PAIR [{TRADE_SYMBOL}]'s PARTS YOU RUN THIS BOT AGAINST! \n"
@@ -578,13 +550,9 @@ def disclaimer():
         "\t  ⚠️  SET ENV VAR [DISCLAIMER] to 'disabled' if you DO NOT want to see this Disclaimer again! \n"
     )
     time.sleep(6)
-    print(
-        "\t  ⚠️  CAPITAL AT RISK! TRADE ONLY THE CASH YOU ARE COMFORTABLE TO LOSE! \n\n\n"
-    )
+    print("\t  ⚠️  CAPITAL AT RISK! TRADE ONLY THE CASH YOU ARE COMFORTABLE TO LOSE! \n\n\n")
     time.sleep(5)
-    print(
-        '\t\t\t\t  "TIME IN THE MARKET IS BETTER THAN TIMING THE MARKET!" - Kenneth Fisher'
-    )
+    print('\t\t\t\t  "TIME IN THE MARKET IS BETTER THAN TIMING THE MARKET!" - Kenneth Fisher')
     time.sleep(5)
 
 
@@ -659,9 +627,7 @@ def bot_uptime_and_current_price(current_price, output):
     elif output == "Telegram":
         if days < 1:
             return f"{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s"
-        return (
-            f"{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s"
-        )
+        return f"{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s"
 
 
 def email_sender(email_message):
@@ -741,9 +707,7 @@ def re_sync_time():
                 subprocess.call(["w32TM", "/resync"])
             else:
                 devnull = open(os.devnull, "w", encoding="utf-8")
-                subprocess.call(
-                    ["net", "start", "w32time"], stdout=devnull, stderr=devnull
-                )
+                subprocess.call(["net", "start", "w32time"], stdout=devnull, stderr=devnull)
                 subprocess.call(
                     [
                         "w32tm",
@@ -816,9 +780,7 @@ def on_open(ws):
     log.INFO(
         "====================================================================================================================================="
     )
-    log.INFO_BOLD(
-        "Initiating a one-time 10-min info gathering timeframe. Please wait..."
-    )
+    log.INFO_BOLD("Initiating a one-time 10-min info gathering timeframe. Please wait...")
     log.INFO(
         "====================================================================================================================================="
     )
@@ -931,9 +893,7 @@ def on_message(ws, message):
             "a",
             encoding="utf8",
         ) as f:
-            f.write(
-                f"{log.logging_time()} Price of [EGLD] is [{candle_close_price} USDT]\n"
-            )
+            f.write(f"{log.logging_time()} Price of [EGLD] is [{candle_close_price} USDT]\n")
 
         if len(closed_candles) < 11:
             log.INFO(
@@ -961,16 +921,10 @@ def on_message(ws, message):
             log.VERBOSE(f"Latest RSI indicates {latest_rsi}")
 
             if subsequent_valid_rsi_counter == 1:
-                log.DEBUG(
-                    "Invalidating one RSI period, as a buy / sell action just occurred.\n"
-                )
+                log.DEBUG("Invalidating one RSI period, as a buy / sell action just occurred.\n")
                 subsequent_valid_rsi_counter = 0
             else:
-                if (
-                    latest_rsi < RSI_FOR_BUY
-                    or len(ktbr_config) == 0
-                    or len(ktbr_config) == 1
-                ):
+                if latest_rsi < RSI_FOR_BUY or len(ktbr_config) == 0 or len(ktbr_config) == 1:
                     if RYBKA_MODE == "LIVE":
                         for i in range(1, 11):
                             try:
@@ -979,17 +933,13 @@ def on_message(ws, message):
                                 break
                             except Exception as e:
                                 if i == 10:
-                                    log.FATAL_7(
-                                        f"Account Balance Sync. - Failed as:\n{e}"
-                                    )
+                                    log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
                                 time.sleep(3)
 
                     real_time_balances_update()
 
                     safety_net_check = (
-                        balance_usdt
-                        - 2
-                        - TRADE_QUANTITY * round(float(candle_close_price), 4)
+                        balance_usdt - 2 - TRADE_QUANTITY * round(float(candle_close_price), 4)
                     )
 
                     if USDT_SAFETY_NET and safety_net_check < USDT_SAFETY_NET:
@@ -1017,9 +967,7 @@ def on_message(ws, message):
                             "a",
                             encoding="utf8",
                         ) as f:
-                            f.write(
-                                f"\n\n\n{log.logging_time()} Within BUY (part I):\n"
-                            )
+                            f.write(f"\n\n\n{log.logging_time()} Within BUY (part I):\n")
                             f.write(
                                 f'{log.logging_time()} {"Latest RSI (latest_rsi) is":90} {latest_rsi:40}\n'
                             )
@@ -1052,9 +1000,7 @@ def on_message(ws, message):
                             )
 
                         if balance_bnb / bnb_commission >= 100:
-                            log.DEBUG(
-                                f"BNB balance [{balance_bnb}] is enough for transactions."
-                            )
+                            log.DEBUG(f"BNB balance [{balance_bnb}] is enough for transactions.")
 
                             if balance_usdt / 12 > 1:
                                 min_buy_share = candle_close_price / 12
@@ -1081,10 +1027,7 @@ def on_message(ws, message):
 
                                 if possible_nr_of_trades != 0:
                                     if len(ktbr_config) > 5:
-                                        if (
-                                            possible_nr_of_trades
-                                            < len(ktbr_config) * 0.8
-                                        ):
+                                        if possible_nr_of_trades < len(ktbr_config) * 0.8:
                                             multiple_sells = "enabled"
                                         else:
                                             multiple_sells = "disabled"
@@ -1120,17 +1063,11 @@ def on_message(ws, message):
                                             heatmap_limit = 1
                                         else:
                                             if int(TRADING_BOOST_LVL) == 1:
-                                                heatmap_size = round(
-                                                    float(heatmap_actions * 0.65)
-                                                )
+                                                heatmap_size = round(float(heatmap_actions * 0.65))
                                             elif int(TRADING_BOOST_LVL) == 2:
-                                                heatmap_size = round(
-                                                    float(heatmap_actions * 0.4)
-                                                )
+                                                heatmap_size = round(float(heatmap_actions * 0.4))
                                             elif int(TRADING_BOOST_LVL) == 3:
-                                                heatmap_size = round(
-                                                    float(heatmap_actions * 0.25)
-                                                )
+                                                heatmap_size = round(float(heatmap_actions * 0.25))
                                             elif int(TRADING_BOOST_LVL) == 4:
                                                 heatmap_size = 3
                                             elif int(TRADING_BOOST_LVL) == 5:
@@ -1174,15 +1111,11 @@ def on_message(ws, message):
                                                 )
                                     ############################################################################################
 
-                                    log.VERBOSE(
-                                        f"possible_nr_of_trades is {possible_nr_of_trades}"
-                                    )
+                                    log.VERBOSE(f"possible_nr_of_trades is {possible_nr_of_trades}")
                                     log.VERBOSE(f"heatmap_actions is {heatmap_actions}")
                                     log.VERBOSE(f"heatmap_size is {heatmap_size}")
                                     log.VERBOSE(f"heatmap_limit is {heatmap_limit}")
-                                    log.DEBUG(
-                                        f"TRADING_BOOST_LVL is {str(TRADING_BOOST_LVL)}"
-                                    )
+                                    log.DEBUG(f"TRADING_BOOST_LVL is {str(TRADING_BOOST_LVL)}")
 
                                     current_price_rounded_down = math.floor(
                                         round(float(candle_close_price), 4)
@@ -1192,9 +1125,7 @@ def on_message(ws, message):
                                     ktbr_config_array_of_prices = []
 
                                     for v in ktbr_config.values():
-                                        ktbr_config_array_of_prices.append(
-                                            math.floor(float(v[1]))
-                                        )
+                                        ktbr_config_array_of_prices.append(math.floor(float(v[1])))
 
                                     for n in range(
                                         -round(float(heatmap_size / 2)),
@@ -1204,16 +1135,12 @@ def on_message(ws, message):
                                             current_price_rounded_down + n
                                             in ktbr_config_array_of_prices
                                         ):
-                                            heatmap_counter += (
-                                                ktbr_config_array_of_prices.count(
-                                                    current_price_rounded_down + n
-                                                )
+                                            heatmap_counter += ktbr_config_array_of_prices.count(
+                                                current_price_rounded_down + n
                                             )
 
-                                    heatmap_center_coin_counter = (
-                                        ktbr_config_array_of_prices.count(
-                                            current_price_rounded_down
-                                        )
+                                    heatmap_center_coin_counter = ktbr_config_array_of_prices.count(
+                                        current_price_rounded_down
                                     )
 
                                     with open(
@@ -1285,9 +1212,7 @@ def on_message(ws, message):
                                             )
                                     elif (
                                         float(balance_usdt)
-                                        < float(TRADE_QUANTITY)
-                                        * float(candle_close_price)
-                                        + 2
+                                        < float(TRADE_QUANTITY) * float(candle_close_price) + 2
                                     ):
                                         log.INFO(
                                             "Way too low diff between acc. balance and current price * trade quantity. Not allowing buy."
@@ -1338,16 +1263,10 @@ def on_message(ws, message):
                                                 }
                                                 order["orderId"] = order_id_tmp
                                                 order["executedQty"] = TRADE_QUANTITY
-                                                order["fills"][0][
-                                                    "price"
-                                                ] = candle_close_price
-                                                order["fills"][0][
-                                                    "commission"
-                                                ] = bnb_commission
+                                                order["fills"][0]["price"] = candle_close_price
+                                                order["fills"][0]["commission"] = bnb_commission
 
-                                                balance_usdt -= (
-                                                    candle_close_price * TRADE_QUANTITY
-                                                )
+                                                balance_usdt -= candle_close_price * TRADE_QUANTITY
                                                 balance_usdt = round(balance_usdt, 4)
                                                 balance_egld += TRADE_QUANTITY
                                                 balance_egld = round(balance_egld, 4)
@@ -1357,9 +1276,7 @@ def on_message(ws, message):
                                             order_time = datetime.now().strftime(
                                                 "%d/%m/%Y %H:%M:%S"
                                             )
-                                            log.DEBUG(
-                                                f"BUY Order placed now at [{order_time}]\n"
-                                            )
+                                            log.DEBUG(f"BUY Order placed now at [{order_time}]\n")
                                             time.sleep(3)
 
                                             if RYBKA_MODE == "LIVE":
@@ -1409,11 +1326,7 @@ def on_message(ws, message):
                                                         0.08
                                                         / 100
                                                         * round(
-                                                            float(
-                                                                order[
-                                                                    "cummulativeQuoteQty"
-                                                                ]
-                                                            ),
+                                                            float(order["cummulativeQuoteQty"]),
                                                             4,
                                                         )
                                                     ),
@@ -1442,26 +1355,12 @@ def on_message(ws, message):
                                                     "w",
                                                     encoding="utf8",
                                                 ) as f:
-                                                    f.write(
-                                                        str(
-                                                            order["fills"][0][
-                                                                "commission"
-                                                            ]
-                                                        )
-                                                    )
+                                                    f.write(str(order["fills"][0]["commission"]))
 
                                                 ktbr_config[order["orderId"]] = [
-                                                    int(
-                                                        float(order["executedQty"])
-                                                        * 10**4
-                                                    )
+                                                    int(float(order["executedQty"]) * 10**4)
                                                     / 10**4,
-                                                    int(
-                                                        float(
-                                                            order["fills"][0]["price"]
-                                                        )
-                                                        * 10**4
-                                                    )
+                                                    int(float(order["fills"][0]["price"]) * 10**4)
                                                     / 10**4,
                                                 ]
                                                 with open(
@@ -1469,9 +1368,7 @@ def on_message(ws, message):
                                                     "w",
                                                     encoding="utf8",
                                                 ) as f:
-                                                    f.write(
-                                                        str(json.dumps(ktbr_config))
-                                                    )
+                                                    f.write(str(json.dumps(ktbr_config)))
 
                                                 nr_of_trades += 1
 
@@ -1535,15 +1432,9 @@ def on_message(ws, message):
                                                 real_time_balances_update()
 
                                                 if DEBUG_LVL != 3:
-                                                    log.DEBUG(
-                                                        f"USDT balance is [{balance_usdt}]"
-                                                    )
-                                                    log.DEBUG(
-                                                        f"EGLD balance is [{balance_egld}]"
-                                                    )
-                                                    log.DEBUG(
-                                                        f"BNB  balance is [{balance_bnb}]"
-                                                    )
+                                                    log.DEBUG(f"USDT balance is [{balance_usdt}]")
+                                                    log.DEBUG(f"EGLD balance is [{balance_egld}]")
+                                                    log.DEBUG(f"BNB  balance is [{balance_bnb}]")
 
                                                 log.VERBOSE(
                                                     f"After BUY - balance update. USDT balance is [{balance_usdt}]"
@@ -1580,10 +1471,7 @@ def on_message(ws, message):
                                                         f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n\n\n"
                                                     )
 
-                                                if (
-                                                    int(heatmap_limit) > 12
-                                                    or len(ktbr_config) < 2
-                                                ):
+                                                if int(heatmap_limit) > 12 or len(ktbr_config) < 2:
                                                     subsequent_valid_rsi_counter = 0
                                                 else:
                                                     subsequent_valid_rsi_counter = 1
@@ -1652,9 +1540,7 @@ def on_message(ws, message):
                                     "a",
                                     encoding="utf8",
                                 ) as f:
-                                    f.write(
-                                        f"\n\n{log.logging_time()} Within BUY (part IX):\n"
-                                    )
+                                    f.write(f"\n\n{log.logging_time()} Within BUY (part IX):\n")
                                     f.write(
                                         f"{log.logging_time()} Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].\n"
                                     )
@@ -1667,9 +1553,7 @@ def on_message(ws, message):
                                 "a",
                                 encoding="utf8",
                             ) as f:
-                                f.write(
-                                    f"\n\n{log.logging_time()} Within BUY (part X):\n"
-                                )
+                                f.write(f"\n\n{log.logging_time()} Within BUY (part X):\n")
                                 f.write(
                                     f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Please TOP UP!\n"
                                 )
@@ -1690,9 +1574,7 @@ def on_message(ws, message):
                                 break
                             except Exception as e:
                                 if i == 10:
-                                    log.FATAL_7(
-                                        f"Account Balance Sync. - Failed as:\n{e}"
-                                    )
+                                    log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
                                 time.sleep(3)
 
                     real_time_balances_update()
@@ -1732,9 +1614,7 @@ def on_message(ws, message):
                         )
 
                     if balance_bnb / bnb_commission >= 100:
-                        log.DEBUG(
-                            f"BNB balance [{balance_bnb}] is enough for transactions."
-                        )
+                        log.DEBUG(f"BNB balance [{balance_bnb}] is enough for transactions.")
 
                         eligible_sells = []
 
@@ -1756,18 +1636,14 @@ def on_message(ws, message):
                             "a",
                             encoding="utf8",
                         ) as f:
-                            f.write(
-                                f"\n\n\n{log.logging_time()} Within SELL (part II):\n"
-                            )
+                            f.write(f"\n\n\n{log.logging_time()} Within SELL (part II):\n")
                             f.write(
                                 f"{log.logging_time()} {'Eligible sells (eligible_sells) is':90} {str(eligible_sells)}\n"
                             )
 
                         if eligible_sells:
                             for sell in eligible_sells:
-                                log.DEBUG(
-                                    f"Selling buy [{sell}] of qtty [{ktbr_config[sell][0]}]"
-                                )
+                                log.DEBUG(f"Selling buy [{sell}] of qtty [{ktbr_config[sell][0]}]")
 
                                 try:
                                     back_up()
@@ -1806,21 +1682,15 @@ def on_message(ws, message):
                                         order["fills"][0]["price"] = candle_close_price
                                         order["fills"][0]["commission"] = bnb_commission
 
-                                        balance_usdt += (
-                                            candle_close_price * ktbr_config[sell][0]
-                                        )
+                                        balance_usdt += candle_close_price * ktbr_config[sell][0]
                                         balance_usdt = round(balance_usdt, 4)
                                         balance_egld -= ktbr_config[sell][0]
                                         balance_egld = round(balance_egld, 4)
                                         balance_bnb -= bnb_commission
                                         balance_bnb = round(balance_bnb, 6)
 
-                                    order_time = datetime.now().strftime(
-                                        "%d/%m/%Y %H:%M:%S"
-                                    )
-                                    log.DEBUG(
-                                        f"SELL Order placed now at [{order_time}]\n"
-                                    )
+                                    order_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                    log.DEBUG(f"SELL Order placed now at [{order_time}]\n")
                                     time.sleep(1)
 
                                     if RYBKA_MODE == "LIVE":
@@ -1857,14 +1727,10 @@ def on_message(ws, message):
                                         )
                                         # avoid rounding up on quantity & price sold
                                         qtty_aux = (
-                                            int(float(order["executedQty"]) * 10**4)
-                                            / 10**4
+                                            int(float(order["executedQty"]) * 10**4) / 10**4
                                         )
                                         price_aux = (
-                                            int(
-                                                float(order["fills"][0]["price"])
-                                                * 10**4
-                                            )
+                                            int(float(order["fills"][0]["price"]) * 10**4)
                                             / 10**4
                                         )
 
@@ -1911,17 +1777,13 @@ def on_message(ws, message):
                                         ) as f:
                                             f.write(str(total_usdt_profit))
 
-                                        bnb_commission = float(
-                                            order["fills"][0]["commission"]
-                                        )
+                                        bnb_commission = float(order["fills"][0]["commission"])
                                         with open(
                                             f"{RYBKA_MODE}/most_recent_commission",
                                             "w",
                                             encoding="utf8",
                                         ) as f:
-                                            f.write(
-                                                str(order["fills"][0]["commission"])
-                                            )
+                                            f.write(str(order["fills"][0]["commission"]))
 
                                         with open(
                                             f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
@@ -1938,9 +1800,7 @@ def on_message(ws, message):
                                         previous_buy_info = f"What got sold: BUY ID [{str(sell)}] of QTTY [{str(ktbr_config[sell][0])}] at bought PRICE of [{str(ktbr_config[sell][1])}] USDT"
 
                                         del ktbr_config[sell]
-                                        with open(
-                                            f"{RYBKA_MODE}/ktbr", "w", encoding="utf8"
-                                        ) as f:
+                                        with open(f"{RYBKA_MODE}/ktbr", "w", encoding="utf8") as f:
                                             f.write(str(json.dumps(ktbr_config)))
 
                                         with open(
@@ -1979,9 +1839,7 @@ def on_message(ws, message):
                                             for i in range(1, 11):
                                                 try:
                                                     account_balance_update()
-                                                    log.DEBUG(
-                                                        "Account Balance Sync. - Successful"
-                                                    )
+                                                    log.DEBUG("Account Balance Sync. - Successful")
                                                     break
                                                 except Exception as e:
                                                     if i == 10:
@@ -2067,17 +1925,13 @@ def on_message(ws, message):
                                     )
                             re_sync_time()
                         else:
-                            log.INFO(
-                                "No buy transactions are eligible to be sold at this moment!"
-                            )
+                            log.INFO("No buy transactions are eligible to be sold at this moment!")
                             with open(
                                 f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
                                 "a",
                                 encoding="utf8",
                             ) as f:
-                                f.write(
-                                    f"\n\n{log.logging_time()} Within SELL (part VII):\n"
-                                )
+                                f.write(f"\n\n{log.logging_time()} Within SELL (part VII):\n")
                                 f.write(
                                     f"{log.logging_time()} No buy transactions are eligible to be sold at this moment!\n"
                                 )
@@ -2090,9 +1944,7 @@ def on_message(ws, message):
                             "a",
                             encoding="utf8",
                         ) as f:
-                            f.write(
-                                f"\n\n{log.logging_time()} Within SELL (part VIII):\n"
-                            )
+                            f.write(f"\n\n{log.logging_time()} Within SELL (part VIII):\n")
                             f.write(
                                 f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Please TOP UP!\n"
                             )
@@ -2108,16 +1960,12 @@ def on_message(ws, message):
     type=click.Choice(["demo", "live"], case_sensitive=False),
     help="Choose the run mode of the software",
 )
-@click.option(
-    "--version", is_flag=True, help="Show the version of the software", required=False
-)
-@click.option(
-    "--head", is_flag=True, help="Show the version of the software", required=False
-)
+@click.option("--version", is_flag=True, help="Show the version of the software", required=False)
+@click.option("--head", is_flag=True, help="Show the version of the software", required=False)
 def main(version, mode, head):
     """\b
     \b#################################################################################
-    \b###                            🔸 RYBKA Software 🔸                           ###
+    \b###                          🔸 RYBKACORE Software 🔸                         ###
     \b###                                                                           ###
     \b###   📖 Docs: https://gitlab.com/Silviu_space/rybka/-/blob/master/README.md  ###
     \b#################################################################################
@@ -2154,7 +2002,7 @@ def main(version, mode, head):
         sys.exit(111)
 
     if version:
-        print(f"🔍 Rybka Software Version  ➜  [{bootstrap.__version__}]")
+        print(f"🔍 RybkaCore Software Version  ➜  [{bootstrap.__version__}]")
         sys.exit(111)
 
     if mode and head:
@@ -2185,15 +2033,17 @@ def main(version, mode, head):
     clear_terminal()
 
     try:
-        archived_logs_folder="archived_logs"
+        archived_logs_folder = "archived_logs"
         TMP_folder(archived_logs_folder)
     except Exception as e:
-        log.FATAL_7(f"[{archived_logs_folder}] folder could not be created. Reason for failure:\n{e}")
+        log.FATAL_7(
+            f"[{archived_logs_folder}] folder could not be created. Reason for failure:\n{e}"
+        )
 
     try:
         previous_runs_sanitation(archived_logs_folder)
     except Exception as e:
-        log.FATAL_7(f"[SANITATION] process failed. Reason for failure:\n{e}")    
+        log.FATAL_7(f"[SANITATION] process failed. Reason for failure:\n{e}")
 
     if platform == "linux" or platform == "linux2":
         pass
@@ -2387,9 +2237,7 @@ def main(version, mode, head):
             with open("TEMP/telegram_pidTmp", "r", encoding="utf8") as file:
                 telegram_process = int(file.read())
                 if not psutil.pid_exists(telegram_process):
-                    telegram_pid = subprocess.Popen(
-                        ["python", "tlgrm_interactive.py"]
-                    )
+                    telegram_pid = subprocess.Popen(["python", "tlgrm_interactive.py"])
                 else:
                     telegram_pid = "placeholder"
             return telegram_pid
@@ -2510,18 +2358,12 @@ if __name__ == "__main__":
             WEIGHTS_DICT_UPDATED.update({"RYBKA_MIN_PROFIT": MIN_PROFIT})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_USDT_SAFETY_NET": USDT_SAFETY_NET})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_SWITCH": RYBKA_EMAIL_SWITCH})
-            WEIGHTS_DICT_UPDATED.update(
-                {"RYBKA_EMAIL_SENDER_EMAIL": RYBKA_EMAIL_SENDER_EMAIL}
-            )
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_SENDER_EMAIL": RYBKA_EMAIL_SENDER_EMAIL})
             WEIGHTS_DICT_UPDATED.update(
                 {"RYBKA_EMAIL_RECIPIENT_EMAIL": RYBKA_EMAIL_RECIPIENT_EMAIL}
             )
-            WEIGHTS_DICT_UPDATED.update(
-                {"RYBKA_EMAIL_RECIPIENT_NAME": RYBKA_EMAIL_RECIPIENT_NAME}
-            )
-            WEIGHTS_DICT_UPDATED.update(
-                {"RYBKA_TELEGRAM_SWITCH": RYBKA_TELEGRAM_SWITCH}
-            )
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_RECIPIENT_NAME": RYBKA_EMAIL_RECIPIENT_NAME})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_TELEGRAM_SWITCH": RYBKA_TELEGRAM_SWITCH})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_DISCLAIMER": SET_DISCLAIMER})
 
         if not WEIGHTS_DICT_UPDATED:

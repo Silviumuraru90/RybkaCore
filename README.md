@@ -1,4 +1,4 @@
-# 💱 Rybka
+# 💱 RybkaCore
 
 <div align="center">
   <img width="450" height="300" src="MEDIA/rybka_GUI.PNG">
@@ -10,16 +10,15 @@
 
 ## &emsp;&emsp; **Description**
 <br>
-📌 `Rybka` bot is a scalping crypto-trading-bot that currently supports the following pair(s):<br><br>
-&emsp;&emsp;✅ `EGLD`-`USDT` <br>
-&emsp;&emsp;⛏ &nbsp;`more in the future` <br><br><br>
+📌 `RybkaCore` bot is a scalping crypto-trading-bot that currently supports the following pair(s):<br><br>
+&emsp;&emsp;✅ `EGLD`-`USDT` <br><br><br>
 
 📌 It uses 🔌 socket connection to Binance via the `python-binance` lib <br><br>
 
 📌 It is a cross-OS software that has been tested on: <br><br>
-&emsp;&emsp;✅ Ubuntu 18.04 (`bionic`) <br>
-&emsp;&emsp;❔ &nbsp;Ubuntu 20.04 <br>
-&emsp;&emsp;❔ &nbsp;Ubuntu 22.04 <br>
+&emsp;&emsp;✅ Ubuntu 18.04 (`Bionic Beaver`) <br>
+&emsp;&emsp;✅ Ubuntu 20.04 (`Focal Fossa`) <br>
+&emsp;&emsp;✅ Ubuntu 22.04 (`Jammy Jellyfish`) <br>
 &emsp;&emsp;✅ Debian 10 (`buster`) <br>
 
 &emsp;&emsp;✅ Win 10 <br>
@@ -65,6 +64,8 @@
 ✅ Telegram notifier (passive mode) <br>
 ✅ Telegram listener (interactive mode) <br>
 ✅ Implementation of an `always buy` policy in which it will always buy when the price goes up and has nothing / close to nothing to sell for a better profitability over the same timeframe & graph positioning of the currency-to-stable-coin raport <br>
+✅ `Safety net` implementation for USDT <br>
+
 
 <br><br>
 
@@ -200,7 +201,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 # <center> **Let's have a sneak peek into it, shall we? 🖥** </center> 
 
-## 🗃 Booting up the bot:
+## 🗃 Booting up the bot (logs during v.6.x.x-beta):
 
 <div align="center">
   <img src="MEDIA/rybka_live_start1.mp4">
@@ -215,14 +216,14 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 </div>
 <br><br>
 
-## 🗃 Booting up the Telegram Listener (interactive) module:
+## 🗃 Telegram Listener (interactive) module appearance in logs (logs during v.6.x.x-beta):
 
 <div align="center">
   <img src="MEDIA/telegram_active_mode.PNG">
 </div>
 <br><br>
 
-## 🗃 Telegram logs on mobile:
+## 🗃 Telegram logs on mobile (logs during v.6.x.x-beta):
 
 <p align="center">
   <img width="200" height="400" src="MEDIA/Telegram_main_commands.jpg" />
@@ -287,21 +288,14 @@ And the road is long and full of tERRORs!
 ## 🟣 [![](https://img.shields.io/badge/-ROADMAP-green)](https://gitlab.com/Silviu_space/rybka/-/boards)
 <br>
 
-<b>🔜 There are still some pieces to move and cards to play:</b> <br>
+<b>🔜 There are still some pieces to move:</b> <br>
 
-&emsp;&emsp; ♦︎ &nbsp;Switch to `binance-unicorn` instead of `python-binance`, in order to optimize more the uptime and be a reliable trait <br>
-&emsp;&emsp; ♞ &nbsp;`Stock` analysis module and tracking tool for all your shares <br>
-&emsp;&emsp; ♡ &nbsp;&nbsp;Additional `reports` <br>
+&emsp;&emsp; ♞ &nbsp;Control the resulted `output files`' size <br>
+&emsp;&emsp; ♔ &nbsp;Switch to `binance-unicorn` instead of `python-binance`, in order to optimize more the uptime and be a reliable trait <br>
 &emsp;&emsp; ♛ &nbsp;`Price alerts`, via inputs <br>
-&emsp;&emsp; ♥︎ &nbsp;`Safety net` implementation for USDT <br>
-&emsp;&emsp; ♔ &nbsp;More `trade pairs` supported <br>
-&emsp;&emsp; ♙ &nbsp;`Graphs` provided as output <br>
-&emsp;&emsp; ♘ &nbsp;`Profit tracking` over specific periods of time, for better assesing the better / worse periods and adjust weights <br>
-&emsp;&emsp; ♧ &nbsp;Additional `RSI` periods and `candlestick` periods, not only for scalping <br>
-&emsp;&emsp; ♤&nbsp;`Orders` on demand <br>
-&emsp;&emsp; ♠︎ &nbsp;&nbsp;&nbsp;Control the resulted `output files`' size <br>
-&emsp;&emsp; ♗ &nbsp;`Code style` checks and `unit testing` + `coverage`, for a better integrity and stability / quicker testing <br>
-&emsp;&emsp; ♢ &nbsp;Speed up internal processes by moving towards an `OOP` infrastructure / optimization <br>
+&emsp;&emsp; ♘ &nbsp;`Graphs` provided as output in specific situations <br>
+&emsp;&emsp; ♙ &nbsp;Additional `RSI` periods or `indexes`, for a better and broader view <br>
+&emsp;&emsp; ♗ &nbsp;`Unit testing` + `coverage`, for a better integrity and stability / quicker testing <br>
 
 
 <br>

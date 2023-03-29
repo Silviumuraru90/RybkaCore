@@ -85,25 +85,25 @@ def click(text):
 
     else:
         if text == "rybka_live":
-            message = f'LIVE (previously started at: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")})'
+            message = (
+                f'LIVE (previously started at: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")})'
+            )
             A.config(text=message)
         elif text == "rybka_demo":
-            message = f'DEMO (previously started at: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")})'
+            message = (
+                f'DEMO (previously started at: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")})'
+            )
             B.config(text=message)
 
 
 def software_start(text):
     if text == "rybka_live":
         click("stopped")
-        subprocess.Popen(
-            [PYTHON_PATH, f"{text.split('_')[0]}.py", "-m", f"{text.split('_')[1]}"]
-        )
+        subprocess.Popen([PYTHON_PATH, f"{text.split('_')[0]}.py", "-m", f"{text.split('_')[1]}"])
         click(text)
     elif text == "rybka_demo":
         click("stopped")
-        subprocess.Popen(
-            [PYTHON_PATH, f"{text.split('_')[0]}.py", "-m", f"{text.split('_')[1]}"]
-        )
+        subprocess.Popen([PYTHON_PATH, f"{text.split('_')[0]}.py", "-m", f"{text.split('_')[1]}"])
         click(text)
 
 
@@ -116,7 +116,7 @@ def callback(url):
 # ===============================================
 
 heading_welcome = Label(
-    text="RYBKA SOFTWARE",
+    text="RYBKACORE SOFTWARE",
     background="black",
     foreground="DarkOrange4",
     style="Heading.TLabel",
@@ -165,7 +165,7 @@ B = Button(
 # ===============================================
 
 heading_rybka = Label(
-    text="Launch RYBKA:",
+    text="Launch RybkaCore:",
     background="black",
     foreground="DarkGoldenrod4",
     style="Heading.TLabel",

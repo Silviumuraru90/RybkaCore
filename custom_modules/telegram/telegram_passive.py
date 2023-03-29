@@ -31,7 +31,9 @@ class TelegramEngine:
     def __init__(self):
         self.apiKey = bootstrap.TELE_KEY
         self.chatId = bootstrap.TELE_CHAT_ID
-        self.text_url = f"https://api.telegram.org/bot{self.apiKey}/sendMessage?chat_id={self.chatId}"
+        self.text_url = (
+            f"https://api.telegram.org/bot{self.apiKey}/sendMessage?chat_id={self.chatId}"
+        )
         self.photo_url = f"https://api.telegram.org/bot{self.apiKey}/sendPhoto"
 
     @staticmethod
@@ -45,9 +47,7 @@ class TelegramEngine:
 
     def all_errors_file_update(self, error_message):
         try:
-            with open(
-                f"{os.environ.get('RYBKA_MODE')}/errors_thrown", "a", encoding="utf8"
-            ) as f:
+            with open(f"{os.environ.get('RYBKA_MODE')}/errors_thrown", "a", encoding="utf8") as f:
                 f.write(f"\nError / warn thrown was: \n{error_message}\n")
         except Exception as e:
             print(
@@ -66,9 +66,7 @@ class TelegramEngine:
         print(
             f"{bcolors.CRED}{bcolors.BOLD}❌ FATAL {self.logging_time()}      > {message}{bcolors.ENDC}"
         )
-        self.all_errors_file_update(
-            f"❌ FATAL (1) {self.logging_time()}      > {message}"
-        )
+        self.all_errors_file_update(f"❌ FATAL (1) {self.logging_time()}      > {message}")
         sys.exit(1)
 
     def HIGH_VERBOSITY(self, message):
@@ -107,9 +105,7 @@ class TelegramEngine:
                     bot_message = f"⚠️  `WARN ☞ {message}`"
                 elif mode.upper() == "FATAL":
                     bot_message = f"🛑 `FATAL ☞ {message}`"
-                response = requests.get(
-                    f"{self.text_url}&parse_mode=Markdown&text={bot_message}"
-                )
+                response = requests.get(f"{self.text_url}&parse_mode=Markdown&text={bot_message}")
                 self.HIGH_VERBOSITY(response.json())
             except Exception as e:
                 self.WARN(f"[{mode}] message could not be sent via TELEGRAM!")

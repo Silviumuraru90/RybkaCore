@@ -54,9 +54,7 @@ class Rybka_py_env_bootstrap:
 
         # Email related config.
         self.RYBKA_EMAIL_SENDER_DEVICE_PASSWORD = (
-            str(os.environ.get("RYBKA_EMAIL_SENDER_DEVICE_PASSWORD"))
-            .strip("\n")
-            .strip()
+            str(os.environ.get("RYBKA_EMAIL_SENDER_DEVICE_PASSWORD")).strip("\n").strip()
         )
         if not os.environ.get("RYBKA_EMAIL_SWITCH"):
             self.RYBKA_EMAIL_SWITCH = (
@@ -68,9 +66,7 @@ class Rybka_py_env_bootstrap:
                 .strip()
             )
         else:
-            self.RYBKA_EMAIL_SWITCH = (
-                os.environ.get("RYBKA_EMAIL_SWITCH").strip("\n").strip()
-            )
+            self.RYBKA_EMAIL_SWITCH = os.environ.get("RYBKA_EMAIL_SWITCH").strip("\n").strip()
         if not os.environ.get("RYBKA_EMAIL_SENDER_EMAIL"):
             self.RYBKA_EMAIL_SENDER_EMAIL = (
                 config.get(
@@ -122,9 +118,7 @@ class Rybka_py_env_bootstrap:
                 .strip()
             )
         else:
-            self.RYBKA_TELEGRAM_SWITCH = (
-                os.environ.get("RYBKA_TELEGRAM_SWITCH").strip("\n").strip()
-            )
+            self.RYBKA_TELEGRAM_SWITCH = os.environ.get("RYBKA_TELEGRAM_SWITCH").strip("\n").strip()
 
         # Binance related config.
         self.TRADE_SYMBOL = (
@@ -135,9 +129,7 @@ class Rybka_py_env_bootstrap:
             .strip("\n")
             .strip()
         )
-        self.SOCKET = (
-            f"wss://stream.binance.com:9443/ws/{self.TRADE_SYMBOL.lower()}@kline_1m"
-        )
+        self.SOCKET = f"wss://stream.binance.com:9443/ws/{self.TRADE_SYMBOL.lower()}@kline_1m"
         self.RSI_PERIOD = int(
             config.get(
                 "Rybka Binance Configuration. For LIVE and DEMO modes",

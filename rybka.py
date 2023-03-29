@@ -4,12 +4,11 @@
 import os
 import sys
 import time
+from os.path import exists
 
 import click
-import requests
 import psutil
-
-from os.path import exists
+import requests
 
 # custom libs
 from core import current_dir_path_export
@@ -27,13 +26,11 @@ from custom_modules.logging.logging import log
     type=click.Choice(["demo", "live"], case_sensitive=False),
     help="Choose the run mode of the software",
 )
-@click.option(
-    "--version", is_flag=True, help="Show the version of the software", required=False
-)
+@click.option("--version", is_flag=True, help="Show the version of the software", required=False)
 def main(version, mode):
     """\b
     \b#################################################################################
-    \b###                            🔸 RYBKA Software 🔸                           ###
+    \b###                          🔸 RYBKACORE Software 🔸                         ###
     \b###                                                                           ###
     \b###   📖 Docs: https://gitlab.com/Silviu_space/rybka/-/blob/master/README.md  ###
     \b#################################################################################
@@ -53,26 +50,26 @@ def main(version, mode):
             try:
                 os.makedirs(folder)
             except Exception as e:
-                log.FATAL_7(
-                    f"Attempt to create local folder [{folder}] - FAILED with error:\n{e}"
-                )
+                log.FATAL_7(f"Attempt to create local folder [{folder}] - FAILED with error:\n{e}")
 
     TMP_folder("TEMP")
 
-    kill_secondary_start_of_bot=False
+    kill_secondary_start_of_bot = False
     if exists("TEMP/pid_rybkaTmp") and os.stat("TEMP/pid_rybkaTmp").st_size != 0:
         with open("TEMP/pid_rybkaTmp", "r", encoding="utf8") as f:
             previous_pID = int(f.read())
             if psutil.pid_exists(previous_pID) and "python" in psutil.Process(previous_pID).name():
                 kill_secondary_start_of_bot = True
-                    
+
     process_pid = os.getpid()
     if kill_secondary_start_of_bot:
-        log.ORANGE(f" 🔮 Rybka bot is already running in this workspace [PID:{previous_pID}].\n 🔪 Killing current run [PID:{process_pid}]!")
+        log.ORANGE(
+            f" 🔮 Rybka bot is already running in this workspace [PID:{previous_pID}].\n 🔪 Killing current run [PID:{process_pid}]!"
+        )
         psutil.Process(process_pid).kill()
 
     log.DEBUG(f"Allocating PID [{process_pid}]\n")
-    
+
     with open("TEMP/pid_rybkaTmp", "w", encoding="utf8") as z:
         z.write(str(process_pid))
     time.sleep(1)
@@ -87,13 +84,13 @@ def main(version, mode):
         sys.exit(0)
 
     if version:
-        print(f"🔍 Rybka Software Version  ➜  [{bootstrap.__version__}]")
+        print(f"🔍 RybkaCore Software Version  ➜  [{bootstrap.__version__}]")
         sys.exit(0)
 
     if mode:
         while True:
             core_runs += 1
-            log.DEBUG(f"Run nr. [{core_runs}] of Rybka Software\n\n")
+            log.DEBUG(f"Run nr. [{core_runs}] of RybkaCore Software\n\n")
             with open("TEMP/core_runsTmp", "w", encoding="utf8") as x:
                 x.write(str(core_runs))
             log.ORANGE(" 📡 Rybka bot is being started...")
