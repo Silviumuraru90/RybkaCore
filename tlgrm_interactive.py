@@ -1019,23 +1019,36 @@ def handle_message(update, context):
 
 def error(update, context):
     if "make sure that only one bot instance is running" in str(context.error):
-        ORANGE(
-            "\n========================================================================================="
-        )
-        ORANGE(
-            " 🔀 There was identified another Telegram Listener already active. Perhaps on another PC?\n ⚠️  Shutting down the session in here, while keeping the other one alive!"
-        )
-        ORANGE(
-            "=========================================================================================\n"
-        )
-        if exists("TEMP/telegram_pidTmp"):
-            with open("TEMP/telegram_pidTmp", "r", encoding="utf8") as f:
-                telegram_pID = int(f.read())
-                if (
-                    psutil.pid_exists(telegram_pID)
-                    and "python" in psutil.Process(telegram_pID).name()
-                ):
-                    psutil.Process(telegram_pID).kill()
+        with open("TEMP/uptimeTmp", "r", encoding="utf8") as f:
+            with open("TEMP/core_pidTmp", "r", encoding="utf8") as g:
+                pID = int(g.read())
+            if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
+                current_uptime = str(f.read())
+                pattern = r'(\d+)h:\s*(\d+)m'
+
+                match = re.search(pattern, current_uptime)
+                hours = int(match.group(1))
+                minutes = int(match.group(2))
+
+                if exists("TEMP/telegram_pidTmp"):
+                    with open("TEMP/telegram_pidTmp", "r", encoding="utf8") as f:
+                        telegram_pID = int(f.read())
+                        if (
+                            psutil.pid_exists(telegram_pID)
+                            and "python" in psutil.Process(telegram_pID).name()
+                            and hours == 0
+                            and minutes < 3
+                        ):
+                            ORANGE(
+                            "\n========================================================================================="
+                            )
+                            ORANGE(
+                                " 🔀 There was identified another Telegram Listener already active. Perhaps on another PC?\n ⚠️  Shutting down the session in here, while keeping the other one alive!"
+                            )
+                            ORANGE(
+                                "=========================================================================================\n"
+                            )
+                            psutil.Process(telegram_pID).kill()
 
 
 def main():
