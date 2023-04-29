@@ -375,7 +375,7 @@ def start_cmds_template(update, context):
             update.message.reply_text("💤 Bot is indeed stopped at this moment.")
             update.message.reply_text("🚀 Starting Rybka bot!\nPlease wait...")
             try:
-                subprocess.Popen(["python", "rybka.py", "-m", "live"])
+                subprocess.Popen(["python3", "rybka.py", "-m", "live"])
                 for i in range(0, 10):
                     try:
                         time.sleep(2 * i)

@@ -1166,7 +1166,7 @@ def main(version, mode, head):
             with open("TEMP/telegram_pidTmp", "r", encoding="utf8") as file:
                 telegram_process = int(file.read())
                 if not psutil.pid_exists(telegram_process):
-                    telegram_pid = subprocess.Popen(["python", "tlgrm_interactive.py"])
+                    telegram_pid = subprocess.Popen(["python3", "tlgrm_interactive.py"])
                 else:
                     telegram_pid = "placeholder"
             return telegram_pid
