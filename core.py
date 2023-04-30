@@ -1220,7 +1220,7 @@ def main(version, mode, head):
     ######################################################################
 
     try:
-        unicorn_stream_obj = unicorn_binance_websocket_api.BinanceWebSocketApiManager(exchange="binance.com")
+        unicorn_stream_obj = unicorn_binance_websocket_api.BinanceWebSocketApiManager(exchange="binance.com", warn_on_update=False)
         unicorn_stream_obj.create_stream(['kline_1m'], ['EGLDUSDT'])
     except Exception as e:
         log.FATAL_7(
