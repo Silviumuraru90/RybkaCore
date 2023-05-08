@@ -244,7 +244,8 @@ def ktbr_configuration():
                     )
     else:
         try:
-            open(f"{RYBKA_MODE}/ktbr", "w", encoding="utf8").close()
+            with open(f"{RYBKA_MODE}/ktbr", "w", encoding="utf8") as f:
+                f.write("{}")
             log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/ktbr] file created!")
         except Exception as e:
             log.FATAL_7(f"[{RYBKA_MODE}/ktbr] file could NOT be created!\nFailing with error:\n{e}")

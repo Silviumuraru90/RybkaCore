@@ -13,7 +13,7 @@
 📌 `RybkaCore` bot is a scalping crypto-trading-bot that currently supports the following pair(s):<br><br>
 &emsp;&emsp;✅ `EGLD`-`USDT` <br><br><br>
 
-📌 It uses 🔌 socket connection to Binance via the `python-binance` lib <br><br>
+📌 It uses 🔌 socket connection to Binance via the `unicorn-binance-suite` lib <br><br>
 
 📌 It is a cross-OS software that has been tested on: <br><br>
 &emsp;&emsp;✅ Ubuntu 18.04 (`Bionic Beaver`) <br>
@@ -63,6 +63,7 @@
 ✅ Local files check-up on each start / restart action, even integrity check for files' values <br>
 ✅ Telegram notifier (passive mode) <br>
 ✅ Telegram listener (interactive mode) <br>
+✅ Controls the resulted `output files`' size
 ✅ Implementation of an `always buy` policy in which it will always buy when the price goes up and has nothing / close to nothing to sell for a better profitability over the same timeframe & graph positioning of the currency-to-stable-coin raport <br>
 ✅ `Safety net` implementation for USDT <br>
 
@@ -86,16 +87,18 @@ Hence, at the moment, you will need 🐍 `python` in your OS to run the software
 &emsp;&emsp;✅ colored <br>
 &emsp;&emsp;✅ click <br>
 &emsp;&emsp;✅ requests <br>
+&emsp;&emsp;✅ numpy <br>
 &emsp;&emsp;✅ GPUtil <br>
 &emsp;&emsp;✅ psutil <br>
 &emsp;&emsp;✅ telepot <br>
 &emsp;&emsp;✅ termcolor <br>
 &emsp;&emsp;✅ python-telegram-bot==13.14 <br>
+&emsp;&emsp;✅ unicorn-binance-suite (via `python3 -m pip install unicorn-binance-suite --upgrade --force-reinstall`) <br>
 &emsp;&emsp;✅ TA-Lib <br><br><br>
 
-❗️ `Note:` while via `pip3` you are able to install the first modules, `TA-Lib` is not currently available to be installed from the official `pypi` list on Windows platforms, hence you can download the `wheel` file that matches your `python` version and then install it via `pip`. <br> Grab the file from 📦 [HERE](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib) <br><br>
+❗️ `Note:` while via `pip3` you are able to install the first modules, `TA-Lib` is not currently available to be installed from the official `pypi` list, hence you can download the `wheel` file that matches your `python` version and then install it via `pip`. <br> Grab the file from 📦 [HERE](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib) <br><br>
 OR <br><br>
-📦 Build it from source via Windows's `Linux subsystem` with these commands and then install it in the same way, via `pip`. Commands:
+📦 Build it from source via Linux / Windows's `WSL` with these commands and then install it in the same way, via `pip`. Commands:
 ```
 wget https://artiya4u.keybase.pub/TA-lib/ta-lib-0.4.0-src.tar.gz
 tar -xvf ta-lib-0.4.0-src.tar.gz
@@ -290,12 +293,10 @@ And the road is long and full of tERRORs!
 
 <b>🔜 There are still some pieces to move:</b> <br>
 
-&emsp;&emsp; ♞ &nbsp;Control the resulted `output files`' size <br>
-&emsp;&emsp; ♔ &nbsp;Switch to `binance-unicorn` instead of `python-binance`, in order to optimize more the uptime and be a reliable trait <br>
 &emsp;&emsp; ♛ &nbsp;`Price alerts`, via inputs <br>
 &emsp;&emsp; ♘ &nbsp;`Graphs` provided as output in specific situations <br>
 &emsp;&emsp; ♙ &nbsp;Additional `RSI` periods or `indexes`, for a better and broader view <br>
-&emsp;&emsp; ♗ &nbsp;`Unit testing` + `coverage`, for a better integrity and stability / quicker testing <br>
+&emsp;&emsp; ♗ &nbsp;`Unit testing` + `coverage`, for a better integrity. Safer / quicker testing <br>
 
 
 <br>
