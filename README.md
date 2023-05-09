@@ -276,14 +276,14 @@ And the road is long and full of tERRORs!
 <br>
 
 ***
-## 🟣 [![](https://img.shields.io/badge/project%20status-BETA-orange)](https://gitlab.com/Silviu_space/rybka/-/boards)
+## 🟣 [![](https://img.shields.io/badge/Project%20Status-RC-yellow)](https://gitlab.com/Silviu_space/rybka/-/boards)
 
 | Release lifecycle phases | Current lifecycle phase | Estimated date(s) of `start` / `finish` |
 |:--------------------------------|:---------------:|:-----------------------:|
 &emsp;&emsp; ✔️ `ALPHA`              |                 | August 2022 (`finished`)
-&emsp;&emsp; 💻 `BETA` / `BETA TESTING`              |        ✅       | September 2022 (`started`)
-&emsp;&emsp; 💻 `RELEASE CANDIDATE`  |                 | ⬛️
-&emsp;&emsp; 💻 `GA`                 |                 | ⬛️
+&emsp;&emsp; ✔️ `BETA` / `BETA TESTING`              |               | September 2022 `to` May 2023
+&emsp;&emsp; 💻 `RELEASE CANDIDATE`  |         ✅        | May 2023 (`started`)
+&emsp;&emsp; 💻 `GA`                 |                 | ❔
 
 <br>
 
