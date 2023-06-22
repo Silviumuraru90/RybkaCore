@@ -142,6 +142,7 @@ def weights_info_command(update, context):
     {'/RYBKA_EMAIL_RECIPIENT_NAME'}
     {'/RYBKA_TELEGRAM_SWITCH'}
     {'/RYBKA_DISCLAIMER'}
+    {'/RYBKA_ALL_LOG_TLG_SWITCH'}
 
 
     🔄 {'/weights_info'}  -  Shows this help message
@@ -159,11 +160,16 @@ def weight_modification_command(update, context):
 
 🟪 Modify weights:
     {'/m_RYBKA_TRADING_BOOST_LVL'}
+    {'/m_RYBKA_RSI_FOR_BUY'}
+    {'/m_RYBKA_RSI_FOR_SELL'}
+    {'/m_RYBKA_DEBUG_LVL'}
     {'/m_RYBKA_TRADE_QUANTITY'}
     {'/m_RYBKA_MIN_PROFIT'}
     {'/m_RYBKA_EMAIL_SWITCH'}
     {'/m_RYBKA_TELEGRAM_SWITCH'}
-
+    {'/m_RYBKA_ALL_LOG_TLG_SWITCH'}
+    {'/m_RYBKA_USDT_SAFETY_NET'}
+    
 
     🔄 {'/modify_weights'}  -  Shows this help message
 
@@ -531,6 +537,38 @@ def modify_config_ini(weight, value):
             new_line = re.sub(pattern, replacement, line)
             print(new_line, end="")
 
+    elif weight == "RYBKA_RSI_FOR_BUY":
+        pattern = r"RYBKA_RSI_FOR_BUY = \d+"
+        replacement = f"RYBKA_RSI_FOR_BUY = {value}"
+
+        for line in fileinput.input("config.ini", inplace=True):
+            new_line = re.sub(pattern, replacement, line)
+            print(new_line, end="")
+
+    elif weight == "RYBKA_RSI_FOR_SELL":
+        pattern = r"RYBKA_RSI_FOR_SELL = \d+"
+        replacement = f"RYBKA_RSI_FOR_SELL = {value}"
+
+        for line in fileinput.input("config.ini", inplace=True):
+            new_line = re.sub(pattern, replacement, line)
+            print(new_line, end="")
+
+    elif weight == "RYBKA_DEBUG_LVL":
+        pattern = r"RYBKA_DEBUG_LVL =.*"
+        replacement = f"RYBKA_DEBUG_LVL = {value}"
+
+        for line in fileinput.input("config.ini", inplace=True):
+            new_line = re.sub(pattern, replacement, line)
+            print(new_line, end="")
+
+    elif weight == "RYBKA_USDT_SAFETY_NET":
+        pattern = r"RYBKA_USDT_SAFETY_NET =.*"
+        replacement = f"RYBKA_USDT_SAFETY_NET = {value}"
+
+        for line in fileinput.input("config.ini", inplace=True):
+            new_line = re.sub(pattern, replacement, line)
+            print(new_line, end="")
+
     elif weight == "RYBKA_TRADE_QUANTITY":
         pattern = r"RYBKA_TRADE_QUANTITY = \d+.*"
         replacement = f"RYBKA_TRADE_QUANTITY = {value}"
@@ -558,6 +596,14 @@ def modify_config_ini(weight, value):
     elif weight == "RYBKA_TELEGRAM_SWITCH":
         pattern = r"RYBKA_TELEGRAM_SWITCH = .*"
         replacement = f"RYBKA_TELEGRAM_SWITCH = {value}"
+
+        for line in fileinput.input("config.ini", inplace=True):
+            new_line = re.sub(pattern, replacement, line)
+            print(new_line, end="")
+
+    elif weight == "RYBKA_ALL_LOG_TLG_SWITCH":
+        pattern = r"RYBKA_ALL_LOG_TLG_SWITCH = .*"
+        replacement = f"RYBKA_ALL_LOG_TLG_SWITCH = {value}"
 
         for line in fileinput.input("config.ini", inplace=True):
             new_line = re.sub(pattern, replacement, line)
@@ -599,6 +645,198 @@ def m_RYBKA_TRADING_BOOST_LVL_4_command(update, context):
 
 def m_RYBKA_TRADING_BOOST_LVL_5_command(update, context):
     modify_config_ini("RYBKA_TRADING_BOOST_LVL", "5")
+    modifcation_log_message(update, context)
+
+
+####################################################
+##      RYBKA_RSI_FOR_BUY-specific functions      ##
+####################################################
+
+
+def modifcation_log_message(update, context):
+    update.message.reply_text(
+        " 🟪 Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!"
+    )
+
+
+def m_RYBKA_RSI_FOR_BUY_20_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_BUY", "20")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_RSI_FOR_BUY_25_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_BUY", "25")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_RSI_FOR_BUY_28_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_BUY", "28")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_RSI_FOR_BUY_30_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_BUY", "30")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_RSI_FOR_BUY_32_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_BUY", "32")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_RSI_FOR_BUY_35_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_BUY", "35")
+    modifcation_log_message(update, context)
+
+def m_RYBKA_RSI_FOR_BUY_40_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_BUY", "40")
+    modifcation_log_message(update, context)
+
+
+####################################################
+##     RYBKA_RSI_FOR_SELL-specific functions      ##
+####################################################
+
+
+def modifcation_log_message(update, context):
+    update.message.reply_text(
+        " 🟪 Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!"
+    )
+
+
+def m_RYBKA_RSI_FOR_SELL_60_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_SELL", "60")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_RSI_FOR_SELL_65_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_SELL", "65")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_RSI_FOR_SELL_68_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_SELL", "68")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_RSI_FOR_SELL_70_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_SELL", "70")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_RSI_FOR_SELL_72_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_SELL", "72")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_RSI_FOR_SELL_75_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_SELL", "75")
+    modifcation_log_message(update, context)
+
+def m_RYBKA_RSI_FOR_SELL_80_command(update, context):
+    modify_config_ini("RYBKA_RSI_FOR_SELL", "80")
+    modifcation_log_message(update, context)
+
+
+####################################################
+##       RYBKA_DEBUG_LVL-specific functions       ##
+####################################################
+
+
+def modifcation_log_message(update, context):
+    update.message.reply_text(
+        " 🟪 Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!"
+    )
+
+
+def m_RYBKA_DEBUG_LVL_unset_command(update, context):
+    modify_config_ini("RYBKA_DEBUG_LVL", "")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_DEBUG_LVL_1_command(update, context):
+    modify_config_ini("RYBKA_DEBUG_LVL", "1")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_DEBUG_LVL_2_command(update, context):
+    modify_config_ini("RYBKA_DEBUG_LVL", "2")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_DEBUG_LVL_3_command(update, context):
+    modify_config_ini("RYBKA_DEBUG_LVL", "3")
+    modifcation_log_message(update, context)
+
+
+####################################################
+##    RYBKA_USDT_SAFETY_NET-specific functions    ##
+####################################################
+
+
+def modifcation_log_message(update, context):
+    update.message.reply_text(
+        " 🟪 Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!"
+    )
+
+
+def m_RYBKA_USDT_SAFETY_NET_unset_command(update, context):
+    modify_config_ini("RYBKA_USDT_SAFETY_NET", "")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_USDT_SAFETY_NET_50_command(update, context):
+    modify_config_ini("RYBKA_USDT_SAFETY_NET", "50")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_USDT_SAFETY_NET_100_command(update, context):
+    modify_config_ini("RYBKA_USDT_SAFETY_NET", "100")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_USDT_SAFETY_NET_200_command(update, context):
+    modify_config_ini("RYBKA_USDT_SAFETY_NET", "200")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_USDT_SAFETY_NET_350_command(update, context):
+    modify_config_ini("RYBKA_USDT_SAFETY_NET", "350")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_USDT_SAFETY_NET_500_command(update, context):
+    modify_config_ini("RYBKA_USDT_SAFETY_NET", "500")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_USDT_SAFETY_NET_750_command(update, context):
+    modify_config_ini("RYBKA_USDT_SAFETY_NET", "750")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_USDT_SAFETY_NET_1000_command(update, context):
+    modify_config_ini("RYBKA_USDT_SAFETY_NET", "1000")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_USDT_SAFETY_NET_1500_command(update, context):
+    modify_config_ini("RYBKA_USDT_SAFETY_NET", "1500")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_USDT_SAFETY_NET_3000_command(update, context):
+    modify_config_ini("RYBKA_USDT_SAFETY_NET", "3000")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_USDT_SAFETY_NET_5000_command(update, context):
+    modify_config_ini("RYBKA_USDT_SAFETY_NET", "5000")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_USDT_SAFETY_NET_7500_command(update, context):
+    modify_config_ini("RYBKA_USDT_SAFETY_NET", "7500")
     modifcation_log_message(update, context)
 
 
@@ -852,6 +1090,21 @@ def m_RYBKA_TELEGRAM_SWITCH_false_command(update, context):
     modifcation_log_message(update, context)
 
 
+######################################################################
+##    m_RYBKA_ALL_LOG_TLG_SWITCH-specific functions    ##
+######################################################################
+
+
+def m_RYBKA_ALL_LOG_TLG_SWITCH_true_command(update, context):
+    modify_config_ini("RYBKA_ALL_LOG_TLG_SWITCH", "True")
+    modifcation_log_message(update, context)
+
+
+def m_RYBKA_ALL_LOG_TLG_SWITCH_false_command(update, context):
+    modify_config_ini("RYBKA_ALL_LOG_TLG_SWITCH", "False")
+    modifcation_log_message(update, context)
+
+
 ####################################################
 ##  Command-specific functions for sub-menus P.2  ##
 ####################################################
@@ -872,6 +1125,112 @@ def call_submenu_of_weight(update, context, weight):
     {'/RYBKA_TRADING_BOOST_LVL_3'} - Set value "3"
     {'/RYBKA_TRADING_BOOST_LVL_4'} - Set value "4"
     {'/RYBKA_TRADING_BOOST_LVL_5'} - Set value "5"
+
+
+    🔄 {f'/m_{weight}'}  -  Shows this help message
+
+
+❕ Weights specific to DEMO mode are not included!
+        """
+        )
+
+    elif weight == "RYBKA_RSI_FOR_BUY":
+        update.message.reply_text(
+            f"""Available [RYBKA_RSI_FOR_BUY] weight modification commands are ⤵️
+
+
+❔ Firstly you may want to check the current value of this weight:
+    {'/RYBKA_RSI_FOR_BUY'} - Checks current value
+
+🟫 Choose the value you want to set for this weight:
+    {'/RYBKA_RSI_FOR_BUY_20'} - Set value "20"
+    {'/RYBKA_RSI_FOR_BUY_25'} - Set value "25"
+    {'/RYBKA_RSI_FOR_BUY_28'} - Set value "28"
+    {'/RYBKA_RSI_FOR_BUY_30'} - Set value "30"
+    {'/RYBKA_RSI_FOR_BUY_32'} - Set value "32"
+    {'/RYBKA_RSI_FOR_BUY_35'} - Set value "35"
+    {'/RYBKA_RSI_FOR_BUY_40'} - Set value "40"
+
+
+
+    🔄 {f'/m_{weight}'}  -  Shows this help message
+
+
+❕ Weights specific to DEMO mode are not included!
+        """
+        )
+
+    elif weight == "RYBKA_RSI_FOR_SELL":
+        update.message.reply_text(
+            f"""Available [RYBKA_RSI_FOR_SELL] weight modification commands are ⤵️
+
+
+❔ Firstly you may want to check the current value of this weight:
+    {'/RYBKA_RSI_FOR_SELL'} - Checks current value
+
+🟫 Choose the value you want to set for this weight:
+    {'/RYBKA_RSI_FOR_SELL_60'} - Set value "60"
+    {'/RYBKA_RSI_FOR_SELL_65'} - Set value "65"
+    {'/RYBKA_RSI_FOR_SELL_68'} - Set value "68"
+    {'/RYBKA_RSI_FOR_SELL_70'} - Set value "70"
+    {'/RYBKA_RSI_FOR_SELL_72'} - Set value "72"
+    {'/RYBKA_RSI_FOR_SELL_75'} - Set value "75"
+    {'/RYBKA_RSI_FOR_SELL_80'} - Set value "80"
+
+
+
+    🔄 {f'/m_{weight}'}  -  Shows this help message
+
+
+❕ Weights specific to DEMO mode are not included!
+        """
+        )
+
+    elif weight == "RYBKA_DEBUG_LVL":
+        update.message.reply_text(
+            f"""Available [RYBKA_DEBUG_LVL] weight modification commands are ⤵️
+
+
+❔ Firstly you may want to check the current value of this weight:
+    {'/RYBKA_DEBUG_LVL'} - Checks current value
+
+🟫 Choose the value you want to set for this weight:
+    {'/RYBKA_DEBUG_LVL_unset'} - Unset the value
+    {'/RYBKA_DEBUG_LVL_1'} - Set value "1"
+    {'/RYBKA_DEBUG_LVL_2'} - Set value "2"
+    {'/RYBKA_DEBUG_LVL_3'} - Set value "3"
+
+
+
+    🔄 {f'/m_{weight}'}  -  Shows this help message
+
+
+❕ Weights specific to DEMO mode are not included!
+        """
+        )
+
+    elif weight == "RYBKA_USDT_SAFETY_NET":
+        update.message.reply_text(
+            f"""Available [RYBKA_USDT_SAFETY_NET] weight modification commands are ⤵️
+
+
+❔ Firstly you may want to check the current value of this weight:
+    {'/RYBKA_USDT_SAFETY_NET'} - Checks current value
+
+🟫 Choose the value you want to set for this weight:
+    {'/RYBKA_USDT_SAFETY_NET_unset'} - Unset the value
+    {'/RYBKA_USDT_SAFETY_NET_50'} - Set value "50"
+    {'/RYBKA_USDT_SAFETY_NET_100'} - Set value "100"
+    {'/RYBKA_USDT_SAFETY_NET_200'} - Set value "200"
+    {'/RYBKA_USDT_SAFETY_NET_350'} - Set value "350"
+    {'/RYBKA_USDT_SAFETY_NET_500'} - Set value "500"
+    {'/RYBKA_USDT_SAFETY_NET_750'} - Set value "750"
+    {'/RYBKA_USDT_SAFETY_NET_1000'} - Set value "1000"
+    {'/RYBKA_USDT_SAFETY_NET_1500'} - Set value "1500"
+    {'/RYBKA_USDT_SAFETY_NET_3000'} - Set value "3000"
+    {'/RYBKA_USDT_SAFETY_NET_5000'} - Set value "5000"
+    {'/RYBKA_USDT_SAFETY_NET_7500'} - Set value "7500"
+
 
 
     🔄 {f'/m_{weight}'}  -  Shows this help message
@@ -999,6 +1358,26 @@ def call_submenu_of_weight(update, context, weight):
         """
         )
 
+    elif weight == "RYBKA_ALL_LOG_TLG_SWITCH":
+        update.message.reply_text(
+            f"""Available [RYBKA_ALL_LOG_TLG_SWITCH] weight modification commands are ⤵️
+
+
+❔ Firstly you may want to check the current value of this weight:
+    {'/RYBKA_ALL_LOG_TLG_SWITCH'} - Checks current value
+
+🟫 Choose the value you want to set for this weight:
+    {'/RYBKA_ALL_LOG_TLG_SWITCH_true'} - Set value "True"
+    {'/RYBKA_ALL_LOG_TLG_SWITCH_false'} - Set value "False"
+
+
+    🔄 {f'/m_{weight}'}  -  Shows this help message
+
+
+❕ Weights specific to DEMO mode are not included!
+        """
+        )
+
 
 def modify_weights_command(update, context):
     if exists("config.ini"):
@@ -1099,6 +1478,7 @@ def main():
     dp.add_handler(CommandHandler("RYBKA_EMAIL_RECIPIENT_EMAIL", weights_command))
     dp.add_handler(CommandHandler("RYBKA_EMAIL_RECIPIENT_NAME", weights_command))
     dp.add_handler(CommandHandler("RYBKA_TELEGRAM_SWITCH", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_ALL_LOG_TLG_SWITCH", weights_command))
     dp.add_handler(CommandHandler("RYBKA_DISCLAIMER", weights_command))
 
     dp.add_handler(CommandHandler("modify_weights", weight_modification_command))
@@ -1109,6 +1489,44 @@ def main():
     dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL_3", m_RYBKA_TRADING_BOOST_LVL_3_command))
     dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL_4", m_RYBKA_TRADING_BOOST_LVL_4_command))
     dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL_5", m_RYBKA_TRADING_BOOST_LVL_5_command))
+
+    dp.add_handler(CommandHandler("m_RYBKA_RSI_FOR_BUY", modify_weights_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_BUY_20", m_RYBKA_RSI_FOR_BUY_20_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_BUY_25", m_RYBKA_RSI_FOR_BUY_25_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_BUY_28", m_RYBKA_RSI_FOR_BUY_28_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_BUY_30", m_RYBKA_RSI_FOR_BUY_30_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_BUY_32", m_RYBKA_RSI_FOR_BUY_32_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_BUY_35", m_RYBKA_RSI_FOR_BUY_35_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_BUY_40", m_RYBKA_RSI_FOR_BUY_40_command))
+
+    dp.add_handler(CommandHandler("m_RYBKA_RSI_FOR_SELL", modify_weights_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_SELL_60", m_RYBKA_RSI_FOR_SELL_60_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_SELL_65", m_RYBKA_RSI_FOR_SELL_65_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_SELL_68", m_RYBKA_RSI_FOR_SELL_68_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_SELL_70", m_RYBKA_RSI_FOR_SELL_70_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_SELL_72", m_RYBKA_RSI_FOR_SELL_72_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_SELL_75", m_RYBKA_RSI_FOR_SELL_75_command))
+    dp.add_handler(CommandHandler("RYBKA_RSI_FOR_SELL_80", m_RYBKA_RSI_FOR_SELL_80_command))
+
+    dp.add_handler(CommandHandler("m_RYBKA_DEBUG_LVL", modify_weights_command))
+    dp.add_handler(CommandHandler("RYBKA_DEBUG_LVL_unset", m_RYBKA_DEBUG_LVL_unset_command))
+    dp.add_handler(CommandHandler("RYBKA_DEBUG_LVL_1", m_RYBKA_DEBUG_LVL_1_command))
+    dp.add_handler(CommandHandler("RYBKA_DEBUG_LVL_2", m_RYBKA_DEBUG_LVL_2_command))
+    dp.add_handler(CommandHandler("RYBKA_DEBUG_LVL_3", m_RYBKA_DEBUG_LVL_3_command))
+
+    dp.add_handler(CommandHandler("m_RYBKA_USDT_SAFETY_NET", modify_weights_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_unset", m_RYBKA_USDT_SAFETY_NET_unset_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_50", m_RYBKA_USDT_SAFETY_NET_50_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_100", m_RYBKA_USDT_SAFETY_NET_100_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_200", m_RYBKA_USDT_SAFETY_NET_200_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_350", m_RYBKA_USDT_SAFETY_NET_350_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_500", m_RYBKA_USDT_SAFETY_NET_500_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_750", m_RYBKA_USDT_SAFETY_NET_750_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_1000", m_RYBKA_USDT_SAFETY_NET_1000_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_1500", m_RYBKA_USDT_SAFETY_NET_1500_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_3000", m_RYBKA_USDT_SAFETY_NET_3000_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_5000", m_RYBKA_USDT_SAFETY_NET_5000_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_7500", m_RYBKA_USDT_SAFETY_NET_7500_command))
 
     dp.add_handler(CommandHandler("m_RYBKA_TRADE_QUANTITY", modify_weights_command))
     dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_1", m_RYBKA_TRADE_QUANTITY_0_1_command))
@@ -1167,6 +1585,15 @@ def main():
     dp.add_handler(
         CommandHandler("RYBKA_TELEGRAM_SWITCH_false", m_RYBKA_TELEGRAM_SWITCH_false_command)
     )
+
+    dp.add_handler(CommandHandler("m_RYBKA_ALL_LOG_TLG_SWITCH", modify_weights_command))
+    dp.add_handler(
+        CommandHandler("RYBKA_ALL_LOG_TLG_SWITCH_true", m_RYBKA_ALL_LOG_TLG_SWITCH_true_command)
+    )
+    dp.add_handler(
+        CommandHandler("RYBKA_ALL_LOG_TLG_SWITCH_false", m_RYBKA_ALL_LOG_TLG_SWITCH_false_command)
+    )
+
 
     dp.add_handler(MessageHandler(Filters.text, handle_message))
 

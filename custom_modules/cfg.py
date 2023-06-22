@@ -120,6 +120,18 @@ class Rybka_py_env_bootstrap:
         else:
             self.RYBKA_TELEGRAM_SWITCH = os.environ.get("RYBKA_TELEGRAM_SWITCH").strip("\n").strip()
 
+        if not os.environ.get("RYBKA_ALL_LOG_TLG_SWITCH"):
+            self.RYBKA_ALL_LOG_TLG_SWITCH = (
+                config.get(
+                    "Rybka Standalone Configuration. For LIVE and DEMO modes",
+                    "RYBKA_ALL_LOG_TLG_SWITCH",
+                )
+                .strip("\n")
+                .strip()
+            )
+        else:
+            self.RYBKA_ALL_LOG_TLG_SWITCH = os.environ.get("RYBKA_ALL_LOG_TLG_SWITCH").strip("\n").strip()
+
         # Binance related config.
         self.TRADE_SYMBOL = (
             config.get(

@@ -236,7 +236,7 @@ def ktbr_configuration():
                     )
                     for k, v in ktbr_config.items():
                         log.INFO(
-                            f" 💳 Transaction [{k}]  ---  [{bcolors.OKGREEN}{bcolors.BOLD}{v[0]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t EGLD bought at price of [{bcolors.OKGREEN}{bcolors.BOLD}{v[1]}{bcolors.ENDC}{bcolors.DARKGRAY}]\tUSDT per EGLD{bcolors.ENDC}"
+                            f" 💳 Transaction [{k}]  ---  [{bcolors.OKGREEN}{bcolors.BOLD}{v[0]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t EGLD bought at price of [{bcolors.OKGREEN}{bcolors.BOLD}{v[1]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t USDT per EGLD{bcolors.ENDC}"
                         )
                 except Exception as e:
                     log.FATAL_7(
@@ -835,6 +835,7 @@ def main(version, mode, head):
     global TRADING_BOOST_LVL, TRADE_QUANTITY, TRADE_SYMBOL, AUX_TRADE_QUANTITY
     global USDT_SAFETY_NET, MIN_PROFIT
     global RYBKA_TELEGRAM_SWITCH
+    global RYBKA_ALL_LOG_TLG_SWITCH
     global SET_DISCLAIMER
 
     global balance_usdt, balance_egld, balance_bnb
@@ -2274,6 +2275,7 @@ if __name__ == "__main__":
         global TRADE_QUANTITY, AUX_TRADE_QUANTITY, MIN_PROFIT, USDT_SAFETY_NET
         global RYBKA_EMAIL_SWITCH, RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_RECIPIENT_EMAIL, RYBKA_EMAIL_RECIPIENT_NAME
         global RYBKA_TELEGRAM_SWITCH
+        global RYBKA_ALL_LOG_TLG_SWITCH
         global SET_DISCLAIMER
 
         DEBUG_LVL = bootstrap.DEBUG_LVL
@@ -2298,6 +2300,7 @@ if __name__ == "__main__":
         RYBKA_EMAIL_RECIPIENT_NAME = bootstrap.RYBKA_EMAIL_RECIPIENT_NAME
 
         RYBKA_TELEGRAM_SWITCH = bootstrap.RYBKA_TELEGRAM_SWITCH
+        RYBKA_ALL_LOG_TLG_SWITCH = bootstrap.RYBKA_ALL_LOG_TLG_SWITCH
 
         SET_DISCLAIMER = bootstrap.SET_DISCLAIMER
 
@@ -2316,6 +2319,7 @@ if __name__ == "__main__":
             )
             WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_RECIPIENT_NAME": RYBKA_EMAIL_RECIPIENT_NAME})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_TELEGRAM_SWITCH": RYBKA_TELEGRAM_SWITCH})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_ALL_LOG_TLG_SWITCH": RYBKA_ALL_LOG_TLG_SWITCH})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_DISCLAIMER": SET_DISCLAIMER})
 
         if not WEIGHTS_DICT_UPDATED:
@@ -2327,11 +2331,11 @@ if __name__ == "__main__":
                 if WEIGHTS_DICT_UPDATED[k] != WEIGHTS_DICT_OUTDATED[k]:
                     log.INFO(" ")
                     log.INFO_SPECIAL(
-                        f" ⚖️  Rybka's weight [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!"
+                        f" ⚖️  Rybka's weight: [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!"
                     )
                     telegram.LOG(
                         "INFO",
-                        f" 🟢 Rybka's weight [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!",
+                        f" 🟢 Rybka's weight:\n[{k.replace('_',' ')}]\n\n⇢ updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!",
                     )
                     log.INFO(" ")
                     WEIGHTS_DICT_OUTDATED.update({k: WEIGHTS_DICT_UPDATED[k]})

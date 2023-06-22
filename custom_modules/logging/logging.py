@@ -72,26 +72,36 @@ class RybkaLogging:
         print(
             f"{bcolors.DARKGRAY}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {message}{bcolors.ENDC}"
         )
+        if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
+            telegram.LOG("INFO", message)
 
     def INFO_BOLD(self, message):
         print(
             f"{bcolors.DARKGRAY}{bcolors.BOLD}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {message}{bcolors.ENDC}"
         )
+        if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
+            telegram.LOG("INFO", message)
 
     def INFO_UNDERLINE(self, message):
         print(
             f"{bcolors.DARKGRAY}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {bcolors.UNDERLINE}{message}{bcolors.ENDC}"
         )
+        if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
+            telegram.LOG("INFO", message)
 
     def INFO_BOLD_UNDERLINE(self, message):
         print(
             f"{bcolors.DARKGRAY}{bcolors.BOLD}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {bcolors.UNDERLINE}{message}{bcolors.ENDC}"
         )
+        if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
+            telegram.LOG("INFO", message)
 
     def INFO_SPECIAL(self, message):
         print(
             f"{bcolors.OKGREEN}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {message}{bcolors.ENDC}"
         )
+        if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
+            telegram.LOG("INFO", message)
 
     def DEBUG(self, message):
         self.refresh_bootstrap_object()
@@ -99,6 +109,8 @@ class RybkaLogging:
             print(
                 f"{bcolors.OKCYAN}🛠️  [{os.environ.get('RYBKA_MODE')}] [DEBUG] {self.logging_time()}      > {message}{bcolors.ENDC}"
             )
+            if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
+                telegram.LOG("DEBUG", message)
 
     def VERBOSE(self, message):
         self.refresh_bootstrap_object()
@@ -106,6 +118,8 @@ class RybkaLogging:
             print(
                 f"{bcolors.OKBLUE}🛠️ 🛠️  [{os.environ.get('RYBKA_MODE')}] [VERBOSE] {self.logging_time()}  > {message}{bcolors.ENDC}"
             )
+            if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
+                telegram.LOG("VERBOSE", message)
 
     def HIGH_VERBOSITY(self, message):
         self.refresh_bootstrap_object()
@@ -113,6 +127,8 @@ class RybkaLogging:
             print(
                 f"{bcolors.HEADER}🛠️ 🛠️ 🛠️  [{os.environ.get('RYBKA_MODE')}] [HV] {self.logging_time()}     > {message}{bcolors.ENDC}"
             )
+            if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
+                telegram.LOG("HIGH_VERBOSITY", message)
 
     def WARN(self, message):
         print(
@@ -121,6 +137,8 @@ class RybkaLogging:
         self.all_errors_file_update(
             f"⚠️  [{os.environ.get('RYBKA_MODE')}] [WARN] {self.logging_time()}       > {message}"
         )
+        if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
+            telegram.LOG("WARN", message)
 
     def FATAL(self, message):
         print(

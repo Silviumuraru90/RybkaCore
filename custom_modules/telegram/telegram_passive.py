@@ -101,6 +101,12 @@ class TelegramEngine:
                         bot_message = f"`{message}`"
                     else:
                         bot_message = f"⬜️ `INFO ☞ {message}`"
+                elif mode.upper() == "DEBUG":
+                    bot_message = f"🛠️  `DEBUG ☞ {message}`"
+                elif mode.upper() == "VERBOSE":
+                    bot_message = f"🛠️ 🛠️  `VERBOSE ☞ {message}`"
+                elif mode.upper() == "HIGH_VERBOSITY":
+                    bot_message = f"🛠️ 🛠️ 🛠️  `HIGH_VERBOSITY ☞ {message}`"
                 elif mode.upper() == "WARN":
                     bot_message = f"⚠️  `WARN ☞ {message}`"
                 elif mode.upper() == "FATAL":

@@ -150,6 +150,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 |`RYBKA_TELEGRAM_SWITCH`                      | `boolean` | Values ➡️ `True` or `False` <br><br> `True` will enable Telegram Notifications <br>`False` will disable them<br> <br>(Get from environment / config file)                           | ✅        | `False` |  
 |`RYBKA_TELEGRAM_API_KEY`                      | `string` | Telegram bot's <b>Auth</b>orization <b>KEY</b> <br> <br>(Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
 |`RYBKA_TELEGRAM_CHAT_ID`                      | `string` | Telegram bot's chat <b>id</b>entificator <br> <br>(Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
+|`RYBKA_ALL_LOG_TLG_SWITCH`                      | `boolean` | Values ➡️ `True` or `False` <br><br> `True` will enable the flow of shell's logs into Telegram chat <br>`False` will disable them<br> <br>(Get from environment / config file)                            | ❌ | `False` | 
 
 <br>
 
