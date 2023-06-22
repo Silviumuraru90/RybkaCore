@@ -236,7 +236,7 @@ def ktbr_configuration():
                     )
                     for k, v in ktbr_config.items():
                         log.INFO(
-                            f" 💳 Transaction [{k}]  ---  [{bcolors.OKGREEN}{bcolors.BOLD}{v[0]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t EGLD bought at price of [{bcolors.OKGREEN}{bcolors.BOLD}{v[1]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t USDT per EGLD{bcolors.ENDC}"
+                            f" 💳 Transaction [{k}]  ---  [{bcolors.OKGREEN}{bcolors.BOLD}{v[0]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t EGLD bought at price of [{bcolors.OKGREEN}{bcolors.BOLD}{v[1]}{bcolors.ENDC}{bcolors.DARKGRAY}]\tUSDT per EGLD{bcolors.ENDC}"
                         )
                 except Exception as e:
                     log.FATAL_7(
@@ -477,14 +477,19 @@ def software_config_params():
     global RYBKA_EMAIL_SWITCH, RSI_FOR_SELL, RSI_FOR_BUY, MIN_PROFIT, USDT_SAFETY_NET, TRADE_QUANTITY, DEBUG_LVL
     global TRADE_QUANTITY
     print("\n\n")
-    log.ORANGE("\t\t\t\t██████╗░██╗░░░██╗██████╗░██╗░░██╗░█████╗░")
-    log.ORANGE("\t\t\t\t██╔══██╗╚██╗░██╔╝██╔══██╗██║░██╔╝██╔══██╗")
-    log.ORANGE("\t\t\t\t██████╔╝░╚████╔╝░██████╦╝█████═╝░███████║")
-    log.ORANGE("\t\t\t\t██╔══██╗░░╚██╔╝░░██╔══██╗██╔═██╗░██╔══██║")
-    log.ORANGE("\t\t\t\t██║░░██║░░░██║░░░██████╦╝██║░╚██╗██║░░██║")
-    log.ORANGE("\t\t\t\t╚═╝░░╚═╝░░░╚═╝░░░╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝\n")
-    log.ORANGE(f"\t\t\t\t             - MODE: {RYBKA_MODE} -           \n\n")
-
+    log.ORANGE("      ___           ___           ___           ___           ___           ___           ___           ___           ___     ")
+    log.ORANGE("     /\  \         |\__\         /\  \         /\__\         /\  \         /\  \         /\  \         /\  \         /\  \    ")
+    log.ORANGE("    /::\  \        |:|  |       /::\  \       /:/  /        /::\  \       /::\  \       /::\  \       /::\  \       /::\  \   ")
+    log.ORANGE("   /:/\:\  \       |:|  |      /:/\:\  \     /:/__/        /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\:\  \  ")
+    log.ORANGE("  /::\~\:\  \      |:|__|__   /::\~\:\__\   /::\__\____   /::\~\:\  \   /:/  \:\  \   /:/  \:\  \   /::\~\:\  \   /::\~\:\  \ ")
+    log.ORANGE(" /:/\:\ \:\__\     /::::\__\ /:/\:\ \:|__| /:/\:::::\__\ /:/\:\ \:\__\ /:/__/ \:\__\ /:/__/ \:\__\ /:/\:\ \:\__\ /:/\:\ \:\__\\")
+    log.ORANGE(" \/_|::\/:/  /    /:/~~/~    \:\~\:\/:/  / \/_|:|~~|~    \/__\:\/:/  / \:\  \  \/__/ \:\  \ /:/  / \/_|::\/:/  / \:\~\:\ \/__/")
+    log.ORANGE("    |:|::/  /    /:/  /       \:\ \::/  /     |:|  |          \::/  /   \:\  \        \:\  /:/  /     |:|::/  /   \:\ \:\__\  ")
+    log.ORANGE("    |:|\/__/     \/__/         \:\/:/  /      |:|  |          /:/  /     \:\  \        \:\/:/  /      |:|\/__/     \:\ \/__/  ")
+    log.ORANGE("    |:|  |                      \::/__/       |:|  |         /:/  /       \:\__\        \::/  /       |:|  |        \:\__\    ")
+    log.ORANGE("     \|__|                       ~~            \|__|         \/__/         \/__/         \/__/         \|__|         \/__/    \n")
+    log.ORANGE(f"                                                    - MODE: {RYBKA_MODE} -                                                   \n\n")
+    time.sleep(3)
     log.INFO("RybkaCore software started with the following parameters:\n")
     log.INFO_BOLD(f" 🔘 RYBKA_MODE      set to: {bcolors.PURPLE}{RYBKA_MODE:>50}")
     if DEBUG_LVL:
@@ -620,9 +625,9 @@ def bot_uptime_and_current_price(current_price, output):
 
     if output == "CLI":
         if days < 1:
-            price_and_uptime = f"◼️ [EGLD = {bcolors.PURPLE}{current_price:5}{bcolors.DARKGRAY} USDT]   ◼️⬛️◼️   [UPTIME = {bcolors.PURPLE}{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY}] ◼️"
+            price_and_uptime = f"[ {bcolors.OKCYAN}EGLD{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}USDT{bcolors.DARKGRAY} ]  🩺  [{bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ]"
         else:
-            price_and_uptime = f"◼️ [EGLD = {bcolors.PURPLE}{current_price:5}{bcolors.DARKGRAY} USDT]   ◼️⬛️◼️   [UPTIME = {bcolors.PURPLE}{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY}] ◼️"
+            price_and_uptime = f"[ {bcolors.OKCYAN}EGLD{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}USDT{bcolors.DARKGRAY} ]  🩺  [{bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ]"
 
         log.INFO(price_and_uptime)
 
@@ -762,7 +767,7 @@ def previous_runs_sanitation(target_folder):
             shutil.move(folder, target_folder)
 
     if found_match:
-        log.ORANGE(" ✅ Previous run(s)' folder(s) found and moved to the 'archived_logs' folder.\n")
+        log.ORANGE(" ✅ Previous run(s)' folder(s) found and moved to the 'archived_logs' folder.")
     else:
         log.ORANGE(" ✅ Current dir is already sanitized.\n")
 
@@ -795,84 +800,6 @@ def move_and_replace(target_folder, path=None):
 ###############################################
 ###########   WEBSOCKET FUNCTIONS   ###########
 ###############################################
-
-
-def on_open(ws):
-    log.INFO(
-        "====================================================================================================================================="
-    )
-    log.INFO_BOLD(
-        f"Connection to Binance servers established, listening to [{bcolors.PURPLE}{TRADE_SYMBOL}{bcolors.DARKGRAY}] data"
-    )
-    log.INFO(
-        "====================================================================================================================================="
-    )
-    log.INFO_BOLD("Initiating a one-time 10-min info gathering timeframe. Please wait...")
-    log.INFO(
-        "====================================================================================================================================="
-    )
-
-
-def on_close(ws, close_status_code, close_msg):
-    global archived_logs_folder
-
-    if not os.path.isdir(archived_logs_folder):
-        os.makedirs(archived_logs_folder)
-    shutil.move(current_export_dir, archived_logs_folder)
-
-    print(
-        f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot.{bcolors.ENDC}"
-    )
-    log.all_errors_file_update(
-        f"❌ [{RYBKA_MODE}] [FATAL (1)] {log.logging_time()}      > Closed connection, something went wrong. Please consult logs and restart the bot."
-    )
-    telegram.LOG("FATAL", f"🏴‍☠️ Bot is shutting down... [{RYBKA_MODE}]")
-
-    if close_status_code or close_msg:
-        print(
-            f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Close status code: {str(close_status_code)}{bcolors.ENDC}"
-        )
-        print(
-            f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Close message: {str(close_msg)}{bcolors.ENDC}"
-        )
-        log.all_errors_file_update(
-            f"❌ [{RYBKA_MODE}] [FATAL (1)] {log.logging_time()}      > Close status code: {str(close_status_code)}"
-        )
-        log.all_errors_file_update(
-            f"❌ [{RYBKA_MODE}] [FATAL (1)] {log.logging_time()}      > Close message: {str(close_msg)}"
-        )
-        telegram.LOG(
-            "FATAL",
-            f"[RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working.\n\n Close Status Code: {str(close_status_code)}\n Close Message: {str(close_msg)}",
-        )
-        email_sender(
-            f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working.\n\n Close Status Code: {str(close_status_code)}\n Close Message: {str(close_msg)}"
-        )
-    else:
-        email_sender(
-            f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working. No DEBUG close message or status code provided"
-        )
-
-
-def on_error(ws, message):
-    if str(message).strip():
-        print(
-            f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Software encountered an error and got shutdown! Additional error message provided:\n{message}{bcolors.ENDC}"
-        )
-        log.all_errors_file_update(
-            f"❌ FATAL {log.logging_time()}      > Software encountered an error and got shutdown! Additional error message provided:\n{message}"
-        )
-        if str(message).strip() == "7":
-            sys.exit(7)
-    else:
-        print(
-            f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL] {log.logging_time()}      > Software encountered an error and got shutdown! No additional error message provided{bcolors.ENDC}"
-        )
-        log.all_errors_file_update(
-            f"❌ FATAL {log.logging_time()}      > Software encountered an error and got shutdown! No additional error message provided"
-        )
-        if str(message).strip() == "7":
-            sys.exit(7)
 
 
 @click.command()
@@ -976,9 +903,7 @@ def main(version, mode, head):
     if platform == "linux" or platform == "linux2":
         pass
     elif platform == "win32":
-        log.ORANGE("\nChecking Rybka's permissions and syncing time...\n")
-        time.sleep(2)
-        log.ORANGE("Please wait!\n")
+        log.ORANGE("\n 📋 Checking Rybka's permissions and syncing time... Please wait!")
         if isAdmin() is not True:
             log.FATAL_7(
                 "Please run the script with admin privileges, as bot needs access to auto-update HOST's time with NIST servers!"
@@ -987,7 +912,7 @@ def main(version, mode, head):
     re_sync_time()
 
     ###########  Prerequisites - start  ###########
-    log.ORANGE("\nPREREQUISITE PROCESS...\n")
+    log.ORANGE("\n 📋 PREREQUISITE PROCESS STARTING...\n")
     time.sleep(1)
 
     process_pid = os.getpid()
@@ -1011,51 +936,9 @@ def main(version, mode, head):
 
     clear_terminal()
 
-    if RYBKA_MODE == "LIVE":
-        log.INFO(
-            "===================================================================================================="
-        )
-        log.INFO(
-            "===================================================================================================="
-        )
-        log.INFO_BOLD(
-            f"=================================  ✅ {bcolors.PURPLE}RYBKA MODE   ---   LIVE{bcolors.DARKGRAY} ✅  =================================="
-        )
-        log.INFO(
-            "===================================================================================================="
-        )
-        log.INFO(
-            "===================================================================================================="
-        )
-
-        time.sleep(3)
+    if RYBKA_MODE == "LIVE" and not SET_DISCLAIMER.upper() == "FALSE":
+        disclaimer()
         clear_terminal()
-
-        if not SET_DISCLAIMER.upper() == "FALSE":
-            disclaimer()
-            clear_terminal()
-    elif RYBKA_MODE == "DEMO":
-        log.INFO(
-            "===================================================================================================="
-        )
-        log.INFO(
-            "===================================================================================================="
-        )
-        log.INFO_BOLD(
-            f"===============================  🛠️  {bcolors.PURPLE}RYBKA MODE   ---   DEMO{bcolors.DARKGRAY} 🛠️   ==================================="
-        )
-        log.INFO(
-            "===================================================================================================="
-        )
-        log.INFO(
-            "===================================================================================================="
-        )
-        time.sleep(3)
-        clear_terminal()
-    else:
-        log.FATAL_7(
-            f"PLEASE be clear about the mode you want the bot to operate in! RYBKA MODE set to [{RYBKA_MODE}]!"
-        )
 
     if RSI_PERIOD < 10:
         log.WARN(
@@ -1207,22 +1090,24 @@ def main(version, mode, head):
         with open("TEMP/telegram_pidTmp", "w", encoding="utf8") as f:
             f.write(str(telegram_pid.pid))
 
-    ######################################################################
-    ##   Keeping this piece for the eventuality of a failover concept   ##
-    ######################################################################
-    # ws = websocket.WebSocketApp(                                       #
-    #     SOCKET,                                                        #
-    #     on_open=on_open,                                               #
-    #     on_close=on_close,                                             #
-    #     on_message=on_message,                                         #
-    #     on_error=on_error,                                             #
-    # )                                                                  #
-    # ws.run_forever()                                                   #
-    ######################################################################
-
     try:
         unicorn_stream_obj = unicorn_binance_websocket_api.BinanceWebSocketApiManager(exchange="binance.com", warn_on_update=False)
         unicorn_stream_obj.create_stream(['kline_1m'], ['EGLDUSDT'])
+
+        log.INFO(
+            "====================================================================================================================================="
+        )
+        log.INFO_BOLD(
+            f"Connection to Binance servers established, listening to [{bcolors.PURPLE}{TRADE_SYMBOL}{bcolors.DARKGRAY}] data"
+        )
+        log.INFO(
+            "====================================================================================================================================="
+        )
+        log.INFO_BOLD("Initiating a one-time 10-min info gathering timeframe. Please wait...")
+        log.INFO(
+            "=====================================================================================================================================\n"
+        )
+
     except Exception as e:
         log.FATAL_7(
             f"The Unicorn object could not be created:\n{e}"

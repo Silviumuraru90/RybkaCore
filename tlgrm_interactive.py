@@ -58,7 +58,7 @@ def initialization():
     #####  3️⃣  Type `/help` for details on how to use    #####
     #####                                               #####
     #########################################################
-    \n\n""",
+    \n""",
             "cyan",
         ),
     )
@@ -1048,7 +1048,10 @@ def error(update, context):
                             ORANGE(
                                 "=========================================================================================\n"
                             )
-                            psutil.Process(telegram_pID).kill()
+                            try:
+                                psutil.Process(telegram_pID).kill()
+                            except Exception as e:
+                                ORANGE(f"TELEGRAM PROCESS COULD NOT BE KILLED. ERROR BELOW:\n\n{e}")
 
 
 def main():
