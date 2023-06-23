@@ -73,35 +73,35 @@ class RybkaLogging:
             f"{bcolors.DARKGRAY}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {message}{bcolors.ENDC}"
         )
         if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
-            telegram.LOG("INFO", message)
+            telegram.LOG(message, "INFO")
 
     def INFO_BOLD(self, message):
         print(
             f"{bcolors.DARKGRAY}{bcolors.BOLD}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {message}{bcolors.ENDC}"
         )
         if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
-            telegram.LOG("INFO", message)
+            telegram.LOG(message, "INFO")
 
     def INFO_UNDERLINE(self, message):
         print(
             f"{bcolors.DARKGRAY}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {bcolors.UNDERLINE}{message}{bcolors.ENDC}"
         )
         if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
-            telegram.LOG("INFO", message)
+            telegram.LOG(message, "INFO")
 
     def INFO_BOLD_UNDERLINE(self, message):
         print(
             f"{bcolors.DARKGRAY}{bcolors.BOLD}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {bcolors.UNDERLINE}{message}{bcolors.ENDC}"
         )
         if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
-            telegram.LOG("INFO", message)
+            telegram.LOG(message, "INFO")
 
     def INFO_SPECIAL(self, message):
         print(
             f"{bcolors.OKGREEN}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {message}{bcolors.ENDC}"
         )
         if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
-            telegram.LOG("INFO", message)
+            telegram.LOG(message, "INFO")
 
     def DEBUG(self, message):
         self.refresh_bootstrap_object()
@@ -110,7 +110,7 @@ class RybkaLogging:
                 f"{bcolors.OKCYAN}🛠️  [{os.environ.get('RYBKA_MODE')}] [DEBUG] {self.logging_time()}      > {message}{bcolors.ENDC}"
             )
             if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
-                telegram.LOG("DEBUG", message)
+                telegram.LOG(message, "DEBUG")
 
     def VERBOSE(self, message):
         self.refresh_bootstrap_object()
@@ -119,7 +119,7 @@ class RybkaLogging:
                 f"{bcolors.OKBLUE}🛠️ 🛠️  [{os.environ.get('RYBKA_MODE')}] [VERBOSE] {self.logging_time()}  > {message}{bcolors.ENDC}"
             )
             if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
-                telegram.LOG("VERBOSE", message)
+                telegram.LOG(message, "VERBOSE")
 
     def HIGH_VERBOSITY(self, message):
         self.refresh_bootstrap_object()
@@ -128,7 +128,7 @@ class RybkaLogging:
                 f"{bcolors.HEADER}🛠️ 🛠️ 🛠️  [{os.environ.get('RYBKA_MODE')}] [HV] {self.logging_time()}     > {message}{bcolors.ENDC}"
             )
             if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
-                telegram.LOG("HIGH_VERBOSITY", message)
+                telegram.LOG(message, "HIGH_VERBOSITY")
 
     def WARN(self, message):
         print(
@@ -138,7 +138,7 @@ class RybkaLogging:
             f"⚠️  [{os.environ.get('RYBKA_MODE')}] [WARN] {self.logging_time()}       > {message}"
         )
         if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
-            telegram.LOG("WARN", message)
+            telegram.LOG(message, "WARN")
 
     def FATAL(self, message):
         print(
@@ -147,7 +147,7 @@ class RybkaLogging:
         self.all_errors_file_update(
             f"❌ [{os.environ.get('RYBKA_MODE')}] [FATAL (1)] {self.logging_time()}      > {message}"
         )
-        telegram.LOG("FATAL", message)
+        telegram.LOG(message, "FATAL")
         sys.exit(1)
 
     def FATAL_7(self, message):
@@ -157,7 +157,10 @@ class RybkaLogging:
         self.all_errors_file_update(
             f"❌ [{os.environ.get('RYBKA_MODE')}] [FATAL (7)] {self.logging_time()}  > {message}"
         )
-        telegram.LOG("FATAL", message)
+        if "ⓇⓎⒷⓀⒶⒸⓄⓇⒺ is stopped" in message:
+            telegram.LOG(message)
+        else:
+            telegram.LOG(message, "FATAL")
         sys.exit(7)
 
     @staticmethod

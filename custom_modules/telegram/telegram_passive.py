@@ -92,15 +92,14 @@ class TelegramEngine:
             f"Make sure the [RYBKA_TELEGRAM_API_KEY] and [RYBKA_TELEGRAM_CHAT_ID] have valid values or that internet is available.\nNotification could NOT be sent due to an error:\n{e}"
         )
 
-    def LOG(self, mode, message):
+    def LOG(self, message, mode="default"):
         self.refresh_bootstrap_object()
         if bootstrap.RYBKA_TELEGRAM_SWITCH.upper() == "TRUE":
             try:
+                if mode == "default":
+                    bot_message = f"{message}"
                 if mode.upper() == "INFO":
-                    if "Bought" in message or "Sold" in message:
-                        bot_message = f"`{message}`"
-                    else:
-                        bot_message = f"⬜️ `INFO ☞ {message}`"
+                    bot_message = f"⬜️ `INFO ☞ {message}`"
                 elif mode.upper() == "DEBUG":
                     bot_message = f"🛠️  `DEBUG ☞ {message}`"
                 elif mode.upper() == "VERBOSE":
@@ -114,7 +113,7 @@ class TelegramEngine:
                 response = requests.get(f"{self.text_url}&parse_mode=Markdown&text={bot_message}")
                 self.HIGH_VERBOSITY(response.json())
             except Exception as e:
-                self.WARN(f"[{mode}] message could not be sent via TELEGRAM!")
+                self.WARN(f"[mode={mode}] - [{message}] message could not be sent via TELEGRAM!")
                 self.LOG_EXCEPTION(e)
 
     def LOCAL_PIC(self, image):

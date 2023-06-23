@@ -93,12 +93,12 @@ def main(version, mode):
             log.DEBUG(f"Run nr. [{core_runs}] of RybkaCore Software\n\n")
             with open("TEMP/core_runsTmp", "w", encoding="utf8") as x:
                 x.write(str(core_runs))
-            log.ORANGE("\n\n 📡 Rybka bot is being started...\n\n")
+            log.ORANGE("\n\n 📡 RybkaCore bot is being started...\n\n")
             time.sleep(2)
 
             status = os.system(f"python3 core.py -m {mode.upper()} --head")
 
-            # 111 is a click-related stoppage
+            # 111 is a 'click' lib related stoppage
             if status == 111:
                 break
             elif status == 2:

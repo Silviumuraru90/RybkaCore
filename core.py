@@ -2,6 +2,7 @@
 
 # Built-in and Third-Party Libs
 import ctypes
+import fileinput
 import json
 import math
 import os
@@ -747,7 +748,7 @@ def real_time_balances_update():
 
     try:
         with open(f"{RYBKA_MODE}/real_time_balances", "w", encoding="utf8") as f:
-            f.write("Most recent balances update shows:\n")
+            f.write("Binance Account shows the following balances (EGLD, USDT and BNB only):\n")
             f.write(f"\n{log.logging_time()} EGLD balance is: {balance_egld}")
             f.write(f"\n{log.logging_time()} USDT balance is: {balance_usdt}")
             f.write(f"\n{log.logging_time()} BNB  balance is: {balance_bnb}")
@@ -836,6 +837,7 @@ def main(version, mode, head):
     global USDT_SAFETY_NET, MIN_PROFIT
     global RYBKA_TELEGRAM_SWITCH
     global RYBKA_ALL_LOG_TLG_SWITCH
+    global RYBKA_BALANCES_AUX
     global SET_DISCLAIMER
 
     global balance_usdt, balance_egld, balance_bnb
@@ -1039,7 +1041,7 @@ def main(version, mode, head):
         "====================================================================================================================================="
     )
 
-    telegram.LOG("INFO", f"🏁 Bot started! [{RYBKA_MODE}]")
+    telegram.LOG(f" 🤖 🅡🅨🅑🅚🅐🅒🅞🅡🅔 started!\n\n          [[{RYBKA_MODE} mode]]")
     email_sender(
         f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot is starting up. Find logs into the local folder: \n\t[{current_export_dir}]"
     )
@@ -1115,10 +1117,45 @@ def main(version, mode, head):
         )
 
     try:
+        def balances_update_via_telegram_cmd():
+            if RYBKA_BALANCES_AUX.upper() == "TRUE" and RYBKA_MODE == "LIVE":
+                for i in range(1, 11):
+                    try:
+                        account_balance_update()
+                        log.DEBUG("Account Balance Sync. - Successful")
+                        break
+                    except Exception as e:
+                        if i == 10:
+                            log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
+                        time.sleep(3)
+
+                real_time_balances_update()
+
+                if exists("LIVE/real_time_balances"):
+                    with open("LIVE/real_time_balances", "r", encoding="utf8") as f:
+                        if os.stat("LIVE/real_time_balances").st_size == 0:
+                            telegram.LOG(" 🚫 [LIVE/real_time_balances] file exists but is empty")
+                        else:
+                            balances = f.read()
+                            for elem in balances.split("\n"):
+                                if ">" in elem:
+                                    elem = f'🟣 {elem.split(">")[1]}'
+                                if elem:
+                                    telegram.LOG(f"{elem}")
+                else:
+                    telegram.LOG(" 🛑 The file for balances does NOT exist!")
+
+                pattern = r"RYBKA_BALANCES_AUX =.*"
+                replacement = "RYBKA_BALANCES_AUX = False"
+
+                for line in fileinput.input("config.ini", inplace=True):
+                    new_line = re.sub(pattern, replacement, line)
+                    print(new_line, end="")
+
         while True:
             oldest_data_from_stream_buffer = unicorn_stream_obj.pop_stream_data_from_stream_buffer()
             if oldest_data_from_stream_buffer:
-                log.HIGH_VERBOSITY(oldest_data_from_stream_buffer)
+                log.HIGH_VERBOSITY(f"Stream buffer is: {oldest_data_from_stream_buffer}")
 
                 try:
                     json.loads(oldest_data_from_stream_buffer)["data"]
@@ -1138,6 +1175,8 @@ def main(version, mode, head):
                     bootstraping_vars()
                     log_files_creation("0")
                     telegram_engine_switch("0")
+
+                    balances_update_via_telegram_cmd()
 
                     with open("TEMP/priceTmp", "w", encoding="utf8") as f:
                         f.write(str(candle_close_price))
@@ -1578,10 +1617,9 @@ def main(version, mode, head):
 
                                                             # avoid rounding up on quantity & price bought
                                                             log.INFO_SPECIAL(
-                                                                f"🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT"
+                                                                f" 🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT"
                                                             )
                                                             telegram.LOG(
-                                                                "INFO",
                                                                 f" 🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT/EGLD",
                                                             )
 
@@ -2003,10 +2041,9 @@ def main(version, mode, head):
                                                     )
 
                                                     log.INFO_SPECIAL(
-                                                        f"🟢 Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT. Previously bought at [{str(ktbr_config[sell][1])}] USDT"
+                                                        f" 🟢 Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT. Previously bought at [{str(ktbr_config[sell][1])}] USDT"
                                                     )
                                                     telegram.LOG(
-                                                        "INFO",
                                                         f" 🟢 Sold [{qtty_aux}] EGLD at [{price_aux}] USDT/EGLD.\nWas bought at [{str(ktbr_config[sell][1])}] USDT/EGLD",
                                                     )
 
@@ -2225,19 +2262,34 @@ def main(version, mode, head):
                                         f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. Please TOP UP!"
                                     )
 
+                        if RYBKA_MODE == "LIVE":
+                            if random.randint(1, 60) <= 2:
+                                for i in range(1, 11):
+                                    try:
+                                        account_balance_update()
+                                        log.DEBUG("Account Balance Sync. - Successful")
+                                        break
+                                    except Exception as e:
+                                        if i == 10:
+                                            log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
+                                        time.sleep(3)
+                                real_time_balances_update()
+
+        
+
     except KeyboardInterrupt:
         print(
             f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL (7)] {log.logging_time()}  > Process stopped by user. Wait a few seconds!\n{bcolors.ENDC}"
         )
         unicorn_stream_obj.stop_manager_with_all_streams()
-        log.FATAL_7(f"Rybka is stopped. [{RYBKA_MODE}]\n")
+        log.FATAL_7(f" 📴 ⓇⓎⒷⓀⒶⒸⓄⓇⒺ is stopped!\n\n          [[{RYBKA_MODE} mode]]\n")
 
     except Exception as e:
         print(
             f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL (7)] {log.logging_time()}      > Stopping ... just wait a few seconds!\n{e}{bcolors.ENDC}"
         )
         unicorn_stream_obj.stop_manager_with_all_streams()
-        log.FATAL_7(f"Rybka is stopped. [{RYBKA_MODE}]\n")
+        log.FATAL_7(f" 📴 ⓇⓎⒷⓀⒶⒸⓄⓇⒺ is stopped!\n\n          [[{RYBKA_MODE} mode]]\n")
 
 
 if __name__ == "__main__":
@@ -2276,6 +2328,7 @@ if __name__ == "__main__":
         global RYBKA_EMAIL_SWITCH, RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_RECIPIENT_EMAIL, RYBKA_EMAIL_RECIPIENT_NAME
         global RYBKA_TELEGRAM_SWITCH
         global RYBKA_ALL_LOG_TLG_SWITCH
+        global RYBKA_BALANCES_AUX
         global SET_DISCLAIMER
 
         DEBUG_LVL = bootstrap.DEBUG_LVL
@@ -2301,6 +2354,7 @@ if __name__ == "__main__":
 
         RYBKA_TELEGRAM_SWITCH = bootstrap.RYBKA_TELEGRAM_SWITCH
         RYBKA_ALL_LOG_TLG_SWITCH = bootstrap.RYBKA_ALL_LOG_TLG_SWITCH
+        RYBKA_BALANCES_AUX = bootstrap.RYBKA_BALANCES_AUX
 
         SET_DISCLAIMER = bootstrap.SET_DISCLAIMER
 
@@ -2320,6 +2374,7 @@ if __name__ == "__main__":
             WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_RECIPIENT_NAME": RYBKA_EMAIL_RECIPIENT_NAME})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_TELEGRAM_SWITCH": RYBKA_TELEGRAM_SWITCH})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_ALL_LOG_TLG_SWITCH": RYBKA_ALL_LOG_TLG_SWITCH})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_BALANCES_AUX": RYBKA_BALANCES_AUX})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_DISCLAIMER": SET_DISCLAIMER})
 
         if not WEIGHTS_DICT_UPDATED:
@@ -2328,13 +2383,12 @@ if __name__ == "__main__":
         else:
             parse_weights()
             for k in WEIGHTS_DICT_UPDATED.keys():
-                if WEIGHTS_DICT_UPDATED[k] != WEIGHTS_DICT_OUTDATED[k]:
+                if WEIGHTS_DICT_UPDATED[k] != WEIGHTS_DICT_OUTDATED[k] and k != "RYBKA_BALANCES_AUX":
                     log.INFO(" ")
                     log.INFO_SPECIAL(
                         f" ⚖️  Rybka's weight: [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!"
                     )
                     telegram.LOG(
-                        "INFO",
                         f" 🟢 Rybka's weight:\n[{k.replace('_',' ')}]\n\n⇢ updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!",
                     )
                     log.INFO(" ")

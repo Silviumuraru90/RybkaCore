@@ -54,7 +54,7 @@ def initialization():
     #########################################################
     #####                                               #####
     #####  1️⃣  Open `Telegram` app on your device        #####
-    #####  2️⃣  Open your Rybka Telegram bot's chat       #####
+    #####  2️⃣  Open your RybkaCore Telegram bot's chat   #####
     #####  3️⃣  Type `/help` for details on how to use    #####
     #####                                               #####
     #########################################################
@@ -83,7 +83,7 @@ def help_command(update, context):
     {'/balances':20}    - Acc. Balances
     {'/current_price':20}  - USDT/EGLD
 
-🟣 FUNd handling history of Rybka:
+🟣 FUNd handling history of RybkaCore:
     {'/current_buys':20} - Tracked Buys
     {'/lifetime_buys_nr':20}- Total Nr. of Buys
     {'/profit':20}        - Lifetime Profit
@@ -91,9 +91,10 @@ def help_command(update, context):
 🟣 FUNctional commands:
     {'/status':20}      - Bot's Status
     {'/current_uptime':20}- Bot's Uptime
-    {'/start_rybka':20}   - Starts Rybka
-    {'/stop_software':20}- Stops Software
     {'/gpu':20}       - GPU Temp.
+
+    {'/start_rybka':20}   - Starts RybkaCore
+    {'/stop_software':20}- Stops Software
 
 🟣 FUNctor commands:
     {'/roadmap':20}   - Bot's Roadmap
@@ -271,25 +272,6 @@ def profit_command(update, context):
         update.message.reply_text("The file for lifetime profit does NOT exist!")
 
 
-def balances_command(update, context):
-    if exists("LIVE/real_time_balances"):
-        with open("LIVE/real_time_balances", "r", encoding="utf8") as f:
-            if os.stat("LIVE/real_time_balances").st_size == 0:
-                update.message.reply_text(" ✅ [LIVE/real_time_balances] file exists and is empty")
-            else:
-                balances = f.read()
-                if not balances:
-                    update.message.reply_text("There are no tracked balances!")
-                else:
-                    for elem in balances.split("\n"):
-                        if ">" in elem:
-                            elem = f'🟣 {elem.split(">")[1]}'
-                        if elem:
-                            update.message.reply_text(f"{elem}")
-    else:
-        update.message.reply_text("The file for balances does NOT exist!")
-
-
 def user_initial_config():
     global client
     try:
@@ -379,7 +361,7 @@ def start_cmds_template(update, context):
             )
         else:
             update.message.reply_text("💤 Bot is indeed stopped at this moment.")
-            update.message.reply_text("🚀 Starting Rybka bot!\nPlease wait...")
+            update.message.reply_text("🚀 Starting RybkaCore bot!\nPlease wait...")
             try:
                 subprocess.Popen(["python3", "rybka.py", "-m", "live"])
                 for i in range(0, 10):
@@ -540,6 +522,14 @@ def modify_config_ini(weight, value):
     elif weight == "RYBKA_RSI_FOR_BUY":
         pattern = r"RYBKA_RSI_FOR_BUY = \d+"
         replacement = f"RYBKA_RSI_FOR_BUY = {value}"
+
+        for line in fileinput.input("config.ini", inplace=True):
+            new_line = re.sub(pattern, replacement, line)
+            print(new_line, end="")
+
+    elif weight == "RYBKA_BALANCES_AUX":
+        pattern = r"RYBKA_BALANCES_AUX =.*"
+        replacement = f"RYBKA_BALANCES_AUX = {value}"
 
         for line in fileinput.input("config.ini", inplace=True):
             new_line = re.sub(pattern, replacement, line)
@@ -1090,9 +1080,9 @@ def m_RYBKA_TELEGRAM_SWITCH_false_command(update, context):
     modifcation_log_message(update, context)
 
 
-######################################################################
-##    m_RYBKA_ALL_LOG_TLG_SWITCH-specific functions    ##
-######################################################################
+####################################################
+##  RYBKA_ALL_LOG_TLG_SWITCH-specific functions   ##
+####################################################
 
 
 def m_RYBKA_ALL_LOG_TLG_SWITCH_true_command(update, context):
@@ -1103,6 +1093,20 @@ def m_RYBKA_ALL_LOG_TLG_SWITCH_true_command(update, context):
 def m_RYBKA_ALL_LOG_TLG_SWITCH_false_command(update, context):
     modify_config_ini("RYBKA_ALL_LOG_TLG_SWITCH", "False")
     modifcation_log_message(update, context)
+
+
+####################################################
+##      RYBKA_BALANCES_AUX-specific functions     ##
+####################################################
+
+
+def m_RYBKA_BALANCES_AUX_true_command(update, context):
+    update.message.reply_text(" 🟪 Balances will be displayed in less than a minute.\n\nPlease wait...")
+    modify_config_ini("RYBKA_BALANCES_AUX", "True")
+
+
+def m_RYBKA_BALANCES_AUX_false_command(update, context):
+    modify_config_ini("RYBKA_BALANCES_AUX", "False")
 
 
 ####################################################
@@ -1448,7 +1452,7 @@ def main():
     dp.add_handler(CommandHandler("current_buys", current_buys_command))
     dp.add_handler(CommandHandler("lifetime_buys_nr", lifetime_buys_nr_command))
     dp.add_handler(CommandHandler("profit", profit_command))
-    dp.add_handler(CommandHandler("balances", balances_command))
+    dp.add_handler(CommandHandler("balances", m_RYBKA_BALANCES_AUX_true_command))
     dp.add_handler(CommandHandler("current_price", current_price_command))
     dp.add_handler(CommandHandler("current_uptime", current_uptime_command))
 

@@ -217,6 +217,19 @@ class Rybka_py_env_bootstrap:
         with open("project_version", "r", encoding="utf8") as f:
             self.__version__ = f.read().strip("\n").strip()
 
+        # Dev-only related config.
+        if not os.environ.get("RYBKA_BALANCES_AUX"):
+            self.RYBKA_BALANCES_AUX = (
+                config.get(
+                    "DEVELOPER-ONLY Configuration. Only for LIVE mode",
+                    "RYBKA_BALANCES_AUX",
+                )
+                .strip("\n")
+                .strip()
+            )
+        else:
+            self.RYBKA_BALANCES_AUX = os.environ.get("RYBKA_BALANCES_AUX").strip("\n").strip()
+
 
 config = configparser.ConfigParser()
 bootstrap = ""
