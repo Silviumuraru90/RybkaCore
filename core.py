@@ -626,9 +626,9 @@ def bot_uptime_and_current_price(current_price, output):
 
     if output == "CLI":
         if days < 1:
-            price_and_uptime = f"[ {bcolors.OKCYAN}EGLD{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}USDT{bcolors.DARKGRAY} ]  🩺  [{bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ]"
+            price_and_uptime = f"[ 🩺 {bcolors.OKCYAN}EGLD{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}USDT{bcolors.DARKGRAY} ]  [ ⏰ {bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ]  [ 💵 {bcolors.OKGREEN}PROFIT{bcolors.DARKGRAY} = {bcolors.PURPLE}{total_usdt_profit} ₮{bcolors.DARKGRAY} ]"
         else:
-            price_and_uptime = f"[ {bcolors.OKCYAN}EGLD{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}USDT{bcolors.DARKGRAY} ]  🩺  [{bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ]"
+            price_and_uptime = f"[ 🩺 {bcolors.OKCYAN}EGLD{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}USDT{bcolors.DARKGRAY} ]  [ ⏰ {bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ]  [ 💵 {bcolors.OKGREEN}PROFIT{bcolors.DARKGRAY} = {bcolors.PURPLE}{total_usdt_profit} ₮{bcolors.DARKGRAY} ]"
 
         log.INFO(price_and_uptime)
 
