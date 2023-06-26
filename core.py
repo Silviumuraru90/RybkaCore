@@ -1156,7 +1156,7 @@ def main(version, mode, head):
                 if exists("LIVE/real_time_balances"):
                     with open("LIVE/real_time_balances", "r", encoding="utf8") as f:
                         if os.stat("LIVE/real_time_balances").st_size == 0:
-                            telegram.LOG(" 🚫 [LIVE/real_time_balances] file exists but is empty")
+                            telegram.LOG(" 🚫 [[LIVE/real_time_balances]] file exists but is empty")
                         else:
                             balances = f.read()
                             for elem in balances.split("\n"):
@@ -1642,7 +1642,7 @@ def main(version, mode, head):
                                                                 f" 🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT"
                                                             )
                                                             telegram.LOG(
-                                                                f" 🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT/EGLD",
+                                                                f" 🟢 Bought [[{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}]] EGLD at [[{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}]] USDT/EGLD",
                                                             )
 
                                                             usdt_trade_fee = round(
@@ -2066,7 +2066,7 @@ def main(version, mode, head):
                                                         f" 🟢 Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT. Previously bought at [{str(ktbr_config[sell][1])}] USDT"
                                                     )
                                                     telegram.LOG(
-                                                        f" 🟢 Sold [{qtty_aux}] EGLD at [{price_aux}] USDT/EGLD.\nWas bought at [{str(ktbr_config[sell][1])}] USDT/EGLD",
+                                                        f" 🟢 Sold [[{qtty_aux}]] EGLD at [[{price_aux}]] USDT/EGLD.\nWas bought at [[{str(ktbr_config[sell][1])}]] USDT/EGLD",
                                                     )
 
                                                     usdt_trade_fee = round(
@@ -2411,7 +2411,7 @@ if __name__ == "__main__":
                         f" ⚖️  Rybka's weight: [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!"
                     )
                     telegram.LOG(
-                        f" 🟢 Rybka's weight:\n[{k.replace('_',' ')}]\n\n⇢ updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!",
+                        f" 🟢 Rybka's weight:\n[[{k.replace('_',' ')}]]\n\n⇢ updated from [[{WEIGHTS_DICT_OUTDATED[k]}]] to [[{WEIGHTS_DICT_UPDATED[k]}]]!",
                     )
                     log.INFO(" ")
                     WEIGHTS_DICT_OUTDATED.update({k: WEIGHTS_DICT_UPDATED[k]})
