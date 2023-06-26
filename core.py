@@ -1246,8 +1246,8 @@ def main(version, mode, head):
 
                         log.VERBOSE(f"Latest RSI indicates {latest_rsi}")
 
-                        if subsequent_valid_rsi_counter == 1:
-                            log.DEBUG("Invalidating one RSI period, as a buy / sell action just occurred.\n")
+                        if subsequent_valid_rsi_counter > 2:
+                            log.DEBUG("Invalidating 3 RSI periods, as a buy / sell action just occurred.\n")
                             subsequent_valid_rsi_counter = 0
                         else:
                             if latest_rsi < RSI_FOR_BUY or len(ktbr_config) == 0 or len(ktbr_config) == 1:
@@ -1803,7 +1803,7 @@ def main(version, mode, head):
                                                             if int(heatmap_limit) > 12 or len(ktbr_config) < 2:
                                                                 subsequent_valid_rsi_counter = 0
                                                             else:
-                                                                subsequent_valid_rsi_counter = 1
+                                                                subsequent_valid_rsi_counter += 1
 
                                                             re_sync_time()
                                                         else:
@@ -2218,7 +2218,7 @@ def main(version, mode, head):
                                                         )
 
                                                     if not multiple_sells == "enabled":
-                                                        subsequent_valid_rsi_counter = 1
+                                                        subsequent_valid_rsi_counter += 1
                                                 else:
                                                     with open(
                                                         f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
