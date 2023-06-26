@@ -626,9 +626,9 @@ def bot_uptime_and_current_price(current_price, output):
 
     if output == "CLI":
         if days < 1:
-            price_and_uptime = f"[ 🩺 {bcolors.OKCYAN}EGLD{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}USDT{bcolors.DARKGRAY} ]  [ ⏰ {bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ]  [ 💵 {bcolors.OKGREEN}PROFIT{bcolors.DARKGRAY} = {bcolors.PURPLE}{total_usdt_profit} ₮{bcolors.DARKGRAY} ]"
+            price_and_uptime = f"[ {bcolors.OKCYAN}EGLD{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}USDT{bcolors.DARKGRAY} ] [ ⏰ {bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ] [ 💵 {bcolors.OKGREEN}PROFIT{bcolors.DARKGRAY} = {bcolors.PURPLE}{total_usdt_profit} ₮{bcolors.DARKGRAY} ]"
         else:
-            price_and_uptime = f"[ 🩺 {bcolors.OKCYAN}EGLD{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}USDT{bcolors.DARKGRAY} ]  [ ⏰ {bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ]  [ 💵 {bcolors.OKGREEN}PROFIT{bcolors.DARKGRAY} = {bcolors.PURPLE}{total_usdt_profit} ₮{bcolors.DARKGRAY} ]"
+            price_and_uptime = f"[ {bcolors.OKCYAN}EGLD{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}USDT{bcolors.DARKGRAY} ] [ ⏰ {bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ] [ 💵 {bcolors.OKGREEN}PROFIT{bcolors.DARKGRAY} = {bcolors.PURPLE}{total_usdt_profit} ₮{bcolors.DARKGRAY} ]"
 
         log.INFO(price_and_uptime)
 
@@ -770,7 +770,27 @@ def previous_runs_sanitation(target_folder):
     if found_match:
         log.ORANGE(" ✅ Previous run(s)' folder(s) found and moved to the 'archived_logs' folder.")
     else:
-        log.ORANGE(" ✅ Current dir is already sanitized.\n")
+        log.ORANGE(" ✅ Current dir is already sanitized.")
+    
+    graphs_subdir_path = 'custom_modules/telegram/data/pics'
+
+    if not os.path.exists(graphs_subdir_path):
+        os.makedirs(graphs_subdir_path)
+        print(f"\n ✅ Created subdirectory: {graphs_subdir_path}")
+    else:
+        print(f"\n ✅ Subdirectory already exists: [{graphs_subdir_path}]")
+
+    graphs_list = os.listdir(graphs_subdir_path)
+    if graphs_list != []:
+        log.ORANGE("\n ⚠️  Residual graph files found. Deleting them:")
+    else:
+        log.ORANGE("\n ✅ No residual graph files found.")
+
+    for graph_name in graphs_list:
+        graph_path = os.path.join(graphs_subdir_path, graph_name)
+        if os.path.isfile(graph_path):
+            os.remove(graph_path)
+            log.ORANGE(f"\n\t ✅ Deleted file: {graphs_subdir_path} --> {graph_name}")
 
 
 def move_and_replace(target_folder, path=None):
@@ -906,13 +926,15 @@ def main(version, mode, head):
     if platform == "linux" or platform == "linux2":
         pass
     elif platform == "win32":
-        log.ORANGE("\n 📋 Checking Rybka's permissions and syncing time... Please wait!")
+        log.ORANGE("\n===========================================================================\n 📋 Checking Rybka's permissions and syncing time... Please wait!")
         if isAdmin() is not True:
             log.FATAL_7(
                 "Please run the script with admin privileges, as bot needs access to auto-update HOST's time with NIST servers!"
             )
 
     re_sync_time()
+
+    time.sleep(2)
 
     ###########  Prerequisites - start  ###########
     log.ORANGE("\n 📋 PREREQUISITE PROCESS STARTING...\n")

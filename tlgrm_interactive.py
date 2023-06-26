@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 
 # Built-in and Third-Party Libs
+from datetime import datetime, timedelta
 import fileinput
 import json
 import logging
 import os
 import re
+import random
+import requests
+import string as string_str
 import subprocess
 import sys
 import time
@@ -16,12 +20,16 @@ import GPUtil
 import psutil
 from binance.client import Client
 from telegram import ParseMode
+import telepot
 
 # Custom Libs
 from telegram.ext import *
 from termcolor import colored
 
 from custom_modules.telegram import telegram_active_commands as R
+from custom_modules.cfg import bootstrap
+from custom_modules.graph_engine.graph import generate_graph
+
 
 ####################################################
 ##############    Logging Handlers    ##############
@@ -32,6 +40,14 @@ logging.getLogger().setLevel(logging.CRITICAL)
 
 def ORANGE(message):
     print(colored_2.fg(202) + f"{message}")
+
+
+###############################################
+########      UNIQUE ID FUNCTION      #########
+###############################################
+
+def id_generator(size=10, chars=string_str.ascii_uppercase + string_str.digits):
+    return "".join(random.choice(chars) for elem in range(size))
 
 
 ####################################################
@@ -104,12 +120,13 @@ def help_command(update, context):
 🟣 FUNdamental SUBmenu(s):
     {'/weights_info':20}  - Bot's Weights
     {'/modify_weights':20}- Modify Weights
+    {'/graphs':20}       - Generate Graphs
 
 
     🔄 {'/help'}  -  Shows this help message
 
 
-❕ These only apply to LIVE mode!
+❕ Some may only apply to LIVE mode!
 ❕ Use with caution!
         """
     )
@@ -118,6 +135,92 @@ def help_command(update, context):
 ####################################################
 ##############        Sub-menus       ##############
 ####################################################
+
+
+def graphs_info_command(update, context):
+    update.message.reply_text(
+        f"""Available crypto-graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/EGLD'}
+    {'/BTC'}
+    {'/ETH'}
+    {'/BNB'}
+
+
+    🔄 {'/graphs'}  -  Shows this help message
+
+        """
+    )
+
+
+def egld_command(update, context):
+    update.message.reply_text(
+        f"""Available EGLD-graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/EGLD_price_in_the_last_year'}
+    {'/EGLD_price_in_the_last_month'}
+    {'/EGLD_price_in_the_last_week'}
+
+
+    🔄 {'/EGLD'}  -  Shows this help message
+
+        """
+    )
+
+
+def btc_command(update, context):
+    update.message.reply_text(
+        f"""Available BTC-graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/BTC_price_in_the_last_year'}
+    {'/BTC_price_in_the_last_month'}
+    {'/BTC_price_in_the_last_week'}
+
+
+    🔄 {'/BTC'}  -  Shows this help message
+
+        """
+    )
+
+
+def eth_command(update, context):
+    update.message.reply_text(
+        f"""Available ETH-graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/ETH_price_in_the_last_year'}
+    {'/ETH_price_in_the_last_month'}
+    {'/ETH_price_in_the_last_week'}
+
+
+    🔄 {'/ETH'}  -  Shows this help message
+
+        """
+    )
+
+
+def bnb_command(update, context):
+    update.message.reply_text(
+        f"""Available BNB-graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/BNB_price_in_the_last_year'}
+    {'/BNB_price_in_the_last_month'}
+    {'/BNB_price_in_the_last_week'}
+
+
+    🔄 {'/BNB'}  -  Shows this help message
+
+        """
+    )
 
 
 def weights_info_command(update, context):
@@ -1389,9 +1492,94 @@ def modify_weights_command(update, context):
 
 
 ####################################################
-##############     CORE Functions     ##############
+##########    Graph related Functions    ###########
 ####################################################
 
+def local_pic(update, image):
+    try:
+        bot = telepot.Bot(bootstrap.TELE_KEY)
+        bot.sendPhoto(
+            bootstrap.TELE_CHAT_ID,
+            photo=open(f"custom_modules/telegram/data/pics/{image}.png", "rb"),
+        )
+    except Exception as e:
+        update.message.reply_text("Local image could not be sent via TELEGRAM!")
+
+
+def generate_graph_command(update, context):
+
+    usd_prices = []
+    eur_prices = []
+
+    currency = update["message"]["text"].split("_")[0][1:]
+    timeframe = update["message"]["text"].split("_")[5]
+
+    graph_image_name = f"graph_{currency}_{timeframe}_" + id_generator()
+
+    def api_call(currency, date):
+        r = ""
+
+        if currency == "EGLD":
+            r = requests.get(f"https://api.coingecko.com/api/v3/coins/elrond-erd-2/history?date={date}&localization=false")
+        elif currency == "BTC":
+            r = requests.get(f"https://api.coingecko.com/api/v3/coins/bitcoin/history?date={date}&localization=false")
+        elif currency == "ETH":
+            r = requests.get(f"https://api.coingecko.com/api/v3/coins/ethereum/history?date={date}&localization=false")
+        elif currency == "BNB":
+            r = requests.get(f"https://api.coingecko.com/api/v3/coins/binancecoin/history?date={date}&localization=false")
+
+        if r.status_code != 200:
+            return "ratelimited"
+    
+        usd_price = r.json()["market_data"]["current_price"]["usd"]
+        eur_price = r.json()["market_data"]["current_price"]["eur"]
+
+        return [f"{usd_price:.2f}", f"{eur_price:.2f}"]
+
+    def generate_dates(timeframe):
+        today = datetime.now()
+
+        date_list = []
+        for i in range(timeframe):
+            date = today - timedelta(days=i)
+            formatted_date = date.strftime("%d-%m-%Y")
+            date_list.append(formatted_date)
+
+        return date_list
+    
+
+    if timeframe == "week":
+        update.message.reply_text(" 🙏 RybkaCore might be getting queued for retrieving price data from Coin Gecko servers.\n\nPlease wait for the current 📈 to be generated!")
+        list_of_dates = generate_dates(7)
+    elif timeframe == "month":
+        update.message.reply_text(f" ⚗️ Your {timeframe} graph will be ready in ~2-3 mins.\n\n ⏰ RybkaCore is getting queued for retrieving price data from Coin Gecko servers.\n\nPlease wait for the current 📈 to be generated!")
+        list_of_dates = generate_dates(30)
+    elif timeframe == "year":
+        update.message.reply_text(f" ⚗️ Your {timeframe} graph will be ready in ~30 mins.\n\n ⏰ RybkaCore is getting queued for retrieving price data from Coin Gecko servers.\n\nPlease wait for the current 📈 to be generated!")
+        list_of_dates = generate_dates(365)
+
+    list_of_dates = list_of_dates[::-1]
+
+    for date in list_of_dates:
+        prices = api_call(currency, date)
+        while prices == "ratelimited":
+            prices = api_call(currency, date)
+            time.sleep(10)
+        usd_prices.append(float(prices[0]))
+        eur_prices.append(float(prices[1]))
+
+    matplotlib_formatted_dates = []
+    for date_str in list_of_dates:
+        date_obj = datetime.strptime(date_str, '%d-%m-%Y')
+        matplotlib_formatted_dates.append(date_obj)
+   
+    generate_graph(graph_image_name, currency, timeframe, matplotlib_formatted_dates, usd_prices, eur_prices)
+    local_pic(update, graph_image_name)
+
+
+####################################################
+##############     CORE Functions     ##############
+####################################################
 
 def handle_message(update, context):
     text = str(update.message.text).lower()
@@ -1485,6 +1673,7 @@ def main():
     dp.add_handler(CommandHandler("RYBKA_ALL_LOG_TLG_SWITCH", weights_command))
     dp.add_handler(CommandHandler("RYBKA_DISCLAIMER", weights_command))
 
+    # Modify weights
     dp.add_handler(CommandHandler("modify_weights", weight_modification_command))
 
     dp.add_handler(CommandHandler("m_RYBKA_TRADING_BOOST_LVL", modify_weights_command))
@@ -1597,6 +1786,29 @@ def main():
     dp.add_handler(
         CommandHandler("RYBKA_ALL_LOG_TLG_SWITCH_false", m_RYBKA_ALL_LOG_TLG_SWITCH_false_command)
     )
+
+    # Graphs
+    dp.add_handler(CommandHandler("graphs", graphs_info_command))
+
+    dp.add_handler(CommandHandler("EGLD", egld_command))
+    dp.add_handler(CommandHandler("EGLD_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("EGLD_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("EGLD_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("BTC", btc_command))
+    dp.add_handler(CommandHandler("BTC_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("BTC_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("BTC_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("ETH", eth_command))
+    dp.add_handler(CommandHandler("ETH_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("ETH_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("ETH_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("BNB", bnb_command))
+    dp.add_handler(CommandHandler("BNB_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("BNB_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("BNB_price_in_the_last_week", generate_graph_command))
 
 
     dp.add_handler(MessageHandler(Filters.text, handle_message))

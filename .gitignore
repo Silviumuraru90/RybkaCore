@@ -5,6 +5,7 @@
 .vs/
 
 # Software's output
+custom_modules/telegram/data/pics/*
 archived_logs/
 BACK_UPS_FOR_*
 LIVE/

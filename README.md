@@ -66,6 +66,7 @@
 ✅ Controls the resulted `output files`' size
 ✅ Implementation of an `always buy` policy in which it will always buy when the price goes up and has nothing / close to nothing to sell for a better profitability over the same timeframe & graph positioning of the currency-to-stable-coin raport <br>
 ✅ `Safety net` implementation for USDT <br>
+✅ Various `graphs` generated on the spot and provided via Telegram <br>
 
 
 <br><br>
@@ -87,6 +88,7 @@ Hence, at the moment, you will need 🐍 `python` in your OS to run the software
 &emsp;&emsp;✅ colored <br>
 &emsp;&emsp;✅ click <br>
 &emsp;&emsp;✅ requests <br>
+&emsp;&emsp;✅ matplotlib <br>
 &emsp;&emsp;✅ numpy <br>
 &emsp;&emsp;✅ GPUtil <br>
 &emsp;&emsp;✅ psutil <br>
