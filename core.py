@@ -1800,7 +1800,7 @@ def main(version, mode, head):
                                                                     f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n\n\n"
                                                                 )
 
-                                                            if int(heatmap_limit) > 12 or len(ktbr_config) < 2:
+                                                            if len(ktbr_config) < 2:
                                                                 subsequent_valid_rsi_counter = 0
                                                             else:
                                                                 subsequent_valid_rsi_counter += 1
