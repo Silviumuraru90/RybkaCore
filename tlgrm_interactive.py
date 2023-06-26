@@ -123,6 +123,7 @@ def help_command(update, context):
     {'/graphs':20}       - Generate Graphs
 
 
+❕ Reminder:
     🔄 {'/help'}  -  Shows this help message
 
 
@@ -149,7 +150,7 @@ def graphs_info_command(update, context):
     {'/BNB'}
 
 
-    🔄 {'/graphs'}  -  Shows this help message
+    🔄 {'/help'}  -  Back to parent menu
 
         """
     )
@@ -166,7 +167,9 @@ def egld_command(update, context):
     {'/EGLD_price_in_the_last_week'}
 
 
-    🔄 {'/EGLD'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
 
         """
     )
@@ -183,7 +186,9 @@ def btc_command(update, context):
     {'/BTC_price_in_the_last_week'}
 
 
-    🔄 {'/BTC'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
 
         """
     )
@@ -200,7 +205,9 @@ def eth_command(update, context):
     {'/ETH_price_in_the_last_week'}
 
 
-    🔄 {'/ETH'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
 
         """
     )
@@ -217,7 +224,9 @@ def bnb_command(update, context):
     {'/BNB_price_in_the_last_week'}
 
 
-    🔄 {'/BNB'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
 
         """
     )
@@ -249,7 +258,7 @@ def weights_info_command(update, context):
     {'/RYBKA_ALL_LOG_TLG_SWITCH'}
 
 
-    🔄 {'/weights_info'}  -  Shows this help message
+    🔄 {'/help'}  -  Back to parent menu
 
 
 ❕ Weights specific to DEMO mode are not included!
@@ -275,7 +284,7 @@ def weight_modification_command(update, context):
     {'/m_RYBKA_USDT_SAFETY_NET'}
     
 
-    🔄 {'/modify_weights'}  -  Shows this help message
+    🔄 {'/help'}  -  Back to parent menu
 
 
 ❕ Weights specific to DEMO mode are not included!
@@ -1234,7 +1243,9 @@ def call_submenu_of_weight(update, context, weight):
     {'/RYBKA_TRADING_BOOST_LVL_5'} - Set value "5"
 
 
-    🔄 {f'/m_{weight}'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/modify_weights'}  -  Back to parent menu
 
 
 ❕ Weights specific to DEMO mode are not included!
@@ -1260,7 +1271,9 @@ def call_submenu_of_weight(update, context, weight):
 
 
 
-    🔄 {f'/m_{weight}'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/modify_weights'}  -  Back to parent menu
 
 
 ❕ Weights specific to DEMO mode are not included!
@@ -1286,7 +1299,9 @@ def call_submenu_of_weight(update, context, weight):
 
 
 
-    🔄 {f'/m_{weight}'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/modify_weights'}  -  Back to parent menu
 
 
 ❕ Weights specific to DEMO mode are not included!
@@ -1309,7 +1324,9 @@ def call_submenu_of_weight(update, context, weight):
 
 
 
-    🔄 {f'/m_{weight}'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/modify_weights'}  -  Back to parent menu
 
 
 ❕ Weights specific to DEMO mode are not included!
@@ -1340,7 +1357,9 @@ def call_submenu_of_weight(update, context, weight):
 
 
 
-    🔄 {f'/m_{weight}'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/modify_weights'}  -  Back to parent menu
 
 
 ❕ Weights specific to DEMO mode are not included!
@@ -1379,7 +1398,9 @@ def call_submenu_of_weight(update, context, weight):
     {'/RYBKA_TRADE_QUANTITY_5'}   - Set value "5"
 
 
-    🔄 {f'/m_{weight}'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/modify_weights'}  -  Back to parent menu
 
 
 ❕ Weights specific to DEMO mode are not included!
@@ -1418,7 +1439,9 @@ def call_submenu_of_weight(update, context, weight):
     {'/RYBKA_MIN_PROFIT_5'}   - Set value "5"
 
 
-    🔄 {f'/m_{weight}'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/modify_weights'}  -  Back to parent menu
 
 
 ❕ Weights specific to DEMO mode are not included!
@@ -1438,7 +1461,9 @@ def call_submenu_of_weight(update, context, weight):
     {'/RYBKA_EMAIL_SWITCH_false'} - Set value "False"
 
 
-    🔄 {f'/m_{weight}'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/modify_weights'}  -  Back to parent menu
 
 
 ❕ Weights specific to DEMO mode are not included!
@@ -1458,7 +1483,9 @@ def call_submenu_of_weight(update, context, weight):
     {'/RYBKA_TELEGRAM_SWITCH_false'} - Set value "False"
 
 
-    🔄 {f'/m_{weight}'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/modify_weights'}  -  Back to parent menu
 
 
 ❕ Weights specific to DEMO mode are not included!
@@ -1478,7 +1505,9 @@ def call_submenu_of_weight(update, context, weight):
     {'/RYBKA_ALL_LOG_TLG_SWITCH_false'} - Set value "False"
 
 
-    🔄 {f'/m_{weight}'}  -  Shows this help message
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/modify_weights'}  -  Back to parent menu
 
 
 ❕ Weights specific to DEMO mode are not included!
