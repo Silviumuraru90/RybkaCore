@@ -157,7 +157,7 @@ class RybkaLogging:
         self.all_errors_file_update(
             f"❌ [{os.environ.get('RYBKA_MODE')}] [FATAL (7)] {self.logging_time()}  > {message}"
         )
-        if "ⓇⓎⒷⓀⒶⒸⓄⓇⒺ is stopped" in message:
+        if "ⓇⓎⒷⓀⒶⒸⓄⓇⒺ" in message:
             telegram.LOG(message)
         else:
             telegram.LOG(message, "FATAL")

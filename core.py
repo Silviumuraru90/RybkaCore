@@ -1063,7 +1063,7 @@ def main(version, mode, head):
         "====================================================================================================================================="
     )
 
-    telegram.LOG(f" 🤖 🅡🅨🅑🅚🅐🅒🅞🅡🅔 started!\n\n          [[{RYBKA_MODE} mode]]")
+    telegram.LOG(f" 🟢 🅡🅨🅑🅚🅐🅒🅞🅡🅔 🟢\n          [[{RYBKA_MODE} mode]]")
     email_sender(
         f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot is starting up. Find logs into the local folder: \n\t[{current_export_dir}]"
     )
@@ -2416,14 +2416,14 @@ def main(version, mode, head):
             f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL (7)] {log.logging_time()}  > Process stopped by user. Wait a few seconds!\n{bcolors.ENDC}"
         )
         unicorn_stream_obj.stop_manager_with_all_streams()
-        log.FATAL_7(f" 📴 ⓇⓎⒷⓀⒶⒸⓄⓇⒺ is stopped!\n\n          [[{RYBKA_MODE} mode]]\n")
+        log.FATAL_7(f" 🔴 ⓇⓎⒷⓀⒶⒸⓄⓇⒺ 🔴\n          [[{RYBKA_MODE} mode]]\n")
 
     except Exception as e:
         print(
             f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL (7)] {log.logging_time()}      > Stopping ... just wait a few seconds!\n{e}{bcolors.ENDC}"
         )
         unicorn_stream_obj.stop_manager_with_all_streams()
-        log.FATAL_7(f" 📴 ⓇⓎⒷⓀⒶⒸⓄⓇⒺ is stopped!\n\n          [[{RYBKA_MODE} mode]]\n")
+        log.FATAL_7(f" 🔴 ⓇⓎⒷⓀⒶⒸⓄⓇⒺ 🔴\n          [[{RYBKA_MODE} mode]]\n")
 
 
 if __name__ == "__main__":
