@@ -387,7 +387,7 @@ def profit_command(update, context):
 def user_initial_config():
     global client
     try:
-        client = Client(os.environ.get("BIN_KEY"), os.environ.get("BIN_SECRET"))
+        client = Client(os.environ.get("RYBKA_BIN_KEY"), os.environ.get("RYBKA_BIN_SECRET"))
     except Exception as e:
         print(
             f"Client config  -  FAILED\nError encountered at setting user config. via API KEY and API SECRET. Please check error below:\n{e}"

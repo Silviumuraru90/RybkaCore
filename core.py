@@ -66,7 +66,7 @@ def id_generator(size=10, chars=string_str.ascii_uppercase + string_str.digits):
 def user_initial_config():
     global client
     try:
-        client = Client(bootstrap.BIN_KEY, bootstrap.BIN_SECRET)
+        client = Client(bootstrap.RYBKA_BIN_KEY, bootstrap.RYBKA_BIN_SECRET)
         log.INFO_BOLD(f" ✅ Client initial config  -  {bcolors.PURPLE}DONE")
     except Exception as e:
         log.FATAL_7(
@@ -1952,7 +1952,7 @@ def main(version, mode, head):
                                                                 f"{log.logging_time()} Order could NOT be placed due to an error:\n{e}\n"
                                                             )
                                                         log.FATAL_7(
-                                                            f"Make sure the [BIN_KEY] and [BIN_SECRET] ENV vars have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}"
+                                                            f"Make sure the [RYBKA_BIN_KEY] and [RYBKA_BIN_SECRET] ENV vars have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}"
                                                         )
                                             else:
                                                 log.WARN(
@@ -2365,7 +2365,7 @@ def main(version, mode, head):
                                                         f"{log.logging_time()} Order could NOT be placed due to an error:\n{e}\n"
                                                     )
                                                 log.FATAL_7(
-                                                    f"Make sure the [BIN_KEY] and [BIN_SECRET] ENV vars have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}"
+                                                    f"Make sure the [RYBKA_BIN_KEY] and [RYBKA_BIN_SECRET] ENV vars have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}"
                                                 )
                                         re_sync_time()
                                     else:

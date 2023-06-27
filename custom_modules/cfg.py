@@ -8,8 +8,8 @@ import os
 class Rybka_py_env_bootstrap:
     def __init__(self):
         # API Authorization for Binance
-        self.BIN_KEY = os.environ.get("BIN_KEY")
-        self.BIN_SECRET = os.environ.get("BIN_SECRET")
+        self.RYBKA_BIN_KEY = os.environ.get("RYBKA_BIN_KEY")
+        self.RYBKA_BIN_SECRET = os.environ.get("RYBKA_BIN_SECRET")
 
         # API Authorization for Telegram
         self.TELE_KEY = os.environ.get("RYBKA_TELEGRAM_API_KEY")
