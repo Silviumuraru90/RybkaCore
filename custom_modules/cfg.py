@@ -185,19 +185,17 @@ class Rybka_py_env_bootstrap:
         # DEMO mode related config.
         try:
             self.RYBKA_DEMO_BALANCE_USDT = (
-                int(
+                float(
                     config.get(
                         "Rybka Standalone Configuration. Only for DEMO mode",
                         "RYBKA_DEMO_BALANCE_USDT",
                     )
                 )
-                .strip("\n")
-                .strip()
             )
         except:
             self.RYBKA_DEMO_BALANCE_USDT = 1500
         try:
-            self.RYBKA_DEMO_BALANCE_EGLD = int(
+            self.RYBKA_DEMO_BALANCE_EGLD = float(
                 config.get(
                     "Rybka Standalone Configuration. Only for DEMO mode",
                     "RYBKA_DEMO_BALANCE_EGLD",
@@ -206,7 +204,7 @@ class Rybka_py_env_bootstrap:
         except:
             self.RYBKA_DEMO_BALANCE_EGLD = 100
         try:
-            self.RYBKA_DEMO_BALANCE_BNB = int(
+            self.RYBKA_DEMO_BALANCE_BNB = float(
                 config.get(
                     "Rybka Standalone Configuration. Only for DEMO mode",
                     "RYBKA_DEMO_BALANCE_BNB",
