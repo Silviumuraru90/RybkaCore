@@ -1584,7 +1584,7 @@ def generate_graph_command(update, context):
         update.message.reply_text(f" ⚗️ Your {timeframe} graph will be ready in ~2-3 mins.\n\n ⏰ RybkaCore is getting queued for retrieving price data from Coin Gecko servers.\n\nPlease wait for the current 📈 to be generated!")
         list_of_dates = generate_dates(30)
     elif timeframe == "year":
-        update.message.reply_text(f" ⚗️ Your {timeframe} graph will be ready in ~30 mins.\n\n ⏰ RybkaCore is getting queued for retrieving price data from Coin Gecko servers.\n\nPlease wait for the current 📈 to be generated!")
+        update.message.reply_text(f" ⚗️ Your {timeframe} graph will be ready in ~20-30 mins.\n\n ⏰ RybkaCore is getting queued for retrieving price data from Coin Gecko servers.\n\nPlease wait for the current 📈 to be generated!")
         list_of_dates = generate_dates(365)
 
     list_of_dates = list_of_dates[::-1]
