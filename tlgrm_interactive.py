@@ -110,7 +110,7 @@ def help_command(update, context):
     {'/gpu':20}       - GPU Temp.
 
     {'/start_rybka':20}   - Starts RybkaCore
-    {'/stop_software':20}- Stops Software
+    {'/stop_rybka':20}- Stops RybkaCore
 
 🟣 FUNctor commands:
     {'/roadmap':20}   - Bot's Roadmap
@@ -151,7 +151,6 @@ def graphs_info_command(update, context):
 
 
     🔄 {'/help'}  -  Back to parent menu
-
         """
     )
 
@@ -170,7 +169,6 @@ def egld_command(update, context):
     🔄 {'/help'}  -  Shows the `help` message
 
     🔄 {'/graphs'}  -  Back to parent menu
-
         """
     )
 
@@ -189,7 +187,6 @@ def btc_command(update, context):
     🔄 {'/help'}  -  Shows the `help` message
 
     🔄 {'/graphs'}  -  Back to parent menu
-
         """
     )
 
@@ -208,7 +205,6 @@ def eth_command(update, context):
     🔄 {'/help'}  -  Shows the `help` message
 
     🔄 {'/graphs'}  -  Back to parent menu
-
         """
     )
 
@@ -227,7 +223,6 @@ def bnb_command(update, context):
     🔄 {'/help'}  -  Shows the `help` message
 
     🔄 {'/graphs'}  -  Back to parent menu
-
         """
     )
 
@@ -288,6 +283,41 @@ def weight_modification_command(update, context):
 
 
 ❕ Weights specific to DEMO mode are not included!
+        """
+    )
+
+
+def start_rybka_command(update, context):
+    update.message.reply_text(
+        f"""Available weight modification commands are ⤵️
+
+
+❓ Are you sure ❓:
+    {'/yes_start_it_in_DEMO_mode'}
+
+    {'/yes_start_it_in_LIVE_mode'}
+
+
+⚠️ Please note this has a limitation and will not work, if the bot was opened via the GUI, instead of the terminal;
+⚠️ Issue tracked in order to be solved, via:
+https://gitlab.com/Silviu_space/rybka/-/issues/301
+
+
+    🔄 {'/help'}  -  Back to parent menu
+        """
+    )
+
+
+def stop_rybka_command(update, context):
+    update.message.reply_text(
+        f"""Available weight modification commands are ⤵️
+
+
+❓ Are you sure ❓:
+    {'/yes_stop_it'}
+    
+
+    🔄 {'/help'}  -  Back to parent menu
         """
     )
 
@@ -463,7 +493,7 @@ def current_uptime_command(update, context):
         )
 
 
-def start_cmds_template(update, context):
+def yes_start_it(update, context):
     try:
         with open("TEMP/core_pidTmp", "r", encoding="utf8") as f:
             pID = int(f.read())
@@ -475,7 +505,7 @@ def start_cmds_template(update, context):
             update.message.reply_text("💤 Bot is indeed stopped at this moment.")
             update.message.reply_text("🚀 Starting RybkaCore bot!\nPlease wait...")
             try:
-                subprocess.Popen(["python3", "rybka.py", "-m", "live"])
+                subprocess.Popen(["python3", "rybka.py", "-m", f"{str(update.message.text).lower().split('_')[4]}"])
                 for i in range(0, 10):
                     try:
                         time.sleep(2 * i)
@@ -503,11 +533,7 @@ def start_cmds_template(update, context):
         )
 
 
-def start_rybka_command(update, context):
-    start_cmds_template(update, context)
-
-
-def stop_software_command(update, context):
+def yes_stop_it(update, context):
     try:
         with open("TEMP/core_pidTmp", "r", encoding="utf8") as f:
             core_pID = int(f.read())
@@ -1677,7 +1703,10 @@ def main():
     dp.add_handler(CommandHandler("deposits", binance_deposit_history_command))
 
     dp.add_handler(CommandHandler("start_rybka", start_rybka_command))
-    dp.add_handler(CommandHandler("stop_software", stop_software_command))
+    dp.add_handler(CommandHandler("yes_start_it_in_DEMO_mode", yes_start_it))
+    dp.add_handler(CommandHandler("yes_start_it_in_LIVE_mode", yes_start_it))
+    dp.add_handler(CommandHandler("stop_rybka", stop_rybka_command))
+    dp.add_handler(CommandHandler("yes_stop_it", yes_stop_it))
 
     dp.add_handler(CommandHandler("roadmap", roadmap_command))
     dp.add_handler(CommandHandler("stock_bot", stock_bot_command))
