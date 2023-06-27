@@ -1246,11 +1246,86 @@ def main(version, mode, head):
 
                         log.VERBOSE(f"Latest RSI indicates {latest_rsi}")
 
+                        ###################################
+                        ###       SPECIAL POLICY 1      ###
+                        ################################################################################################################################
+                        ###   Put in place to make the price go up or down towards a higher margin, then make a buy or sell. This makes ktbr be      ###
+                        ###      distributed in a more uniform manner than just making constant buys / sells with small differences of price         ###
+                        ###      between them until it will hit a bottleneck on heatmap (HEATMAP policy).                                            ###
+                        ################################################################################################################################
+
                         if subsequent_valid_rsi_counter > 2:
                             log.DEBUG("Invalidating 3 RSI periods, as a buy / sell action just occurred.\n")
                             subsequent_valid_rsi_counter = 0
+
+                            ###################################
+                            ###   END of SPECIAL POLICY 1   ###
+                            ###################################
+                            
                         else:
-                            if latest_rsi < RSI_FOR_BUY or len(ktbr_config) == 0 or len(ktbr_config) == 1:
+                            
+                            ###################################
+                            ###       SPECIAL POLICY 2      ###
+                            ################################################################################################################################
+                            ###   Put in place to buy even though there are ktbr buy transactions above, in majority and RSI wouldn't indicate a buy.    ###
+                            ###   This policy evaluates the prices compared to the other buys and if there are at least 10 buys, activates and           ###
+                            ###      makes the bot buy EGLD if the current price is way below the majority of other buys and almost all the buys         ###
+                            ###      under the current $ price got sold. So that it will buy even if price goes up, but ktbr contains lots of buy        ###
+                            ###      transacs. By this, we ensure a higher profit, as it makes the bot works in time, that otherwise would be skipped.   ###
+                            ################################################################################################################################
+
+                            policy = "not_overridden"
+
+                            def buy_when_most_buys_are_above():
+
+                                with open(f"{RYBKA_MODE}/ktbr", "r", encoding="utf8") as f:
+                                    check_ktbr = json.loads(f.read())
+
+                                    if len(check_ktbr) > 10 and len(check_ktbr) < 51:
+                                        control = math.floor(len(check_ktbr) / 7)
+                                    elif len(check_ktbr) > 50:
+                                        control = math.floor(len(check_ktbr) / 12)
+                                    
+                                    verification_counter = 0
+                                    control_zone_counter = 0
+                                    for v in check_ktbr.values():
+                                        
+                                        if round(candle_close_price - math.floor(candle_close_price / 10), 2) > v[1]:
+                                            verification_counter += 1
+
+                                        if v[1] > round(candle_close_price - math.floor(candle_close_price / 10), 2) and v[1] < round(candle_close_price + math.floor(candle_close_price / 10), 2):
+                                            control_zone_counter += 1
+
+                                    if verification_counter > control or control_zone_counter > 1:
+                                        return "not_overridden"
+                                        
+                                    return "overridden"
+
+                                # just a reassurance if ktbr is deleted unexpectedly by "outside" means. To be sure no overridden happens if the above "with" won't evaluate.
+                                return "not_overridden"
+
+                            policy = buy_when_most_buys_are_above()
+
+                            ###################################
+                            ###   END of SPECIAL POLICY 2   ###
+                            ###################################
+
+                            ###################################
+                            ###       SPECIAL POLICY 3      ###
+                            ################################################################################################################################
+                            ###   Put in place to buy even though there are less or equal to 4 transactions done in ktbr, only and price might even      ###
+                            ###      go up, as this policy invalidates RSI as well, granting an even higher profit in time, by making the bot work       ###
+                            ###      in "dead time".                                                                                                     ###
+                            ################################################################################################################################
+
+                            if latest_rsi < RSI_FOR_BUY or len(ktbr_config) in [0, 3] or policy == "overridden":
+
+                                ###################################
+                                ###   END of SPECIAL POLICY 3   ###
+                                ###################################
+
+                                log.DEBUG(f"Policy was {policy}.")
+
                                 if RYBKA_MODE == "LIVE":
                                     for i in range(1, 11):
                                         try:
@@ -1351,7 +1426,35 @@ def main(version, mode, head):
                                                 f"Remaining possible nr. of buy orders: {possible_nr_of_trades}\n"
                                             )
 
+                                            ###################################
+                                            ###       SPECIAL POLICY 4      ###
+                                            ################################################################################################################################
+                                            ###   This "HEATMAP" policy is set in place to dinamically make the bot greedy or not and adapt the greediness based on      ###
+                                            ###      a heatmap it construct and widens with every new buy transaction successfully completed. The more buys, the less    ###
+                                            ###      greedy it becomes. The more sells of those buys, the more greedy it becomes. But this is NOT a rule of thumb, as    ###
+                                            ###      it constructs N price-frames (limits) that dinamically move, per each 1$ the price of EGLD - USDT pair gains or     ###
+                                            ###      loses - hence the margin of such frame, might get more greedy, even though it just made a buy, because it may find  ###
+                                            ###      itself  in a totally other frame. It counts the number of buy transactions done in a frame (let's say from 33$ to   ###
+                                            ###      37$) and limits itself to do only X transactions in there, but it also dinamically limits itself to a nr. of        ###
+                                            ###      coins per interval (an interval is a 1$ frame, like 33$-34$ or 34$-35$). So it does a limited priceframe with       ###
+                                            ###      nested limits all across it, per each 1$ level. Then, when the price goes up or down, the whoe frame moves, as its  ###
+                                            ###      its center is always the price of EGLD in $.                                                                        ###
+                                            ###                                                                                                                          ###   
+                                            ###      It's by far the most important aspect of the bot and most sensitive core script of RybkaCore. This also allows the  ###
+                                            ###      formation of inner policies controled by the user via the [RYBKA_TRADING_BOOST_LVL] variable.                       ###
+                                            ################################################################################################################################
+
                                             if possible_nr_of_trades != 0:
+
+                                                ###################################
+                                                ###       SPECIAL POLICY 5      ###
+                                                ################################################################################################################################
+                                                ###   This "Multiple Sells" policy is set in place to gain speed when there are too many buys done already.                  ###
+                                                ###   It will sell more currency previously bought, at once, within one minute, not re-evaluating the RSI for subsequent     ###
+                                                ###      eligible sells. This way, the bot, if overloaded with buys, in raport to the total nr. of possible buys remaining   ###
+                                                ###      will get cash again and will do it quickly, so that it can work more and thus make more profit.                     ###
+                                                ################################################################################################################################
+
                                                 if len(ktbr_config) > 5:
                                                     if possible_nr_of_trades < len(ktbr_config) * 0.8:
                                                         multiple_sells = "enabled"
@@ -1359,6 +1462,10 @@ def main(version, mode, head):
                                                         multiple_sells = "disabled"
                                                 else:
                                                     multiple_sells = "disabled"
+
+                                                ###################################
+                                                ###   END of SPECIAL POLICY 5   ###
+                                                ###################################
 
                                                 ########   Make sure `division by 0` is not hit when editing the weights in here   ########
                                                 if possible_nr_of_trades == 1:
@@ -1522,6 +1629,11 @@ def main(version, mode, head):
                                                     log.DEBUG(
                                                         f"heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]\n\n\n\n"
                                                     )
+
+                                                    ###################################
+                                                    ###   END of SPECIAL POLICY 4   ###
+                                                    ###################################
+
                                                     with open(
                                                         f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
                                                         "a",
