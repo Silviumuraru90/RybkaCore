@@ -417,7 +417,7 @@ def ktbr_integrity():
         log.VERBOSE(f"ktbr_integrity()'s egld balance is {balance_egld}")
 
         if round(sum_of_ktbr_cryptocurrency, 4) <= balance_egld:
-            log.DEBUG(" ✅ KTBR integrity status  -  VALID\n")
+            log.INFO_BOLD(f" ✅ KTBR integrity status  -  {bcolors.PURPLE}VALID{bcolors.DARKGRAY}. Amount of EGLD previously bought: [{bcolors.OKGREEN}{round(sum_of_ktbr_cryptocurrency, 4)}{bcolors.DARKGRAY}]\n")
         else:
             log.FATAL_7(
                 "KTBR integrity status  -  INVALID\nThis means that the amount of EGLD you have in cloud is actually less now, than what you retain in the 'ktbr' file. Probably you've spent a part of it in the meantime."
@@ -515,12 +515,12 @@ def software_config_params():
         
         time.sleep(2)
 
-        log.GREEN("                               ██╗     ██╗██╗   ██╗███████╗    ███╗   ███╗ ██████╗ ██████╗ ███████╗ ")
-        log.GREEN("                               ██║     ██║██║   ██║██╔════╝    ████╗ ████║██╔═══██╗██╔══██╗██╔════╝ ")
-        log.GREEN("                               ██║     ██║██║   ██║█████╗      ██╔████╔██║██║   ██║██║  ██║█████╗   ")
-        log.GREEN("                               ██║     ██║╚██╗ ██╔╝██╔══╝      ██║╚██╔╝██║██║   ██║██║  ██║██╔══╝   ")
-        log.GREEN("                               ███████╗██║ ╚████╔╝ ███████╗    ██║ ╚═╝ ██║╚██████╔╝██████╔╝███████╗ ")
-        log.GREEN("                               ╚══════╝╚═╝  ╚═══╝  ╚══════╝    ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝ \n\n")
+        log.GREEN("                              ██╗     ██╗██╗   ██╗███████╗    ███╗   ███╗ ██████╗ ██████╗ ███████╗ ")
+        log.GREEN("                              ██║     ██║██║   ██║██╔════╝    ████╗ ████║██╔═══██╗██╔══██╗██╔════╝ ")
+        log.GREEN("                              ██║     ██║██║   ██║█████╗      ██╔████╔██║██║   ██║██║  ██║█████╗   ")
+        log.GREEN("                              ██║     ██║╚██╗ ██╔╝██╔══╝      ██║╚██╔╝██║██║   ██║██║  ██║██╔══╝   ")
+        log.GREEN("                              ███████╗██║ ╚████╔╝ ███████╗    ██║ ╚═╝ ██║╚██████╔╝██████╔╝███████╗ ")
+        log.GREEN("                              ╚══════╝╚═╝  ╚═══╝  ╚══════╝    ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝ \n\n")
 
     time.sleep(3)
     log.INFO("RybkaCore software started with the following parameters:\n")
