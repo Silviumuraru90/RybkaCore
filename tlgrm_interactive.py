@@ -1666,13 +1666,13 @@ def error(update, context):
                             and minutes < 3
                         ):
                             ORANGE(
-                            "\n========================================================================================="
+                            "\n=========================================================================================="
                             )
                             ORANGE(
                                 " 🔀 There was identified another Telegram Listener already active. Perhaps on another PC?\n ⚠️  Shutting down the session in here, while keeping the other one alive!"
                             )
                             ORANGE(
-                                "=========================================================================================\n"
+                                "==========================================================================================\n"
                             )
                             try:
                                 psutil.Process(telegram_pID).kill()

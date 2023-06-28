@@ -68,6 +68,34 @@ class RybkaLogging:
     def ORANGE(message):
         print(colored.fg(202) + f"{message}")
 
+    @staticmethod
+    def BLUE(message):
+        print(colored.fg(27) + f"{message}")
+
+    @staticmethod
+    def CYAN(message):
+        print(colored.fg(51) + f"{message}")
+
+    @staticmethod
+    def RED(message):
+        print(colored.fg(196) + f"{message}")
+
+    @staticmethod
+    def GREEN(message):
+        print(colored.fg(46) + f"{message}")
+
+    @staticmethod
+    def YELLOW(message):
+        print(colored.fg(226) + f"{message}")
+
+    @staticmethod
+    def PURPLE(message):
+        print(colored.fg(135) + f"{message}")
+
+    @staticmethod
+    def MAGENTA(message):
+        print(colored.fg(201) + f"{message}")
+
     def INFO(self, message):
         print(
             f"{bcolors.DARKGRAY}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {message}{bcolors.ENDC}"
