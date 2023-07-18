@@ -105,7 +105,12 @@ Hence, at the moment, you will need 🐍 `python` in your OS to run the software
 &emsp;&emsp;✅ unicorn-binance-suite (via `python3 -m pip install unicorn-binance-suite --upgrade --force-reinstall`) <br>
 &emsp;&emsp;✅ TA-Lib <br><br><br>
 
-❗️ `Note:` while via `pip3` you are able to install the first modules, `TA-Lib` is not currently available to be installed from the official `pypi` list, hence you can download the `wheel` file that matches your `python` version and then install it via `pip`. <br> Grab the file from 📦 [HERE](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib) <br><br>
+❗️ `Note:` while via `pip3` you are able to install the first modules, `TA-Lib` is not currently available to be installed from the official `pypi` list, hence you can download the `wheel` file that matches your `python` version and then install it via `pip`.
+<br>
+
+ 📁 Grab the file from 📦 [HERE](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib); <br>
+ 📁 For example: `TA_Lib‑0.4.24‑cp310‑cp310‑win_amd64.whl` will apply to Win's python v.3.10.x envs;<br> 
+ 📁 Then you can go in the dir where the `.whl` file downloaded, and `pip install <TA_Lib_file_name_you_downloaded>.whl` using `pip` under the required python version you need or within the `pyenv` / etc. you will use for the bot;<br><br>
 OR <br><br>
 📦 Build it from source via Linux / Windows's `WSL` with these commands and then install it in the same way, via `pip`. Commands:
 ```
