@@ -36,6 +36,10 @@
 <br><br>
 
 ***
+❗️ Keep your bot `up-to-date` for benefiting from the features below and bugs fixes along the way
+
+
+***
 
 ## &emsp;&emsp; **Features supported**
 <br>
