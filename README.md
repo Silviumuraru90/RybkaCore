@@ -323,7 +323,6 @@ And the road is long and full of tERRORs!
 <b>🔜 There are still some pieces to move:</b> <br>
 
 &emsp;&emsp; ♛ &nbsp;`Price alerts`, via inputs <br>
-&emsp;&emsp; ♘ &nbsp;`Graphs` provided as output in specific situations <br>
 &emsp;&emsp; ♙ &nbsp;Additional `RSI` periods or `indexes`, for a better and broader view <br>
 &emsp;&emsp; ♗ &nbsp;`Unit testing` + `coverage`, for a better integrity. Safer / quicker testing <br>
 
