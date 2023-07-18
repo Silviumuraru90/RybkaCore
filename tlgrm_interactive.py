@@ -105,12 +105,12 @@ def help_command(update, context):
     {'/profit':20}        - Lifetime Profit
 
 🟣 FUNctional commands:
-    {'/status':20}      - Bot's Status
+    {'/status':20}       - Bot's Status
     {'/current_uptime':20}- Bot's Uptime
-    {'/gpu':20}       - GPU Temp.
+    {'/gpu':20}        - GPU Temp.
 
-    {'/start_rybka':20}   - Starts RybkaCore
-    {'/stop_rybka':20}- Stops RybkaCore
+    {'/start_rybka':20}   - Starts bot
+    {'/stop_rybka':20}   - Stops bot
 
 🟣 FUNctor commands:
     {'/roadmap':20}   - Bot's Roadmap
@@ -120,7 +120,7 @@ def help_command(update, context):
 🟣 FUNdamental SUBmenu(s):
     {'/weights_info':20}  - Bot's Weights
     {'/modify_weights':20}- Modify Weights
-    {'/graphs':20}       - Generate Graphs
+    {'/graphs':20}      - Generate Graphs
 
 
 ❕ Reminder:
