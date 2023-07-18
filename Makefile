@@ -22,13 +22,13 @@ sc: style check
 # ===============================================
 
 tk_win:
-	cd binarization && pyinstaller --onefile --windowed --icon="rybka.ico" RybkaSoft.py
+	cd binarization && pyinstaller --onefile --windowed --icon="rybkacore_brown.ico" RybkaSoft.py
 	move "binarization\dist\RybkaSoft.exe" "."
 	rmdir /s /q binarization\build binarization\dist binarization\__pycache__
 	del binarization\RybkaSoft.spec
 
 tk_linux:
-	cd binarization && $(PYINSTALLER) --onefile --windowed --icon="rybka.xbm" RybkaSoft.py
+	cd binarization && $(PYINSTALLER) --onefile --windowed --icon="rybkacore.xbm" RybkaSoft.py
 	mv "binarization/dist/RybkaSoft" "."
 	rm -rf binarization/build binarization/dist binarization/__pycache__
 	rm -f binarization/RybkaSoft.spec

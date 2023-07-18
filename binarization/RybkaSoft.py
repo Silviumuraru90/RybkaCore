@@ -45,13 +45,13 @@ if platform == "linux" or platform == "linux2":
             "\n"
         )
 elif platform == "win32":
-    if os.path.exists("rybka.ico"):
-        top.iconbitmap("rybka.ico")
+    if os.path.exists("rybkacore_brown.ico"):
+        top.iconbitmap("rybkacore_brown.ico")
         build_id = f'Release\n{str(open("../project_version", "r", encoding="utf8").read())}'.strip(
             "\n"
         )
     else:
-        top.iconbitmap("binarization/rybka.ico")
+        top.iconbitmap("binarization/rybkacore_white.ico")
         build_id = f'Release\n{str(open("project_version", "r", encoding="utf8").read())}'.strip(
             "\n"
         )

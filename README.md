@@ -1,5 +1,7 @@
-# 💱 RybkaCore
-
+<div align="center">
+  <img width="250" height="250" src="MEDIA/bw_logo.PNG">
+</div>
+<br><br>
 <div align="center">
   <img width="450" height="300" src="MEDIA/rybka_GUI.PNG">
 </div>
@@ -174,9 +176,9 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 🔘 And, of course, an `internet connection` <br><br><br>
 
-### &emsp;&emsp;<b>Notes</b><br><br>
+### &emsp;&emsp;<b> 🟡 Notes</b><br><br>
 
-🟥 If you encounter a `ujson` module related error upon starting the bot, follow the last path in the `StackTrace` of the error and modify the line within the files (~3 files) where the `import` of this lib is done from `ujson` to `json`;<br>
+🔴 If you encounter a `ujson` module related error upon starting the bot (not all experience this error), follow the last path in the `StackTrace` of the error and modify the line within the files (~3 files) where the `import` of this lib is done from `ujson` to `json`;<br>
 &emsp;Hence:<br>
 `import ujson as json` becomes `import json`<br>
 `import ujson` becomes `import json`
