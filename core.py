@@ -1393,7 +1393,7 @@ def main(version, mode, head):
                                         log.INFO("===============================")
                                     else:
                                         log.INFO("===============================")
-                                        log.INFO("          BUY SIGNAL!")
+                                        log.INFO(f"          {bcolors.OKCYAN}BUY{bcolors.ENDC} SIGNAL!")
                                         log.INFO("===============================")
 
                                     with open(
@@ -1658,7 +1658,7 @@ def main(version, mode, head):
                                                     heatmap_center_coin_counter >= heatmap_limit
                                                     or heatmap_counter >= heatmap_actions
                                                 ):
-                                                    log.INFO("HEATMAP DOES NOT ALLOW BUYING!")
+                                                    log.INFO("HEATMAP DOES NOT ALLOW BUYING!\n")
                                                     log.DEBUG(
                                                         f"heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]\n\n\n\n"
                                                     )
@@ -2037,7 +2037,7 @@ def main(version, mode, head):
 
                             if latest_rsi > RSI_FOR_SELL:
                                 log.INFO("================================")
-                                log.INFO("          SELL SIGNAL!")
+                                log.INFO(f"          {bcolors.OKCYAN}SELL{bcolors.ENDC} SIGNAL!")
                                 log.INFO("================================")
 
                                 if RYBKA_MODE == "LIVE":
@@ -2402,7 +2402,7 @@ def main(version, mode, head):
                                                 )
                                         re_sync_time()
                                     else:
-                                        log.INFO("No buy transactions are eligible to be sold at this moment!")
+                                        log.INFO("No buy transactions are eligible to be sold at this moment!\n")
                                         with open(
                                             f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
                                             "a",
