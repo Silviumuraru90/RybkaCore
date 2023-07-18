@@ -1312,6 +1312,7 @@ def main(version, mode, head):
 
                                 with open(f"{RYBKA_MODE}/ktbr", "r", encoding="utf8") as f:
                                     check_ktbr = json.loads(f.read())
+                                    control = 0
 
                                     if len(check_ktbr) > 10 and len(check_ktbr) < 51:
                                         control = math.floor(len(check_ktbr) / 7)
