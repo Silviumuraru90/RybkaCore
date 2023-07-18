@@ -196,11 +196,15 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 <br><br>
 
-❗️ `Note:` Recommendation for having the best UI output - running `Rybka` software into a `cmd` shell within `Visual Studio Code` <br>
+❗️ `Note:` Recommendation for having the best UI output - running `Rybka` software into a `cmd` shell within `Visual Studio Code` <br><br>
 ❗️ `Note:` Recommendation for having the best uptime (this includes opting out of Binance's `Default Security Controls` policy, to be sure your Public IP won't change, as unfortunately, Binance does NOT offer the variant of having a dynamic DNS, which would've solved this part otherwise) and better profit return (only due to low electricity cost) - running `Rybka` software on a `Raspberry PI 4` connected directly to a `UPS` <br>
 <div align="center">
   <img width="300" height="270" src="MEDIA/raspberry_pi.jpeg">
 </div>
+
+OR: if you prefer `Windows` and especially hate `arm64` architectures, you can try `Chuwi`'s [small PCs](https://store.chuwi.com/collections/mini-pc) or any other mini-PC out there with low power consumption.<br><br>
+
+
 ❗️ `Note:` Running the bot with higher trading quantities or lower will NOT mean the taxes - compared to your profits will vary, as tax is a percentage of the trading quantity moved around. Profit - taxes report can only be increased in your favor if you run the bot with a higher profit margin, per trade; <br><br><br>
 
 > ▶️ For Win -> you can run directly the `RybkaSoft.exe` file and start the needed process(es) from that GUI; or via a CLI (no GUI presentation screen) with admin priviledges with `python rybka.py -m <mode>`. Mode is either of "demo" or "live". <br><br>
