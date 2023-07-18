@@ -278,7 +278,8 @@ If you are willing to have your stress level increased by: <br>
 &emsp; ☣️ optimizing those lines of code <br>
 &emsp; 💡 coming up with bright ideas for new features <br>
 
-=> Send me an email to `silviumuraru90@yahoo.com` and I'll consider your request.<br><br>
+=> Send me an email to `silviumuraru90@yahoo.com` and I'll consider your request. If granted, you'll be provided a `developer` role within the project and can help towards issuing `MRs` that will eventually be reviewed by myself - to make sure the integrity of the tool is kept.
+<br><br>
 
 
 ...but pay attention, the [BOARD-FOR-ROADMAP](https://gitlab.com/Silviu_space/rybka/-/boards) is full!
