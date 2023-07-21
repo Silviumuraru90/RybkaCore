@@ -179,16 +179,17 @@ class RybkaLogging:
         sys.exit(1)
 
     def FATAL_7(self, message):
+        if "ⓇⓎⒷⓀⒶⒸⓄⓇⒺ" in message:
+            telegram.LOG(message)
+            message = ' '.join([c for c in message])
+        else:
+            telegram.LOG(message, "FATAL")
         print(
             f"{bcolors.CRED}{bcolors.BOLD}❌ [{os.environ.get('RYBKA_MODE')}] [FATAL (7)] {self.logging_time()}  > {message}{bcolors.ENDC}"
         )
         self.all_errors_file_update(
             f"❌ [{os.environ.get('RYBKA_MODE')}] [FATAL (7)] {self.logging_time()}  > {message}"
         )
-        if "ⓇⓎⒷⓀⒶⒸⓄⓇⒺ" in message:
-            telegram.LOG(message)
-        else:
-            telegram.LOG(message, "FATAL")
         sys.exit(7)
 
     @staticmethod
