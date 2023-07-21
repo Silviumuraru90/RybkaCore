@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="250" height="250" src="MEDIA/bw_logo.PNG">
+  <img width="250" height="250" src="MEDIA/bw_logo.png">
 </div>
 <br><br>
 <div align="center">
