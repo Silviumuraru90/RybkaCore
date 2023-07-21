@@ -9,8 +9,6 @@ from os.path import exists
 import click
 import psutil
 import requests
-from PIL import Image, ImageTk
-import tkinter as tk
 
 # custom libs
 from core import current_dir_path_export
@@ -100,35 +98,42 @@ def main(version, mode):
             time.sleep(1)
 
             ### POP-UP Implementation START ###
-            def show_image_popup(popup_image_path, popup_duration, popup_width, popup_height, popup_window_title):
-                root = tk.Tk()
-                root.title(popup_window_title)
+            try:
+                from PIL import Image, ImageTk
+                import tkinter as tk
+                def show_image_popup(popup_image_path, popup_duration, popup_width, popup_height, popup_window_title):
+                    root = tk.Tk()
+                    root.title(popup_window_title)
 
-                image = Image.open(popup_image_path)
-                image = image.resize((popup_width, popup_height), Image.Resampling.LANCZOS)
+                    root.iconbitmap("binarization/rybkacore_white.ico")
 
-                photo = ImageTk.PhotoImage(image)
+                    image = Image.open(popup_image_path)
+                    image = image.resize((popup_width, popup_height), Image.Resampling.LANCZOS)
 
-                screen_width = root.winfo_screenwidth()
-                screen_height = root.winfo_screenheight()
+                    photo = ImageTk.PhotoImage(image)
 
-                x_position = (screen_width - popup_width) // 2
-                y_position = (screen_height - popup_height) // 2
+                    screen_width = root.winfo_screenwidth()
+                    screen_height = root.winfo_screenheight()
 
-                root.geometry(f"{popup_width}x{popup_height}+{x_position}+{y_position}")
+                    x_position = (screen_width - popup_width) // 2
+                    y_position = (screen_height - popup_height) // 2
 
-                label = tk.Label(root, image=photo)
-                label.pack()
+                    root.geometry(f"{popup_width}x{popup_height}+{x_position}+{y_position}")
 
-                root.after(popup_duration, root.destroy)
-                root.mainloop()
+                    label = tk.Label(root, image=photo)
+                    label.pack()
 
-            popup_image_path = "logo.png"
-            popup_duration = 2000
-            popup_width = 400
-            popup_height = 400
-            popup_window_title = "RYBKACORE"
-            show_image_popup(popup_image_path, popup_duration, popup_width, popup_height, popup_window_title)
+                    root.after(popup_duration, root.destroy)
+                    root.mainloop()
+
+                popup_image_path = "MEDIA/logo.png"
+                popup_duration = 2000
+                popup_width = 400
+                popup_height = 400
+                popup_window_title = "RYBKACORE"
+                show_image_popup(popup_image_path, popup_duration, popup_width, popup_height, popup_window_title)
+            except:
+                pass
             ### END ###
 
             status = os.system(f"python3 core.py -m {mode.upper()} --head")

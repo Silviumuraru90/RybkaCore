@@ -619,7 +619,7 @@ def email_engine_params(direct_call="1"):
         if direct_call == "1":
             log.INFO(" ")
             log.WARN(
-                "Emails are turned [OFF]. Set [RYBKA_EMAIL_SWITCH] var as 'True' in env. if you want email notifications enabled!"
+                "Emails are turned [OFF]. Set [RYBKA_EMAIL_SWITCH] var as 'True' in env / config.ini. if you want email notifications enabled!"
             )
             log.INFO(" ")
 
@@ -638,7 +638,7 @@ def telegram_engine_switch(direct_call="1"):
         if direct_call == "1":
             log.INFO(" ")
             log.WARN(
-                "Telegram notifications are turned [OFF]. Set [RYBKA_TELEGRAM_SWITCH] var as 'True' in env. if you want Telegram notifications enabled!"
+                "Telegram notifications are turned [OFF]. Set [RYBKA_TELEGRAM_SWITCH] var as 'True' in env / config.ini. if you want Telegram notifications enabled!"
             )
             log.INFO(" ")
 
@@ -1137,7 +1137,7 @@ def main(version, mode, head):
     else:
         log.INFO(" ")
         log.WARN(
-            "Telegram Listener is turned [OFF]. Set [RYBKA_TELEGRAM_SWITCH] var as 'True' in env. if you want Telegram notifications enabled!"
+            "Telegram Listener is turned [OFF]. Set [RYBKA_TELEGRAM_SWITCH] var as 'True' in env / config.ini. if you want Telegram notifications enabled!"
         )
         log.INFO(" ")
 
@@ -2456,6 +2456,9 @@ def main(version, mode, head):
             f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL (7)] {log.logging_time()}      > Stopping ... just wait a few seconds!\n{e}{bcolors.ENDC}"
         )
         unicorn_stream_obj.stop_manager_with_all_streams()
+        email_sender(
+            f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working.\n\n Check terminal / log files for more details."
+        )
         log.FATAL_7(f" 🔴 ⓇⓎⒷⓀⒶⒸⓄⓇⒺ 🔴\n          [[{RYBKA_MODE} mode]]\n")
 
 
