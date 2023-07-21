@@ -417,7 +417,7 @@ def ktbr_integrity():
         log.VERBOSE(f"ktbr_integrity()'s egld balance is {balance_egld}")
 
         if round(sum_of_ktbr_cryptocurrency, 4) <= balance_egld:
-            log.INFO_BOLD(f" ✅ KTBR integrity status  -  {bcolors.PURPLE}VALID{bcolors.DARKGRAY}. Amount of EGLD previously bought: [{bcolors.OKGREEN}{round(sum_of_ktbr_cryptocurrency, 4)}{bcolors.DARKGRAY}]\n")
+            log.INFO_BOLD(f" ✅ KTBR integrity status  -  {bcolors.PURPLE}VALID{bcolors.DARKGRAY}. Amount of EGLD bought and tracked: [{bcolors.OKGREEN}{round(sum_of_ktbr_cryptocurrency, 4)}{bcolors.DARKGRAY}]\n")
         else:
             log.FATAL_7(
                 "KTBR integrity status  -  INVALID\nThis means that the amount of EGLD you have in cloud is actually less now, than what you retain in the 'ktbr' file. Probably you've spent a part of it in the meantime."
