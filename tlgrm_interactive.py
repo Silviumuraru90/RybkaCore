@@ -28,7 +28,10 @@ from termcolor import colored
 
 from custom_modules.telegram import telegram_active_commands as R
 from custom_modules.cfg import bootstrap
-from custom_modules.graph_engine.graph import generate_graph
+try:
+    from custom_modules.graph_engine.graph import generate_graph
+except:
+    pass
 
 
 ####################################################
@@ -142,6 +145,9 @@ def graphs_info_command(update, context):
     update.message.reply_text(
         f"""Available crypto-graphs are ⤵️
 
+⚠️ Please note this has a limitation and may not work for some users;
+⚠️ Issue tracked in order to be solved, via:
+https://gitlab.com/Silviu_space/rybka/-/issues/350
 
 🟪 Cryptocurrency submenus:
     {'/EGLD'}
