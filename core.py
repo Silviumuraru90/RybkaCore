@@ -1004,7 +1004,6 @@ def main(version, mode, head):
         RSI_PERIOD = 10
 
     def main_files():
-        ktbr_configuration()
         profit_file()
         commission_file()
         nr_of_trades_file()
@@ -1031,6 +1030,9 @@ def main(version, mode, head):
         "====================================================================================================================================="
     )
     log.INFO(" ")
+
+    # Needs to be set before any [ktbr_integrity()] call, to make sure this is firstly created, in LIVE mode, if non-existing
+    ktbr_configuration()
 
     if RYBKA_MODE == "LIVE":
         for i in range(1, 6):

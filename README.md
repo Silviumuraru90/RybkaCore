@@ -84,7 +84,7 @@
 
 ## &emsp;&emsp; **Prerequisites**
 <br>
-As `rybka` is not a standalone executable software yet, for any of the aforementioned OS listed, it manages to achieve cross-OS status directly via `python`. Currently compatible python versions: <br><br>
+As `rybka` is not a standalone executable software yet, for any of the aforementioned OS listed, it manages to achieve cross-OS status directly via `python3`. Currently compatible python versions: <br><br>
 &emsp;&emsp;✅ Python 3.6 <br>
 &emsp;&emsp;✅ Python 3.7 <br>
 &emsp;&emsp;✅ Python 3.8 <br>
@@ -127,9 +127,30 @@ sudo make install
 ```
 <br>
 
-❗️ `Note:` bot currently requires admin-level access on Windows in order to run, for it to be able to constantly synchronize the time with NIST's `time.nist.gov` server. This is NOT applicable for Linux-based distributions, where the de-sync issue has not been noticed
+❗️ `Note:` Bot currently requires admin-level access on Windows in order to run, for it to be able to constantly synchronize the time with NIST's `time.nist.gov` server. This is NOT applicable for Linux-based distributions, where the de-sync issue has not been noticed
 
+<br>
+
+❗️ `Note:` Usually, the Windows installation should go somewhat like this:<br>
+
+&emsp;&emsp;&emsp;🔹`Chocolatey` module installation via `Powershell`:
+```
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
+
+&emsp;&emsp;&emsp;🔹`Pyenv` installation via `Chocolatey`:
+```
+choco install pyenv-win
+```
+
+
+&emsp;&emsp;&emsp;🔹`Python` installation via `Pyenv` versioning manager:
+```
+pyenv install 3.<X>.<X>
+pyenv global 3.<X>.<X>
+```
 <br><br>
+
 
 ***
 
@@ -170,11 +191,13 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 <br>
 
-🔘 Some `USDT` for buy actions in your Binance wallet <br><br>
+🔘 `python3` command available to run the bot under it. Make sure all of the libs are installed under the python version considered by the `python3` command. Do the necessary `update-alternatives` / symlinks, if needed; <br>
 
-🔘 Some `BNB` amount in your Binance wallet (this is the currency used for trades' commission; `~100 trades = 1$ commission`) <br><br>
+🔘 Some `USDT` for buy actions in your Binance wallet; <br>
 
-🔘 And, of course, an `internet connection` <br><br><br>
+🔘 Some `BNB` amount in your Binance wallet (this is the currency used for trades' commission; `~100 trades = 1$ commission`); <br>
+
+🔘 And, of course, an `internet connection`. <br><br><br>
 
 ### &emsp;&emsp;<b> 🟡 Notes</b><br><br>
 
@@ -226,8 +249,8 @@ OR: if you prefer `Windows` and especially hate `arm64` architectures, you can t
 
 ❗️ `Note:` Running the bot with higher trading quantities or lower will NOT mean the taxes - compared to your profits will vary, as tax is a percentage of the trading quantity moved around. Profit - taxes report can only be increased in your favor if you run the bot with a higher profit margin, per trade; <br><br><br>
 
-> ▶️ For Win -> you can run directly the `RybkaSoft.exe` file and start the needed process(es) from that GUI; or via a CLI (no GUI presentation screen) with admin priviledges with `python rybka.py -m <mode>`. Mode is either of "demo" or "live". <br><br>
-▶️ For Linux however -> you have to grant executable permissions via `chmod +x RybkaSoft` and then still run it via terminal with `./RybkaSoft` cmd, unfortunately, for it to boot correctly; or via a CLI (no GUI presentation screen) without sudo / root priviledges with `python rybka.py -m <mode>`. Mode is either of "demo" or "live". <br><br>
+> ▶️ For Win -> you can run directly the `RybkaSoft.exe` file and start the needed process(es) from that GUI; or via a CLI (no GUI presentation screen) with admin priviledges with `python3 rybka.py -m <mode>`. Mode is either of "demo" or "live". <br><br>
+▶️ For Linux however -> you have to grant executable permissions via `chmod +x RybkaSoft` and then still run it via terminal with `./RybkaSoft` cmd, unfortunately, for it to boot correctly; or via a CLI (no GUI presentation screen) without sudo / root priviledges with `python3 rybka.py -m <mode>`. Mode is either of "demo" or "live". <br><br>
 ▶️ (Win / Linux) The Telegram Listener (Telegram interactive part) module (which is only the listener part where user can input commands and info. will be provided for each) is to be started by Rybka bot directly when it runs, as a subshell, without any user action.
 
 <br><br>
