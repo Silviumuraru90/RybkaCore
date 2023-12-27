@@ -228,7 +228,8 @@ def ktbr_configuration():
     if exists(f"{RYBKA_MODE}/ktbr"):
         with open(f"{RYBKA_MODE}/ktbr", "r", encoding="utf8") as f:
             if os.stat(f"{RYBKA_MODE}/ktbr").st_size == 0:
-                log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/ktbr] file exists and is empty")
+                log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/ktbr] file exists, but its content doesn't present the right format, modifying that right now")
+                f.write("{}")
             else:
                 try:
                     ktbr_config = json.loads(f.read())
@@ -420,7 +421,7 @@ def ktbr_integrity():
             log.INFO_BOLD(f" ✅ KTBR integrity status  -  {bcolors.PURPLE}VALID{bcolors.DARKGRAY}. Amount of EGLD bought and tracked: [{bcolors.OKGREEN}{round(sum_of_ktbr_cryptocurrency, 4)}{bcolors.DARKGRAY}]\n")
         else:
             log.FATAL_7(
-                "KTBR integrity status  -  INVALID\nThis means that the amount of EGLD you have in cloud is actually less now, than what you retain in the 'ktbr' file. Probably you've spent a part of it in the meantime."
+                f"KTBR integrity status  -  INVALID\nThis means that the amount of EGLD you have in cloud [{balance_egld}] is actually less now, than what you retain in the 'ktbr' file [{round(sum_of_ktbr_cryptocurrency, 4)}]. Probably you've spent a part of it in the meantime."
             )
 
 
@@ -1921,8 +1922,9 @@ def main(version, mode, head):
                                                             log.VERBOSE(
                                                                 f"After BUY - balance update. BNB  balance is [{balance_bnb}]"
                                                             )
-
-                                                            ktbr_integrity()
+                                                            
+                                                            if RYBKA_MODE == "LIVE":
+                                                                ktbr_integrity()
 
                                                             with open(
                                                                 f"{current_export_dir}/{TRADE_SYMBOL}_order_history",
@@ -2333,7 +2335,8 @@ def main(version, mode, head):
                                                     log.DEBUG(f"EGLD balance is [{balance_egld}]")
                                                     log.DEBUG(f"BNB  balance is [{balance_bnb}]")
 
-                                                    ktbr_integrity()
+                                                    if RYBKA_MODE == "LIVE":
+                                                        ktbr_integrity()
 
                                                     with open(
                                                         f"{current_export_dir}/{TRADE_SYMBOL}_order_history",
