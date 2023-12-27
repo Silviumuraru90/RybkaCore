@@ -1455,7 +1455,7 @@ def main(version, mode, head):
                                                 )
 
                                             possible_nr_of_trades = math.floor(
-                                                balance_usdt / (TRADE_QUANTITY * candle_close_price)
+                                                (round(float(balance_usdt - USDT_SAFETY_NET), 4)) / (TRADE_QUANTITY * candle_close_price)
                                             )
                                             log.INFO(
                                                 f"Remaining possible nr. of buy orders: {possible_nr_of_trades}\n"
