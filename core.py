@@ -1786,10 +1786,10 @@ def main(version, mode, head):
 
                                                             # avoid rounding up on quantity & price bought
                                                             log.INFO_SPECIAL(
-                                                                f" 🟢 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT\n"
+                                                                f" 🟣 Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT\n"
                                                             )
                                                             telegram.LOG(
-                                                                f" 🟢 Bought [[{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}]] EGLD at [[{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}]] USDT/EGLD",
+                                                                f" 🟣 Bought [[{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}]] EGLD at [[{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}]] USDT/EGLD",
                                                             )
 
                                                             usdt_trade_fee = round(
