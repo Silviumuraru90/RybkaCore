@@ -201,6 +201,9 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 ### &emsp;&emsp;<b> 🟡 Notes</b><br><br>
 
+🟣 Always keep your bot `up-to-date`!
+</b><br><br>
+
 🟣 What is `ktbr`? It stands for `keep-the-business-running` and is the most important file created by the bot. It keeps track of bot's buy transactions in an individual way. There is also an `integrity` function (to which you'll see a log in terminal) that runs once in a while that constantly verifies if the user has not altered the amount of balances the bot is aware of, in the cloud. If there is a misalignment - it will stop and let you know about it. The sum of `EGLD` across all the buy transactions in the `ktbr` file should at all times be equal or less than the sum of `EGLD` you have in your Binance account. Should you want to transfer some to any other wallet, edit this ktbr file, while keeping its `json` format;
 </b><br><br>
 
