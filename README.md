@@ -199,19 +199,49 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 🔘 And, of course, an `internet connection`. <br><br><br>
 
-### &emsp;&emsp;<b> 🟡 Notes</b><br><br>
+### 🔴 Breakpoints? (not really) 🔴
+</b><br>
+🔴 If the price of BNB would hit `24001 USDT` (`bnb_candle_close_price=24000`), bot's script part:
+```
+bnb_min_buy_share = bnb_candle_close_price / 12
+bnb_min_order_quantity = round(float(1 / bnb_min_buy_share), 3)
+```
+=> would make `bnb_min_order_quantity` get assigned the value of `0.0`, which is below the `LOT_SIZE`'s `minQty` of `0.001`, for `BNBUSDT` pair:
 
-🟣 Always keep your bot `up-to-date`!
-</b><br><br>
+<div align="center">
+  <img src="MEDIA/BNB_characteristics.png">
+</div>
+<br>
 
-🟣 What is `ktbr`? It stands for `keep-the-business-running` and is the most important file created by the bot. It keeps track of bot's buy transactions in an individual way. There is also an `integrity` function (to which you'll see a log in terminal) that runs once in a while that constantly verifies if the user has not altered the amount of balances the bot is aware of, in the cloud. If there is a misalignment - it will stop and let you know about it. The sum of `EGLD` across all the buy transactions in the `ktbr` file should at all times be equal or less than the sum of `EGLD` you have in your Binance account. Should you want to transfer some to any other wallet, edit this ktbr file, while keeping its `json` format;
-</b><br><br>
+=> thus the buy order of more `BNB` with `USDT` - would fail. This, of course, could've represented a breakpoint, but it got solved by enforcing a minimum of `0.001` BNB to be bought in such scenario; which may then only fail if there isn't enough `USDT` in the account, look, we'll most probably never face this, ever;
+<br><br><br>
+
+🔴 If the price of `EGLD` would skyrocket, meaning that less than `0.01 EGLD` would represent more than `10 USDT` [the minimum imposed coin quantity per order for `EGLDUSDT` pair (the `MIN_NOTIONAL`'s `minNotional` value in the image below)], then the `LOT_SIZE`'s `minQty` of `0.01`, for `EGLDUSDT` pair would not be met, thus failing the transaction;
+
+<div align="center">
+  <img src="MEDIA/EGLD_characteristics.png">
+</div>
+<br>
+
+=> Now, of course, this also got solved, by imposing a minimum quantity of `0.01` on this pair, no matter what the user imposes within `config.ini` file and no matter the auto-adjustment engine done of the bot, in case the user set the value too low;
+<br><br><br>
 
 🔴 If you encounter a `ujson` module related error upon starting the bot (not all experience this error), follow the last path in the `StackTrace` of the error and modify the line within the files (~3 files) where the `import` of this lib is done from `ujson` to `json`;<br>
 &emsp;Hence:<br>
 `import ujson as json` becomes `import json`<br>
 `import ujson` becomes `import json`
 <br><br><br>
+🔴 There is, unfortunately, a `known issue` in regards to the `graph module`, making the Telegram commands unusable for some users. Tracked via [this ticket](https://gitlab.com/Silviu_space/rybka/-/issues/350);
+
+<br><br><br>
+
+### &emsp;&emsp;<b> 🟡 Notes</b><br><br>
+
+🟣 Always keep your bot `up-to-date`!
+</b><br><br>
+
+🟣 What is `ktbr`? It stands for `keep-the-business-running` and is the most important file created by the bot. It keeps track of bot's buy transactions in an individual way. There is also an `integrity` function (to which you'll see a log in terminal) that runs once in a while that constantly verifies if the user has not altered the amount of balances the bot is aware of, in the cloud. If there is a misalignment - it will stop and let you know about it. The sum of `EGLD` across all the buy transactions in the `ktbr` file should at all times be equal or less than the sum of `EGLD` you have in your Binance account. Should you want to transfer some to any other wallet, edit this ktbr file, while keeping its `json` format;
+</b><br><br></br>
 ❗️ Note for the `MOST efficient way of using the bot` respective to `profit`: try to aproximate the nr. of `[RYBKA_TRADE_QUANTITY]` you can buy by considering the price of `EGLD` in `USDT` and thinking how many piece of cryptocurrency you would buy with the sum of `USDT` you have in your account, so that it will result in <b>at least</b> `30` possible buys. This will comply with the best inner policies in the bot, to maximize the profit. You can surely use `RybkaCore` with whichever sum of money, anyway, but it won't guarantee the optimal results, still, it will be capable of making considerable profits. Pay attention that when the bot will try to make a `buy`, it will also tell you in the terminal the possible number of buys (so it will also calculate itself those) and pay attention that the minimum possible order is of `10$` per Binance, but actually a minimum of `12$`, per bot's inner logic. If you let the bot run with the predefined value of `[RYBKA_TRADE_QUANTITY]` found in `config.ini` - it will automatically calculate the minimum `[RYBKA_TRADE_QUANTITY]` required for it to always buy the smallest possible chunk of `EGLD`, so you can safely just leave it do its thing and this way let it maximize the number of possible buys;
 <br><br><br>
 ❗️ Note for the cryptocurrency the bot will consider. It will use only the `USDT` appearing / added later on (while the bot runs) in Binance and the `BNB` for taxes per orders (also considered on-the-fly). But it will NOT consider the new `EGLD` added into Binance, only the one that it bought already in the current / previous runs. If some `USDT` is removed, better stop the bot before that action and restart it afterwards, as it might fail if you'll let it run. Same applies to `EGLD`, if you want to move it out of `Binance`, but this will be possible to be safely removed via a tool that will be developed in the future via [this ticket](https://gitlab.com/Silviu_space/rybka/-/issues/292). Till then, the only way to make the bot work without errors when you move EGLD (that bot `previosuly bought`) out of Binance, is to tweak accordingly the `ktbr` file in the `LIVE` folder of the bot; operation which might be dangerous if the result won't be compliant to the `json` format of the file's content or with the balance of `EGLD` remaining in `Binance`;

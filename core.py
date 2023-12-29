@@ -131,8 +131,8 @@ def account_balance_update():
     locked_balance_egld = round(float(balance_aux_egld["locked"]), 4)
 
     balance_aux_bnb = client.get_asset_balance(asset="BNB")
-    balance_bnb = round(float(balance_aux_bnb["free"]), 6)
-    locked_balance_bnb = round(float(balance_aux_bnb["locked"]), 6)
+    balance_bnb = round(float(balance_aux_bnb["free"]), 8)
+    locked_balance_bnb = round(float(balance_aux_bnb["locked"]), 8)
 
 
 ###############################################
@@ -150,6 +150,14 @@ def log_files_creation(direct_call="1"):
         if direct_call == "1":
             os.mkdir(current_export_dir)
 
+            with open(
+                f"{current_export_dir}/BNB_USDT_historical_prices",
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    f"Here is a detailed view of the history of candle prices for the [BNB-USDT] currency pair:\n\n"
+                )
             with open(
                 f"{current_export_dir}/{TRADE_SYMBOL}_historical_prices",
                 "w",
@@ -283,39 +291,6 @@ def profit_file():
         except Exception as e:
             log.FATAL_7(
                 f"[{RYBKA_MODE}/usdt_profit] file could NOT be created!\nFailing with error:\n{e}"
-            )
-    log.VERBOSE(
-        "====================================================================================================================================="
-    )
-
-
-def commission_file():
-    global bnb_commission
-    global RYBKA_MODE
-    log.VERBOSE(
-        "====================================================================================================================================="
-    )
-    if exists(f"{RYBKA_MODE}/most_recent_commission"):
-        with open(f"{RYBKA_MODE}/most_recent_commission", "r", encoding="utf8") as f:
-            if os.stat(f"{RYBKA_MODE}/most_recent_commission").st_size == 0:
-                log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/most_recent_commission] file exists and is empty")
-            else:
-                try:
-                    bnb_commission = float(f.read())
-                    log.VERBOSE(
-                        f" ✅ [{RYBKA_MODE}/most_recent_commission] file contains the following most recent paid fee: [{bnb_commission}] BNB"
-                    )
-                except Exception as e:
-                    log.FATAL_7(
-                        f"[{RYBKA_MODE}/most_recent_commission] file contains wrong formatted content!\nFailing with error:\n{e}"
-                    )
-    else:
-        try:
-            open(f"{RYBKA_MODE}/most_recent_commission", "w", encoding="utf8").close()
-            log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/most_recent_commission] file created!")
-        except Exception as e:
-            log.FATAL_7(
-                f"[{RYBKA_MODE}/most_recent_commission] file could NOT be created!\nFailing with error:\n{e}"
             )
     log.VERBOSE(
         "====================================================================================================================================="
@@ -907,6 +882,11 @@ def main(version, mode, head):
     global subsequent_valid_rsi_counter
     global archived_logs_folder, current_export_dir
 
+    # In need of a dummy value in the case where the candle closes for EGLDUSDT before it closed for BNBUSDT, hence the value is not attributed to the BNB side, but only after up to 1 more minute
+    global bnb_candle_close_price, bnb_conversion_done
+    bnb_candle_close_price = 0
+    bnb_conversion_done = 0
+
 
     if not version and not mode and not head:
         click.echo(click.get_current_context().get_help())
@@ -1006,7 +986,6 @@ def main(version, mode, head):
 
     def main_files():
         profit_file()
-        commission_file()
         nr_of_trades_file()
         full_order_history_file()
         real_time_balances()
@@ -1152,7 +1131,7 @@ def main(version, mode, head):
 
     try:
         unicorn_stream_obj = unicorn_binance_websocket_api.BinanceWebSocketApiManager(exchange="binance.com", warn_on_update=False)
-        unicorn_stream_obj.create_stream(['kline_1m'], ['EGLDUSDT'])
+        unicorn_stream_obj.create_stream(['kline_1m'], ['EGLDUSDT', 'BNBUSDT'])
 
         log.INFO(
             "====================================================================================================================================="
@@ -1220,7 +1199,14 @@ def main(version, mode, head):
                     continue
 
                 candle = json.loads(oldest_data_from_stream_buffer)
-                
+
+                # When bnb_candle_close_price is 0 (assigned above), we still have to override this just 1 time (when it is 0) with the first price a candle provides, to not make subsequent fractions divide by 0
+                if candle["data"]["s"] == "BNBUSDT" and bnb_candle_close_price == 0:
+                    bnb_candle_close_price = round(float(candle["data"]["k"]["c"]), 4)
+
+                if candle["data"]["s"] == "BNBUSDT" and candle["data"]["k"]["x"]:
+                    bnb_candle_close_price = round(float(candle["data"]["k"]["c"]), 4)
+
                 is_candle_egld_usdt = candle["data"]["s"]
                 is_candle_closed = candle["data"]["k"]["x"]
                 candle_close_price = round(float(candle["data"]["k"]["c"]), 4)
@@ -1255,6 +1241,13 @@ def main(version, mode, head):
                         encoding="utf8",
                     ) as f:
                         f.write(f"{log.logging_time()} Price of [EGLD] is [{candle_close_price} USDT]\n")
+
+                    with open(
+                        f"{current_export_dir}/BNB_USDT_historical_prices",
+                        "a",
+                        encoding="utf8",
+                    ) as f:
+                        f.write(f"{log.logging_time()} Price of [BNB] is [{bnb_candle_close_price} USDT]\n")
 
                     if len(closed_candles) < 11:
                         log.INFO(
@@ -1349,16 +1342,18 @@ def main(version, mode, head):
                             ###################################
                             ###       SPECIAL POLICY 3      ###
                             ################################################################################################################################
-                            ###   Put in place to buy even though there are less or equal to 4 transactions done in ktbr, only and price might even      ###
+                            ###   Put in place to buy even though there are less or equal to 4 transactions done in ktbr only and price might even       ###
                             ###      go up, as this policy invalidates RSI as well, granting an even higher profit in time, by making the bot work       ###
                             ###      in "dead time".                                                                                                     ###
                             ################################################################################################################################
 
-                            if latest_rsi < RSI_FOR_BUY or len(ktbr_config) in [0, 3] or policy == "overridden":
+                            if latest_rsi < RSI_FOR_BUY or len(ktbr_config) in [0, 3] or policy == "overridden" or bnb_conversion_done == 1:
 
                                 ###################################
                                 ###   END of SPECIAL POLICY 3   ###
                                 ###################################
+
+                                bnb_conversion_done = 0
 
                                 log.DEBUG(f"Policy was {policy}.")
 
@@ -1418,9 +1413,6 @@ def main(version, mode, head):
                                             f"{log.logging_time()} {'EGLD balance (balance_egld) is':90} {balance_egld:40}\n"
                                         )
                                         f.write(
-                                            f"{log.logging_time()} {'BNB commission (bnb_commission) is':90} {bnb_commission:40}\n"
-                                        )
-                                        f.write(
                                             f"{log.logging_time()} {'Total USDT profit (total_usdt_profit) is':90} {total_usdt_profit:40}\n"
                                         )
                                         f.write(
@@ -1436,25 +1428,32 @@ def main(version, mode, head):
                                             f"\n{log.logging_time()} {'KTBR config (BEFORE processing) (str(json.dumps(ktbr_config))) is':90} \n {str(json.dumps(ktbr_config))}\n\n"
                                         )
 
-                                    if balance_bnb / bnb_commission >= 100:
+                                    min_buy_share = candle_close_price / 12
+                                    min_order_quantity = round(float(1 / min_buy_share), 2)
+
+                                    TRADE_QUANTITY = AUX_TRADE_QUANTITY
+
+                                    if min_order_quantity > TRADE_QUANTITY:
+                                        log.DEBUG(
+                                            f"We can NOT trade at this quantity: [{TRADE_QUANTITY}]. Enforcing a min quantity (per buy action) of [{min_order_quantity}] EGLD coins."
+                                        )
+                                        TRADE_QUANTITY = min_order_quantity
+                                    else:
+                                        log.DEBUG(
+                                            f"We CAN trade at this quantity: [{TRADE_QUANTITY}]. No need to enforce a higher min trading limit."
+                                        )
+                                    
+                                    if TRADE_QUANTITY < 0.01:
+                                        TRADE_QUANTITY = 0.01
+                                        log.DEBUG(
+                                            f"Turns out that the TRADE_QUANTITY [{TRADE_QUANTITY}] is under Binance's imposed minimum of trade quantity for EGLDUSDT pair or `0.01`. Setting TRADE_QUANTITY=0.01"
+                                        )
+                                        
+                                    if (round(float((round(float(balance_bnb * bnb_candle_close_price), 6)) / (round(float(0.08 / 100 * candle_close_price * TRADE_QUANTITY), 4))), 4)) >= 30:
+
                                         log.DEBUG(f"BNB balance [{balance_bnb}] is enough for transactions.")
 
                                         if balance_usdt / 12 > 1:
-                                            min_buy_share = candle_close_price / 12
-                                            min_order_quantity = round(float(1 / min_buy_share), 2)
-
-                                            TRADE_QUANTITY = AUX_TRADE_QUANTITY
-
-                                            if min_order_quantity > TRADE_QUANTITY:
-                                                log.DEBUG(
-                                                    f"We can NOT trade at this quantity: [{TRADE_QUANTITY}]. Enforcing a min quantity (per buy action) of [{min_order_quantity}] EGLD coins."
-                                                )
-                                                TRADE_QUANTITY = min_order_quantity
-                                            else:
-                                                log.DEBUG(
-                                                    f"We CAN trade at this quantity: [{TRADE_QUANTITY}]. No need to enforce a higher min trading limit."
-                                                )
-
                                             possible_nr_of_trades = math.floor(
                                                 (round(float(balance_usdt - USDT_SAFETY_NET), 4)) / (TRADE_QUANTITY * candle_close_price)
                                             )
@@ -1737,26 +1736,39 @@ def main(version, mode, head):
                                                             order["orderId"] = order_id_tmp
                                                             order["executedQty"] = TRADE_QUANTITY
                                                             order["fills"][0]["price"] = candle_close_price
-                                                            order["fills"][0]["commission"] = bnb_commission
+                                                            order["fills"][0]["commission"] = round(float(round(float(0.08 / 100 * candle_close_price * TRADE_QUANTITY), 4) / bnb_candle_close_price), 8)
 
                                                             balance_usdt -= candle_close_price * TRADE_QUANTITY
                                                             balance_usdt = round(balance_usdt, 4)
                                                             balance_egld += TRADE_QUANTITY
                                                             balance_egld = round(balance_egld, 4)
-                                                            balance_bnb -= bnb_commission
-                                                            balance_bnb = round(balance_bnb, 6)
+                                                            balance_bnb -= round(float(round(float(0.08 / 100 * candle_close_price * TRADE_QUANTITY), 4) / bnb_candle_close_price), 8)
+                                                            balance_bnb = round(balance_bnb, 8)
 
                                                         order_time = datetime.now().strftime(
                                                             "%d/%m/%Y %H:%M:%S"
                                                         )
                                                         log.DEBUG(f"BUY Order placed now at [{order_time}]\n")
-                                                        time.sleep(3)
+                                                        time.sleep(5)
 
                                                         if RYBKA_MODE == "LIVE":
-                                                            order_status = client.get_order(
-                                                                symbol=TRADE_SYMBOL,
-                                                                orderId=order["orderId"],
-                                                            )
+                                                            for i in range(1, 11):
+                                                                try:
+                                                                    order_status = client.get_order(
+                                                                        symbol=TRADE_SYMBOL,
+                                                                        orderId=order["orderId"],
+                                                                    )
+                                                                    log.DEBUG(
+                                                                        "EGLD Buy Order status retrieval - Successful"
+                                                                    )
+                                                                    break
+                                                                except Exception as e:
+                                                                    if i == 10:
+                                                                        log.FATAL_7(
+                                                                            f"EGLD Buy Order status retrieval - Failed as:\n{e}"
+                                                                        )
+                                                                    time.sleep(3)
+                                                            
                                                         elif RYBKA_MODE == "DEMO":
                                                             order_status = {
                                                                 "symbol": "EGLDUSDT",
@@ -1878,7 +1890,7 @@ def main(version, mode, head):
                                                                     f"{log.logging_time()} {'USDT trade fee (usdt_trade_fee) is':90} {str(usdt_trade_fee)}\n"
                                                                 )
                                                                 f.write(
-                                                                    f"{log.logging_time()} {'Order commission is':90} {str(order['fills'][0]['commission']):40}\n"
+                                                                    f"{log.logging_time()} {'Order commission is':90} {str(bnb_commission):40}\n"
                                                                 )
                                                                 f.write(
                                                                     f"{log.logging_time()} KTBR config (AFTER processing) (str(json.dumps(ktbr_config))) is {str(json.dumps(ktbr_config)):40}\n"
@@ -1889,6 +1901,7 @@ def main(version, mode, head):
                                                             move_and_replace("full_order_history", RYBKA_MODE)
                                                             move_and_replace(f"{TRADE_SYMBOL}_DEBUG", current_export_dir)
                                                             move_and_replace(f"{TRADE_SYMBOL}_historical_prices", current_export_dir)
+                                                            move_and_replace(f"BNB_USDT_historical_prices", current_export_dir)
                                                             move_and_replace(f"{TRADE_SYMBOL}_order_history", current_export_dir)
 
                                                             if RYBKA_MODE == "LIVE":
@@ -2012,7 +2025,7 @@ def main(version, mode, head):
                                             )
                                             # TODO add log.WARN message and email func within the same 'if' clause for enabling / disabling such emails
                                             # log.WARN(f"Notifying user (via email) that bot might need more money for buy actions, if possible.")
-                                            # email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot might be able to buy more, but doesn't have enought USDT in balance [{balance_usdt}]\n\nTOP UP if possible!")
+                                            # email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot might be able to buy more, but doesn't have enough USDT in balance [{balance_usdt}]\n\nTOP UP if possible!")
                                             with open(
                                                 f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
                                                 "a",
@@ -2023,26 +2036,170 @@ def main(version, mode, head):
                                                     f"{log.logging_time()} Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].\n"
                                                 )
                                     else:
-                                        email_sender(
-                                            f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enought BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, it will stop at this point. Please TOP UP!"
-                                        )
-                                        with open(
-                                            f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
-                                            "a",
-                                            encoding="utf8",
-                                        ) as f:
-                                            f.write(f"\n\n{log.logging_time()} Within BUY (part X):\n")
-                                            f.write(
-                                                f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Please TOP UP!\n"
+                                        if RYBKA_MODE == "LIVE":
+                                            email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enough BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 USDT into BNB. This does NOT take from Safety Net!"
                                             )
-                                        log.FATAL_7(
-                                            f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. Please TOP UP!"
-                                        )
+                                            with open(
+                                                f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                                "a",
+                                                encoding="utf8",
+                                            ) as f:
+                                                f.write(f"\n\n{log.logging_time()} Within BUY (part X):\n")
+                                                f.write(
+                                                    f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Hence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 USDT into BNB. This does NOT take from Safety Net!\n"
+                                                )
+                                            
+                                            if round(float(balance_usdt - USDT_SAFETY_NET), 4) > 15:
 
-                            if latest_rsi > RSI_FOR_SELL:
+                                                bnb_min_buy_share = bnb_candle_close_price / 12
+                                                bnb_min_order_quantity = round(float(1 / bnb_min_buy_share), 3)
+                                                
+                                                # treating the rare case of a sky-high price of BNB (of 24001 or above, in USDT), scenario in which the value of `bnb_min_order_quantity` would be equal to `0.0`
+                                                if bnb_min_order_quantity == 0:
+                                                    bnb_min_order_quantity = 0.001
+
+                                                order = client.order_market_buy(
+                                                    symbol="BNBUSDT",
+                                                    quantity=bnb_min_order_quantity,
+                                                )
+
+                                                bnb_conversion_done = 1
+                                                
+                                                order_time = datetime.now().strftime(
+                                                    "%d/%m/%Y %H:%M:%S"
+                                                )
+                                                log.DEBUG(f"BNB BUY Order placed now at [{order_time}]\n")
+                                                log.VERBOSE(f"bnb_min_order_quantity is [{str(bnb_min_order_quantity)}]\n")
+                                                log.VERBOSE(f"bnb_candle_close_price is [{str(bnb_candle_close_price)}]\n")
+                                                log.VERBOSE(f"bnb_min_buy_share is [{str(bnb_min_buy_share)}]\n")
+
+                                                time.sleep(5)
+
+                                                with open(
+                                                    f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                                    "a",
+                                                    encoding="utf8",
+                                                ) as f:
+                                                    f.write(f"\n\n\n{log.logging_time()} Within BNB buy order (part I):\n")
+                                                    f.write(
+                                                        f'{log.logging_time()} {"bnb_min_order_quantity":90} {str(bnb_min_order_quantity)}\n'
+                                                    )
+                                                    f.write(
+                                                        f'{log.logging_time()} {"bnb_candle_close_price":90} {str(bnb_candle_close_price)}\n'
+                                                    )
+                                                    f.write(
+                                                        f'{log.logging_time()} {"bnb_min_buy_share":90} {str(bnb_min_buy_share)}\n'
+                                                    )
+
+                                                for i in range(1, 11):
+                                                    try:
+                                                        order_status = client.get_order(
+                                                            symbol="BNBUSDT",
+                                                            orderId=order["orderId"],
+                                                        )
+                                                        log.DEBUG(
+                                                            "1. BNB Buy Order status retrieval - Successful"
+                                                        )
+                                                        break
+                                                    except Exception as e:
+                                                        if i == 10:
+                                                            log.FATAL_7(
+                                                                f"1. BNB Buy Order status retrieval - Failed as:\n{e}"
+                                                            )
+                                                        time.sleep(3)
+                                                
+                                                with open(
+                                                    f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                                    "a",
+                                                    encoding="utf8",
+                                                ) as f:
+                                                    f.write(f"\n\n\n{log.logging_time()} Within BNB buy order (part I):\n")
+                                                    f.write(
+                                                        f'{log.logging_time()} {"Order status is":90} {str(order_status)}\n'
+                                                    )
+                                                    
+                                                if order_status["status"] == "FILLED":
+                                                    log.INFO_BOLD_UNDERLINE(
+                                                        " ✅ BNB BUY Order filled successfully!\n"
+                                                    )
+
+                                                    # avoid rounding up on quantity & price bought
+                                                    log.INFO_SPECIAL(
+                                                        f" ☑️  ♻️  Bought [{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}] BNB at price per 1 BNB of [{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}] USDT\n"
+                                                    )
+                                                    telegram.LOG(
+                                                        f" ☑️ ♻️ Bought [[{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}]] BNB at [[{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}]] USDT/BNB",
+                                                    )
+                                                    
+                                                    for i in range(1, 11):
+                                                        try:
+                                                            account_balance_update()
+                                                            log.DEBUG(
+                                                                "Account Balance Sync. - Successful"
+                                                            )
+                                                            break
+                                                        except Exception as e:
+                                                            if i == 10:
+                                                                log.FATAL_7(
+                                                                    f"Account Balance Sync. - Failed as:\n{e}"
+                                                                )
+                                                            time.sleep(3)
+    
+                                                    real_time_balances_update()
+    
+                                                    if DEBUG_LVL != 3:
+                                                        log.DEBUG(f"USDT balance is [{balance_usdt}]")
+                                                        log.DEBUG(f"EGLD balance is [{balance_egld}]")
+                                                        log.DEBUG(f"BNB  balance is [{balance_bnb}]")
+                                                        
+                                                else:
+                                                    with open(
+                                                        f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                                        "a",
+                                                        encoding="utf8",
+                                                    ) as f:
+                                                        f.write(
+                                                            f"\n\n{log.logging_time()} Within BUY (part VI):\n"
+                                                        )
+                                                        f.write(
+                                                            f"{log.logging_time()} BNB Buy order was NOT filled successfully! Please check the cause!\n"
+                                                        )
+                                                        f.write(
+                                                            f"{log.logging_time()} BNB Order (order) is {str(json.dumps(order))}\n"
+                                                        )
+                                                        f.write(
+                                                            f"{log.logging_time()} BNB Order status (order_status) is {str(json.dumps(order_status))}\n"
+                                                        )
+                                                    log.FATAL_7(
+                                                        "BNB Buy order was NOT filled successfully! Please check the cause!"
+                                                    )
+                                            else:
+                                                log.FATAL_7(
+                                                    f"USDT balance [{balance_usdt}] is NOT enough to sustain many more transactions."
+                                                )
+                                        elif RYBKA_MODE == "DEMO":
+                                            email_sender(
+                                                f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enough BNB in balance [{balance_bnb}] to sustain many more trades.\nAs we are in [RYBKA MODE - {RYBKA_MODE}] - bot will STOP at this point, as the user could've added infinite amounts of BNB at start, but decided not to.\n\n"
+                                                )
+                                            with open(
+                                                    f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                                    "a",
+                                                    encoding="utf8",
+                                            ) as f:
+                                                f.write(f"\n\n{log.logging_time()} Within BUY (part X):\n")
+                                                f.write(
+                                                    f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. As we are in [RYBKA MODE - {RYBKA_MODE}] - bot will STOP at this point, as the user could've added infinite amounts of BNB at start, but decided not to.\n"
+                                                )
+                                            log.FATAL_7(
+                                                f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. As we are in [RYBKA MODE - {RYBKA_MODE}] - bot will STOP at this point, as the user could've added infinite amounts of BNB at start, but decided not to."
+                                            )
+
+                            if latest_rsi > RSI_FOR_SELL or bnb_conversion_done == 1:
                                 log.INFO("================================")
                                 log.INFO(f"          {bcolors.OKCYAN}SELL{bcolors.ENDC} SIGNAL!")
                                 log.INFO("================================")
+
+                                bnb_conversion_done = 0
 
                                 if RYBKA_MODE == "LIVE":
                                     for i in range(1, 11):
@@ -2076,9 +2233,6 @@ def main(version, mode, head):
                                         f"{log.logging_time()} {'EGLD balance (balance_egld) is':90} {balance_egld:40}\n"
                                     )
                                     f.write(
-                                        f"{log.logging_time()} {'BNB commission (bnb_commission) is':90} {bnb_commission:40}\n"
-                                    )
-                                    f.write(
                                         f"{log.logging_time()} {'Total USDT profit (total_usdt_profit) is':90} {total_usdt_profit:40}\n"
                                     )
                                     f.write(
@@ -2091,7 +2245,28 @@ def main(version, mode, head):
                                         f"\n{log.logging_time()} KTBR config (BEFORE processing) (str(json.dumps(ktbr_config))) is \n {str(json.dumps(ktbr_config))}\n\n"
                                     )
 
-                                if balance_bnb / bnb_commission >= 100:
+                                # To estimate if we have enough BNB for commissions on SELLing part for the bot, we have to calculate the possibility of allowing multiple_sells
+                                # Hence we estimate selling half of the `ktbr` at median quantity and price in it and making sure we have over 5 times that amount in bnb, for commission
+                                # which may not be 5 times exactly, as the trade_quantity and price are not evenly distributed across `ktbr` to begin with
+                                if len(ktbr_config) == 0:
+                                    ktbr_length = 2
+                                    avg_coin_qtty = TRADE_QUANTITY
+                                    avg_coin_price = candle_close_price
+                                else:
+                                    sum_coins=0
+                                    sum_price=0
+
+                                    for v in ktbr_config.values():
+                                        sum_coins+=float(v[0])
+                                        sum_price+=float(v[1])
+
+                                    avg_coin_qtty = round(float(sum_coins/len(ktbr_config)), 4)
+                                    avg_coin_price = round(float(sum_price/len(ktbr_config)), 4)
+
+                                ktbr_half_length=len(ktbr_config)/2
+
+                                if (round(float((round(float(balance_bnb * bnb_candle_close_price), 6)) / (round(float(0.08 / 100 * avg_coin_price * avg_coin_qtty * round(float(ktbr_half_length), 4)), 4))), 4)) >= 5:
+
                                     log.DEBUG(f"BNB balance [{balance_bnb}] is enough for transactions.")
 
                                     eligible_sells = []
@@ -2157,24 +2332,37 @@ def main(version, mode, head):
                                                     order["orderId"] = str(sell)
                                                     order["executedQty"] = ktbr_config[sell][0]
                                                     order["fills"][0]["price"] = candle_close_price
-                                                    order["fills"][0]["commission"] = bnb_commission
+                                                    order["fills"][0]["commission"] = round(float(round(float(0.08 / 100 * candle_close_price * ktbr_config[sell][0]), 4) / bnb_candle_close_price), 8)
 
                                                     balance_usdt += candle_close_price * ktbr_config[sell][0]
                                                     balance_usdt = round(balance_usdt, 4)
                                                     balance_egld -= ktbr_config[sell][0]
                                                     balance_egld = round(balance_egld, 4)
-                                                    balance_bnb -= bnb_commission
-                                                    balance_bnb = round(balance_bnb, 6)
+                                                    balance_bnb -= round(float(round(float(0.08 / 100 * candle_close_price * ktbr_config[sell][0]), 4) / bnb_candle_close_price), 8)
+                                                    balance_bnb = round(balance_bnb, 8)
 
                                                 order_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                                                 log.DEBUG(f"SELL Order placed now at [{order_time}]\n")
-                                                time.sleep(1)
+                                                time.sleep(5)
 
                                                 if RYBKA_MODE == "LIVE":
-                                                    order_status = client.get_order(
-                                                        symbol=TRADE_SYMBOL,
-                                                        orderId=order["orderId"],
-                                                    )
+                                                    for i in range(1, 11):
+                                                        try:
+                                                            order_status = client.get_order(
+                                                                symbol=TRADE_SYMBOL,
+                                                                orderId=order["orderId"],
+                                                            )
+                                                            log.DEBUG(
+                                                                "EGLD Sell Order status retrieval - Successful"
+                                                            )
+                                                            break
+                                                        except Exception as e:
+                                                            if i == 10:
+                                                                log.FATAL_7(
+                                                                    f"EGLD Sell Order status retrieval - Failed as:\n{e}"
+                                                                )
+                                                            time.sleep(3)
+
                                                 elif RYBKA_MODE == "DEMO":
                                                     order_status = {
                                                         "symbol": "EGLDUSDT",
@@ -2212,7 +2400,7 @@ def main(version, mode, head):
                                                     )
 
                                                     log.INFO_SPECIAL(
-                                                        f" 🟢 Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT. Previously bought at [{str(ktbr_config[sell][1])}] USDT\n"
+                                                        f" 🟢 Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT. Previously bought at [{str(ktbr_config[sell][1])}] USDT"
                                                     )
                                                     telegram.LOG(
                                                         f" 🟢 Sold [[{qtty_aux}]] EGLD at [[{price_aux}]] USDT/EGLD.\nWas bought at [[{str(ktbr_config[sell][1])}]] USDT/EGLD",
@@ -2254,12 +2442,6 @@ def main(version, mode, head):
                                                         f.write(str(total_usdt_profit))
 
                                                     bnb_commission = float(order["fills"][0]["commission"])
-                                                    with open(
-                                                        f"{RYBKA_MODE}/most_recent_commission",
-                                                        "w",
-                                                        encoding="utf8",
-                                                    ) as f:
-                                                        f.write(str(order["fills"][0]["commission"]))
 
                                                     with open(
                                                         f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
@@ -2303,7 +2485,7 @@ def main(version, mode, head):
                                                             f"{log.logging_time()} {'USDT trade fee (usdt_trade_fee) is':90} {str(usdt_trade_fee)}\n"
                                                         )
                                                         f.write(
-                                                            f"{log.logging_time()} {'Order commission is':90} {str(order['fills'][0]['commission']):40}\n"
+                                                            f"{log.logging_time()} {'Order commission is':90} {str(bnb_commission):40}\n"
                                                         )
                                                         f.write(
                                                             f"{log.logging_time()} KTBR config (AFTER processing) (str(json.dumps(ktbr_config))) is {str(json.dumps(ktbr_config)):40}\n"
@@ -2314,6 +2496,7 @@ def main(version, mode, head):
                                                     move_and_replace("full_order_history", RYBKA_MODE)
                                                     move_and_replace(f"{TRADE_SYMBOL}_DEBUG", current_export_dir)
                                                     move_and_replace(f"{TRADE_SYMBOL}_historical_prices", current_export_dir)
+                                                    move_and_replace(f"BNB_USDT_historical_prices", current_export_dir)
                                                     move_and_replace(f"{TRADE_SYMBOL}_order_history", current_export_dir)
 
                                                     if RYBKA_MODE == "LIVE":
@@ -2418,22 +2601,165 @@ def main(version, mode, head):
                                                 f"{log.logging_time()} No buy transactions are eligible to be sold at this moment!\n"
                                             )
                                 else:
-                                    email_sender(
-                                        f"[RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enought BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, it will stop at this point. Please TOP UP!"
-                                    )
-                                    with open(
-                                        f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
-                                        "a",
-                                        encoding="utf8",
-                                    ) as f:
-                                        f.write(f"\n\n{log.logging_time()} Within SELL (part VIII):\n")
-                                        f.write(
-                                            f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Please TOP UP!\n"
-                                        )
-                                    log.FATAL_7(
-                                        f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. Please TOP UP!"
-                                    )
+                                    if RYBKA_MODE == "LIVE":
+                                        email_sender(
+                                            f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enough BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 USDT into BNB. This does NOT take from Safety Net!"
+                                            )
+                                        with open(
+                                                f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                                "a",
+                                                encoding="utf8",
+                                        ) as f:
+                                            f.write(f"\n\n{log.logging_time()} Within BUY (part X):\n")
+                                            f.write(
+                                                f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Hence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 USDT into BNB. This does NOT take from Safety Net!\n"
+                                            )
 
+                                        if round(float(balance_usdt - USDT_SAFETY_NET), 4) > 15:
+
+                                            bnb_min_buy_share = bnb_candle_close_price / 12
+                                            bnb_min_order_quantity = round(float(1 / bnb_min_buy_share), 3)
+
+                                            # treating the rare case of a sky-high price of BNB (of 24001 or above, in USDT), scenario in which the value of `bnb_min_order_quantity` would be equal to `0.0`
+                                            if bnb_min_order_quantity == 0:
+                                                bnb_min_order_quantity = 0.001
+
+                                            order = client.order_market_buy(
+                                                symbol="BNBUSDT",
+                                                quantity=bnb_min_order_quantity,
+                                            )
+
+                                            bnb_conversion_done = 1
+
+                                            order_time = datetime.now().strftime(
+                                                "%d/%m/%Y %H:%M:%S"
+                                            )
+                                            log.DEBUG(f"BNB BUY Order placed now at [{order_time}]\n")
+                                            log.VERBOSE(f"bnb_min_order_quantity is [{str(bnb_min_order_quantity)}]\n")
+                                            log.VERBOSE(f"bnb_candle_close_price is [{str(bnb_candle_close_price)}]\n")
+                                            log.VERBOSE(f"bnb_min_buy_share is [{str(bnb_min_buy_share)}]\n")
+                                        
+                                            time.sleep(25)
+
+                                            with open(
+                                                f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                                "a",
+                                                encoding="utf8",
+                                            ) as f:
+                                                f.write(f"\n\n\n{log.logging_time()} Within BNB buy order (part II):\n")
+                                                f.write(
+                                                    f'{log.logging_time()} {"bnb_min_order_quantity":90} {str(bnb_min_order_quantity)}\n'
+                                                )
+                                                f.write(
+                                                    f'{log.logging_time()} {"bnb_candle_close_price":90} {str(bnb_candle_close_price)}\n'
+                                                )
+                                                f.write(
+                                                    f'{log.logging_time()} {"bnb_min_buy_share":90} {str(bnb_min_buy_share)}\n'
+                                                )
+
+                                            for i in range(1, 11):
+                                                try:
+                                                    order_status = client.get_order(
+                                                        symbol="BNBUSDT",
+                                                        orderId=order["orderId"],
+                                                    )
+                                                    log.DEBUG(
+                                                        "2. BNB Buy Order status retrieval - Successful"
+                                                    )
+                                                    break
+                                                except Exception as e:
+                                                    if i == 10:
+                                                        log.FATAL_7(
+                                                            f"2. BNB Buy Order status retrieval - Failed as:\n{e}"
+                                                        )
+                                                    time.sleep(3)
+
+                                            with open(
+                                                f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                                "a",
+                                                encoding="utf8",
+                                            ) as f:
+                                                f.write(f"\n\n\n{log.logging_time()} Within BNB buy order (part II):\n")
+                                                f.write(
+                                                    f'{log.logging_time()} {"Order status is":90} {str(order_status)}\n'
+                                                )
+
+                                            if order_status["status"] == "FILLED":
+                                                log.INFO_BOLD_UNDERLINE(
+                                                    " ✅ BNB BUY Order filled successfully!\n"
+                                                )
+
+                                                # avoid rounding up on quantity & price bought
+                                                log.INFO_SPECIAL(
+                                                    f" ☑️  ♻️  Bought [{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}] BNB at price per 1 BNB of [{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}] USDT\n"
+                                                )
+                                                telegram.LOG(
+                                                    f" ☑️ ♻️ Bought [[{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}]] BNB at [[{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}]] USDT/BNB",
+                                                )
+
+                                                for i in range(1, 11):
+                                                    try:
+                                                        account_balance_update()
+                                                        log.DEBUG(
+                                                            "Account Balance Sync. - Successful"
+                                                        )
+                                                        break
+                                                    except Exception as e:
+                                                        if i == 10:
+                                                            log.FATAL_7(
+                                                                f"Account Balance Sync. - Failed as:\n{e}"
+                                                            )
+                                                        time.sleep(3)
+
+                                                real_time_balances_update()
+
+                                                if DEBUG_LVL != 3:
+                                                    log.DEBUG(f"USDT balance is [{balance_usdt}]")
+                                                    log.DEBUG(f"EGLD balance is [{balance_egld}]")
+                                                    log.DEBUG(f"BNB  balance is [{balance_bnb}]")
+
+                                            else:
+                                                with open(
+                                                        f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                                        "a",
+                                                        encoding="utf8",
+                                                ) as f:
+                                                    f.write(
+                                                        f"\n\n{log.logging_time()} Within BUY (part VI):\n"
+                                                    )
+                                                    f.write(
+                                                        f"{log.logging_time()} BNB Buy order was NOT filled successfully! Please check the cause!\n"
+                                                    )
+                                                    f.write(
+                                                        f"{log.logging_time()} BNB Order (order) is {str(json.dumps(order))}\n"
+                                                    )
+                                                    f.write(
+                                                        f"{log.logging_time()} BNB Order status (order_status) is {str(json.dumps(order_status))}\n"
+                                                    )
+                                                log.FATAL_7(
+                                                    "BNB Buy order was NOT filled successfully! Please check the cause!"
+                                                )
+                                        else:
+                                            log.FATAL_7(
+                                                f"USDT balance [{balance_usdt}] is NOT enough to sustain many more transactions."
+                                            )
+                                    elif RYBKA_MODE == "DEMO":
+                                        email_sender(
+                                            f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enough BNB in balance [{balance_bnb}] to sustain many more trades.\nAs we are in [RYBKA MODE - {RYBKA_MODE}] - bot will STOP at this point, as the user could've added infinite amounts of BNB at start, but decided not to.\n\n"
+                                        )
+                                        with open(
+                                                f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                                "a",
+                                                encoding="utf8",
+                                        ) as f:
+                                            f.write(f"\n\n{log.logging_time()} Within SELL (part VIII):\n")
+                                            f.write(
+                                                f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. As we are in [RYBKA MODE - {RYBKA_MODE}] - bot will STOP at this point, as the user could've added infinite amounts of BNB at start, but decided not to.\n"
+                                            )
+                                        log.FATAL_7(
+                                            f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. As we are in [RYBKA MODE - {RYBKA_MODE}] - bot will STOP at this point, as the user could've added infinite amounts of BNB at start, but decided not to."
+                                        )
+                                    
                         if RYBKA_MODE == "LIVE":
                             if random.randint(1, 60) <= 2:
                                 for i in range(1, 11):
@@ -2587,7 +2913,6 @@ if __name__ == "__main__":
     closed_candles = []
     client = ""
 
-    bnb_commission = 0.00005577
     total_usdt_profit = 0
 
     multiple_sells = "disabled"
