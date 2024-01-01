@@ -275,13 +275,19 @@ bnb_min_order_quantity = round(float(1 / bnb_min_buy_share), 3)
 <br><br>
 
 ❗️ `Note:` Recommendation for having the best UI output - running `Rybka` software into a `cmd` shell within `Visual Studio Code` <br><br>
-❗️ `Note:` Recommendation for having the best uptime (this includes opting out of Binance's `Default Security Controls` policy, to be sure your Public IP won't change, as unfortunately, Binance does NOT offer the variant of having a dynamic DNS, which would've solved this part otherwise) and better profit return (only due to low electricity cost) - running `Rybka` software on a `Raspberry PI 4` connected directly to a `UPS` <br>
+❗️ `Note:` Recommendation for having the best uptime (this includes opting out of Binance's `Default Security Controls` policy, to be sure your Public IP won't change, as unfortunately, Binance does NOT offer the variant of having a dynamic DNS, which would've solved this part otherwise) and better profit return (only due to low electricity cost) - running `Rybka` software on a `Raspberry PI 4` connected directly to a `UPS`: <br><br>
 <div align="center">
   <img width="300" height="270" src="MEDIA/raspberry_pi.jpeg">
 </div>
+<br>
+I should also mention that a small screen connected to the Raspberry PI, is s truly useful addition: aesthetically, but functionally as well (like when you can use touch screen to connect to another network if one dropped, etc.). Pretty cool to see in real-time what it does, without Teamviewer or other solutions, when you are at home:
+<br><br>
+<div align="center">
+  <img width="630" height="470" src="MEDIA/Raspberry_PI_screen.jpg">
+</div>
+<br>
 
-OR: if you prefer `Windows` and especially hate `arm64` architectures, you can try `Chuwi`'s [small PCs](https://store.chuwi.com/collections/mini-pc) or any other mini-PC out there with low power consumption.<br><br>
-
+OR: if you prefer `Windows` and especially hate `arm64` architectures, you can try `Chuwi`'s [small PCs](https://store.chuwi.com/collections/mini-pc) or any other mini-PC out there with low power consumption.<br><br><br>
 
 ❗️ `Note:` Running the bot with higher trading quantities or lower will NOT mean the taxes - compared to your profits will vary, as tax is a percentage of the trading quantity moved around. Profit - taxes report can only be increased in your favor if you run the bot with a higher profit margin, per trade; <br><br><br>
 
@@ -297,7 +303,7 @@ OR: if you prefer `Windows` and especially hate `arm64` architectures, you can t
 
 # <center> **Let's have a sneak peek into it, shall we? 🖥** </center> 
 
-## 🗃 Booting up the bot (logs during v.6.x.x-beta):
+## 🗃 Booting up the bot (images from v.6.x.x-beta):
 
 <div align="center">
   <img src="MEDIA/rybka_live_start1.mp4">
@@ -312,14 +318,14 @@ OR: if you prefer `Windows` and especially hate `arm64` architectures, you can t
 </div>
 <br><br>
 
-## 🗃 Telegram Listener (interactive) module appearance in logs (logs during v.6.x.x-beta):
+## 🗃 Telegram Listener (interactive) module appearance in logs (images from v.6.x.x-beta):
 
 <div align="center">
   <img src="MEDIA/telegram_active_mode.PNG">
 </div>
 <br><br>
 
-## 🗃 Telegram logs on mobile (logs during v.6.x.x-beta):
+## 🗃 Telegram logs on mobile (images from v.6.x.x-beta):
 
 <p align="center">
   <img width="200" height="400" src="MEDIA/Telegram_main_commands.jpg" />
