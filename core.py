@@ -1479,7 +1479,7 @@ def main(version, mode, head):
                                             ###      formation of inner policies controled by the user via the [RYBKA_TRADING_BOOST_LVL] variable.                       ###
                                             ################################################################################################################################
 
-                                            if possible_nr_of_trades != 0:
+                                            if possible_nr_of_trades >= 0:
 
                                                 ###################################
                                                 ###       SPECIAL POLICY 5      ###
@@ -1502,6 +1502,14 @@ def main(version, mode, head):
                                                 ###   END of SPECIAL POLICY 5   ###
                                                 ###################################
 
+                                                #####  LEGEND  ###############################################################################################################################
+                                                ##   "heatmap_size" is the size (+ and -) from the real-time EGLD/USDT price, based on which the logics of the heatmap get applied on top   ##
+                                                ##   "heatmap_center_coin_counter" is a counter for the nr. of buy transactions bought and still tracked at current price of EGLD in USDT   ##
+                                                ##   "heatmap_limit" is a limit for the aforementioned counter                                                                              ##
+                                                ##   "heatmap_actions" is a counter for the nr. of buy transactions bought and still tracked within the current "heatmap_size"              ##
+                                                ##   "heatmap_counter" is a limit for the aforementioned counter                                                                            ##
+                                                ##############################################################################################################################################
+                                                #
                                                 ########   Make sure `division by 0` is not hit when editing the weights in here   ########
                                                 if possible_nr_of_trades == 1:
                                                     heatmap_actions = 1
@@ -1656,14 +1664,24 @@ def main(version, mode, head):
                                                         f"{log.logging_time()} KTBR array of prices (str(ktbr_config_array_of_prices)) is {str(ktbr_config_array_of_prices)}\n\n\n"
                                                     )
 
-                                                if (
-                                                    heatmap_center_coin_counter >= heatmap_limit
-                                                    or heatmap_counter >= heatmap_actions
-                                                ):
-                                                    log.INFO("HEATMAP DOES NOT ALLOW BUYING!\n")
-                                                    log.DEBUG(
-                                                        f"heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]\n\n\n\n"
-                                                    )
+                                                if heatmap_center_coin_counter >= heatmap_limit:
+                                                    log.INFO(f"Buying not allowed!\nAt current 1$ price range of [{str(current_price_rounded_down)}-{str(current_price_rounded_down+1)}$], we have enought buys [{str(heatmap_center_coin_counter)}], considering the limit [{str(heatmap_limit)}]\n")
+                                                    with open(
+                                                        f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                                        "a",
+                                                        encoding="utf8",
+                                                    ) as f:
+                                                        f.write(
+                                                            f"\n\n{log.logging_time()} Within BUY (part IV):\n"
+                                                        )
+                                                        f.write(
+                                                            f"{log.logging_time()} HEATMAP DOES NOT ALLOW BUYING!"
+                                                        )
+                                                        f.write(
+                                                            f"{log.logging_time()} heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}]"
+                                                        )
+                                                elif heatmap_counter >= heatmap_actions:
+                                                    log.INFO(f"Buying not allowed!\nWithin a small price range of [{str(current_price_rounded_down-round(float(heatmap_size / 2)))}-{str(current_price_rounded_down+round(float(heatmap_size / 2)))}$], we have too many buys [{str(heatmap_counter)}], considering the limit [{str(heatmap_actions)}]\n")
 
                                                     ###################################
                                                     ###   END of SPECIAL POLICY 4   ###
@@ -1681,14 +1699,14 @@ def main(version, mode, head):
                                                             f"{log.logging_time()} HEATMAP DOES NOT ALLOW BUYING!"
                                                         )
                                                         f.write(
-                                                            f"{log.logging_time()} heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}] OR heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]"
+                                                            f"{log.logging_time()} heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]"
                                                         )
                                                 elif (
                                                     float(balance_usdt)
                                                     < float(TRADE_QUANTITY) * float(candle_close_price) + 2
                                                 ):
                                                     log.DEBUG(
-                                                        "Way too low diff between acc. balance and current price * trade quantity. Not allowing buy."
+                                                        "Way too low diff between acc. balance and current price * trade quantity. Not allowing a buy transaction."
                                                     )
                                                 else:
                                                     log.VERBOSE("HEATMAP ALLOWS BUYING!\n")
