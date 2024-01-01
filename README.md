@@ -200,7 +200,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 🔘 And, of course, an `internet connection`. <br><br><br>
 
-### 🔴 Breakpoints? (not really) 🔴
+### &emsp;&emsp;<b> 🔴 Breakpoints? (not really) 🔴 </b>
 </b><br>
 🔴 If the price of BNB would hit `24001 USDT` (`bnb_candle_close_price=24000`), bot's script part:
 ```
@@ -236,12 +236,15 @@ bnb_min_order_quantity = round(float(1 / bnb_min_buy_share), 3)
 
 <br><br><br>
 
-### &emsp;&emsp;<b> 🟡 Notes</b><br><br>
+### &emsp;&emsp;<b> 🟡 Notes </b>
 
+<br>
 🟣 Always keep your bot `up-to-date`!
 </b><br><br>
 
 🟣 What is `ktbr`? It stands for `keep-the-business-running` and is the most important file created by the bot. It keeps track of bot's buy transactions in an individual way. There is also an `integrity` function (to which you'll see a log in terminal) that runs once in a while that constantly verifies if the user has not altered the amount of balances the bot is aware of, in the cloud. If there is a misalignment - it will stop and let you know about it. The sum of `EGLD` across all the buy transactions in the `ktbr` file should at all times be equal or less than the sum of `EGLD` you have in your Binance account. Should you want to transfer some to any other wallet, edit this ktbr file, while keeping its `json` format;
+</b><br><br></br>
+❗️ Note for `transaction fees`:  For each transaction the bot is doing (buy or sell), it is paying a fee of `0.08%` of the `trading-quantity-of-the-coin` * `current-coin-price`;
 </b><br><br></br>
 ❗️ Note for the `MOST efficient way of using the bot` respective to `profit`: try to aproximate the nr. of `[RYBKA_TRADE_QUANTITY]` you can buy by considering the price of `EGLD` in `USDT` and thinking how many pieces of cryptocurrency you would buy with the sum of `USDT` you have in your account, so that it will result in <b>at least</b> `30` possible buys. This will comply with the best inner policies in the bot, to maximize the profit. You can surely use `RybkaCore` with whichever sum of money, anyway, but it won't guarantee the optimal results, still, it will be capable of making considerable profits. Pay attention that when the bot will try to make a `buy`, it will also tell you in the terminal the possible number of buys (so it will also calculate itself those) and pay attention that the minimum possible order is of `10$` per Binance, but actually a minimum of `~12$`, per bot's inner logic. If you let the bot run with the predefined value of `[RYBKA_TRADE_QUANTITY]` found in `config.ini` - it will automatically calculate the minimum `[RYBKA_TRADE_QUANTITY]` required for it to always buy the smallest possible chunk of `EGLD`, so you can safely just leave it do its thing and this way let it maximize the number of possible buys;
 <br><br><br>
