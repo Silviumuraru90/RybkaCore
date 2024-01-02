@@ -1305,9 +1305,9 @@ def main(version, mode, head):
                         ###      between them until it will hit a bottleneck on heatmap (HEATMAP policy).                                            ###
                         ################################################################################################################################
 
-                        if subsequent_valid_rsi_counter > 2:
-                            log.DEBUG("Invalidating 3 RSI periods, as a buy / sell action just occurred.\n")
-                            subsequent_valid_rsi_counter = 0
+                        if subsequent_valid_rsi_counter != 0:
+                            log.DEBUG("Invalidating 3 RSI 1-min ticks (in care of a BUY) or 2 RSI 1-min ticks (in care of a SELL), as a transaction just occurred.\nMultiple sells don't fall under this policy\n")
+                            subsequent_valid_rsi_counter -= 1
 
                             ###################################
                             ###   END of SPECIAL POLICY 1   ###
@@ -1371,7 +1371,7 @@ def main(version, mode, head):
                             ###      in "dead time".                                                                                                     ###
                             ################################################################################################################################
 
-                            if latest_rsi < RSI_FOR_BUY or len(ktbr_config) in [0, 3] or policy == "overridden" or bnb_conversion_done == 1:
+                            if latest_rsi < RSI_FOR_BUY or len(ktbr_config) in [0, 4] or policy == "overridden" or bnb_conversion_done == 1:
 
                                 ###################################
                                 ###   END of SPECIAL POLICY 3   ###
@@ -1410,7 +1410,7 @@ def main(version, mode, head):
                                         f"Another buy would NOT enter the safety net [{str(USDT_SAFETY_NET)}]. Permitted."
                                     )
 
-                                    if len(ktbr_config) == 0 or len(ktbr_config) == 1:
+                                    if len(ktbr_config) in [0, 4]:
                                         log.INFO("===============================")
                                         log.INFO(" ALWAYS BUY POLICY ACTIVATED!")
                                         log.INFO("===============================")
@@ -2007,10 +2007,8 @@ def main(version, mode, head):
                                                                     f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n\n\n"
                                                                 )
 
-                                                            if len(ktbr_config) < 2:
-                                                                subsequent_valid_rsi_counter = 0
-                                                            else:
-                                                                subsequent_valid_rsi_counter += 1
+                                                            if len(ktbr_config) > 4:
+                                                                subsequent_valid_rsi_counter = 3
 
                                                             re_sync_time()
                                                         else:
@@ -2298,7 +2296,7 @@ def main(version, mode, head):
                                 # Hence we estimate selling half of the `ktbr` at median quantity and price in it and making sure we have over 5 times that amount in bnb, for commission
                                 # which may not be 5 times exactly, as the trade_quantity and price are not evenly distributed across `ktbr` to begin with
                                 if len(ktbr_config) == 0:
-                                    ktbr_length = 2
+                                    ktbr_half_length=2
                                     avg_coin_qtty = TRADE_QUANTITY
                                     avg_coin_price = candle_close_price
                                 else:
@@ -2311,8 +2309,7 @@ def main(version, mode, head):
 
                                     avg_coin_qtty = round(float(sum_coins/len(ktbr_config)), 4)
                                     avg_coin_price = round(float(sum_price/len(ktbr_config)), 4)
-
-                                ktbr_half_length=len(ktbr_config)/2
+                                    ktbr_half_length=len(ktbr_config)/2
 
                                 if (round(float((round(float(balance_bnb * bnb_candle_close_price), 6)) / (round(float(0.08 / 100 * avg_coin_price * avg_coin_qtty * round(float(ktbr_half_length), 4)), 4))), 4)) >= 5:
 
@@ -2617,8 +2614,8 @@ def main(version, mode, head):
                                                             f"{log.logging_time()} {previous_buy_info} \n\n\n"
                                                         )
 
-                                                    if not multiple_sells == "enabled":
-                                                        subsequent_valid_rsi_counter += 1
+                                                    if multiple_sells != "enabled":
+                                                        subsequent_valid_rsi_counter = 2
                                                 else:
                                                     with open(
                                                         f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
