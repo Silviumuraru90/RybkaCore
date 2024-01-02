@@ -181,7 +181,7 @@ class RybkaLogging:
     def FATAL_7(self, message):
         if "ⓇⓎⒷⓀⒶⒸⓄⓇⒺ" in message:
             telegram.LOG(message)
-            message = ' '.join([c for c in message])
+            message = " ".join([c for c in message])
         else:
             telegram.LOG(message, "FATAL")
         print(

@@ -1,33 +1,34 @@
 #!/usr/bin/env python3
 
 # Built-in and Third-Party Libs
-from datetime import datetime, timedelta
 import fileinput
 import json
 import logging
 import os
-import re
 import random
-import requests
+import re
 import string as string_str
 import subprocess
 import sys
 import time
+from datetime import datetime, timedelta
 from os.path import exists
 
 import colored as colored_2
 import GPUtil
 import psutil
+import requests
+import telepot
 from binance.client import Client
 from telegram import ParseMode
-import telepot
 
 # Custom Libs
 from telegram.ext import *
 from termcolor import colored
 
-from custom_modules.telegram import telegram_active_commands as R
 from custom_modules.cfg import bootstrap
+from custom_modules.telegram import telegram_active_commands as R
+
 try:
     from custom_modules.graph_engine.graph import generate_graph
 except:
@@ -48,6 +49,7 @@ def ORANGE(message):
 ###############################################
 ########      UNIQUE ID FUNCTION      #########
 ###############################################
+
 
 def id_generator(size=10, chars=string_str.ascii_uppercase + string_str.digits):
     return "".join(random.choice(chars) for elem in range(size))
@@ -511,7 +513,14 @@ def yes_start_it(update, context):
             update.message.reply_text("💤 Bot is indeed stopped at this moment.")
             update.message.reply_text("🚀 Starting RybkaCore bot!\nPlease wait...")
             try:
-                subprocess.Popen(["python3", "rybka.py", "-m", f"{str(update.message.text).lower().split('_')[4]}"])
+                subprocess.Popen(
+                    [
+                        "python3",
+                        "rybka.py",
+                        "-m",
+                        f"{str(update.message.text).lower().split('_')[4]}",
+                    ]
+                )
                 for i in range(0, 10):
                     try:
                         time.sleep(2 * i)
@@ -822,6 +831,7 @@ def m_RYBKA_RSI_FOR_BUY_35_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_BUY", "35")
     modifcation_log_message(update, context)
 
+
 def m_RYBKA_RSI_FOR_BUY_40_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_BUY", "40")
     modifcation_log_message(update, context)
@@ -866,6 +876,7 @@ def m_RYBKA_RSI_FOR_SELL_72_command(update, context):
 def m_RYBKA_RSI_FOR_SELL_75_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_SELL", "75")
     modifcation_log_message(update, context)
+
 
 def m_RYBKA_RSI_FOR_SELL_80_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_SELL", "80")
@@ -1245,7 +1256,9 @@ def m_RYBKA_ALL_LOG_TLG_SWITCH_false_command(update, context):
 
 
 def m_RYBKA_BALANCES_AUX_true_command(update, context):
-    update.message.reply_text(" 🟪 Balances will be displayed in less than a minute.\n\nPlease wait...")
+    update.message.reply_text(
+        " 🟪 Balances will be displayed in less than a minute.\n\nPlease wait..."
+    )
     modify_config_ini("RYBKA_BALANCES_AUX", "True")
 
 
@@ -1556,6 +1569,7 @@ def modify_weights_command(update, context):
 ##########    Graph related Functions    ###########
 ####################################################
 
+
 def local_pic(update, image):
     try:
         bot = telepot.Bot(bootstrap.TELE_KEY)
@@ -1568,7 +1582,6 @@ def local_pic(update, image):
 
 
 def generate_graph_command(update, context):
-
     usd_prices = []
     eur_prices = []
 
@@ -1581,17 +1594,25 @@ def generate_graph_command(update, context):
         r = ""
 
         if currency == "EGLD":
-            r = requests.get(f"https://api.coingecko.com/api/v3/coins/elrond-erd-2/history?date={date}&localization=false")
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/elrond-erd-2/history?date={date}&localization=false"
+            )
         elif currency == "BTC":
-            r = requests.get(f"https://api.coingecko.com/api/v3/coins/bitcoin/history?date={date}&localization=false")
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/bitcoin/history?date={date}&localization=false"
+            )
         elif currency == "ETH":
-            r = requests.get(f"https://api.coingecko.com/api/v3/coins/ethereum/history?date={date}&localization=false")
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/ethereum/history?date={date}&localization=false"
+            )
         elif currency == "BNB":
-            r = requests.get(f"https://api.coingecko.com/api/v3/coins/binancecoin/history?date={date}&localization=false")
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/binancecoin/history?date={date}&localization=false"
+            )
 
         if r.status_code != 200:
             return "ratelimited"
-    
+
         usd_price = r.json()["market_data"]["current_price"]["usd"]
         eur_price = r.json()["market_data"]["current_price"]["eur"]
 
@@ -1607,16 +1628,21 @@ def generate_graph_command(update, context):
             date_list.append(formatted_date)
 
         return date_list
-    
 
     if timeframe == "week":
-        update.message.reply_text(" 🙏 RybkaCore might be getting queued for retrieving price data from Coin Gecko servers.\n\nPlease wait for the current 📈 to be generated!")
+        update.message.reply_text(
+            " 🙏 RybkaCore might be getting queued for retrieving price data from Coin Gecko servers.\n\nPlease wait for the current 📈 to be generated!"
+        )
         list_of_dates = generate_dates(7)
     elif timeframe == "month":
-        update.message.reply_text(f" ⚗️ Your {timeframe} graph will be ready in ~2-3 mins.\n\n ⏰ RybkaCore is getting queued for retrieving price data from Coin Gecko servers.\n\nPlease wait for the current 📈 to be generated!")
+        update.message.reply_text(
+            f" ⚗️ Your {timeframe} graph will be ready in ~2-3 mins.\n\n ⏰ RybkaCore is getting queued for retrieving price data from Coin Gecko servers.\n\nPlease wait for the current 📈 to be generated!"
+        )
         list_of_dates = generate_dates(30)
     elif timeframe == "year":
-        update.message.reply_text(f" ⚗️ Your {timeframe} graph will be ready in ~20-30 mins.\n\n ⏰ RybkaCore is getting queued for retrieving price data from Coin Gecko servers.\n\nPlease wait for the current 📈 to be generated!")
+        update.message.reply_text(
+            f" ⚗️ Your {timeframe} graph will be ready in ~20-30 mins.\n\n ⏰ RybkaCore is getting queued for retrieving price data from Coin Gecko servers.\n\nPlease wait for the current 📈 to be generated!"
+        )
         list_of_dates = generate_dates(365)
 
     list_of_dates = list_of_dates[::-1]
@@ -1631,16 +1657,19 @@ def generate_graph_command(update, context):
 
     matplotlib_formatted_dates = []
     for date_str in list_of_dates:
-        date_obj = datetime.strptime(date_str, '%d-%m-%Y')
+        date_obj = datetime.strptime(date_str, "%d-%m-%Y")
         matplotlib_formatted_dates.append(date_obj)
-   
-    generate_graph(graph_image_name, currency, timeframe, matplotlib_formatted_dates, usd_prices, eur_prices)
+
+    generate_graph(
+        graph_image_name, currency, timeframe, matplotlib_formatted_dates, usd_prices, eur_prices
+    )
     local_pic(update, graph_image_name)
 
 
 ####################################################
 ##############     CORE Functions     ##############
 ####################################################
+
 
 def handle_message(update, context):
     text = str(update.message.text).lower()
@@ -1656,7 +1685,7 @@ def error(update, context):
                 pID = int(g.read())
             if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
                 current_uptime = str(f.read())
-                pattern = r'(\d+)h:\s*(\d+)m'
+                pattern = r"(\d+)h:\s*(\d+)m"
 
                 match = re.search(pattern, current_uptime)
                 hours = int(match.group(1))
@@ -1672,7 +1701,7 @@ def error(update, context):
                             and minutes < 3
                         ):
                             ORANGE(
-                            "\n=========================================================================================="
+                                "\n=========================================================================================="
                             )
                             ORANGE(
                                 " 🔀 There was identified another Telegram Listener already active. Perhaps on another PC?\n ⚠️  Shutting down the session in here, while keeping the other one alive!"
@@ -1779,11 +1808,21 @@ def main():
     dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_350", m_RYBKA_USDT_SAFETY_NET_350_command))
     dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_500", m_RYBKA_USDT_SAFETY_NET_500_command))
     dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_750", m_RYBKA_USDT_SAFETY_NET_750_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_1000", m_RYBKA_USDT_SAFETY_NET_1000_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_1500", m_RYBKA_USDT_SAFETY_NET_1500_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_3000", m_RYBKA_USDT_SAFETY_NET_3000_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_5000", m_RYBKA_USDT_SAFETY_NET_5000_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_7500", m_RYBKA_USDT_SAFETY_NET_7500_command))
+    dp.add_handler(
+        CommandHandler("RYBKA_USDT_SAFETY_NET_1000", m_RYBKA_USDT_SAFETY_NET_1000_command)
+    )
+    dp.add_handler(
+        CommandHandler("RYBKA_USDT_SAFETY_NET_1500", m_RYBKA_USDT_SAFETY_NET_1500_command)
+    )
+    dp.add_handler(
+        CommandHandler("RYBKA_USDT_SAFETY_NET_3000", m_RYBKA_USDT_SAFETY_NET_3000_command)
+    )
+    dp.add_handler(
+        CommandHandler("RYBKA_USDT_SAFETY_NET_5000", m_RYBKA_USDT_SAFETY_NET_5000_command)
+    )
+    dp.add_handler(
+        CommandHandler("RYBKA_USDT_SAFETY_NET_7500", m_RYBKA_USDT_SAFETY_NET_7500_command)
+    )
 
     dp.add_handler(CommandHandler("m_RYBKA_TRADE_QUANTITY", modify_weights_command))
     dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY_0_1", m_RYBKA_TRADE_QUANTITY_0_1_command))
@@ -1873,7 +1912,6 @@ def main():
     dp.add_handler(CommandHandler("BNB_price_in_the_last_year", generate_graph_command))
     dp.add_handler(CommandHandler("BNB_price_in_the_last_month", generate_graph_command))
     dp.add_handler(CommandHandler("BNB_price_in_the_last_week", generate_graph_command))
-
 
     dp.add_handler(MessageHandler(Filters.text, handle_message))
 

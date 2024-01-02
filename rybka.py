@@ -101,9 +101,13 @@ def main(version, mode):
 
             ### POP-UP Implementation START ###
             try:
-                from PIL import Image, ImageTk
                 import tkinter as tk
-                def show_image_popup(popup_image_path, popup_duration, popup_width, popup_height, popup_window_title):
+
+                from PIL import Image, ImageTk
+
+                def show_image_popup(
+                    popup_image_path, popup_duration, popup_width, popup_height, popup_window_title
+                ):
                     root = tk.Tk()
                     root.title(popup_window_title)
 
@@ -133,7 +137,9 @@ def main(version, mode):
                 popup_width = 400
                 popup_height = 400
                 popup_window_title = "RYBKACORE"
-                show_image_popup(popup_image_path, popup_duration, popup_width, popup_height, popup_window_title)
+                show_image_popup(
+                    popup_image_path, popup_duration, popup_width, popup_height, popup_window_title
+                )
             except:
                 pass
             ### END ###

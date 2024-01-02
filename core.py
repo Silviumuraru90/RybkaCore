@@ -4,6 +4,7 @@
 import ctypes
 import fileinput
 import json
+import logging
 import math
 import os
 import platform
@@ -31,11 +32,10 @@ import psutil
 import talib
 import unicorn_binance_websocket_api
 import websocket
-import logging
 from binance.client import Client
 from binance.enums import *
 
-logging.getLogger('unicorn_binance_websocket_api').disabled = True
+logging.getLogger("unicorn_binance_websocket_api").disabled = True
 
 
 def current_dir_path_export():
@@ -241,7 +241,9 @@ def ktbr_configuration():
     if exists(f"{RYBKA_MODE}/ktbr"):
         with open(f"{RYBKA_MODE}/ktbr", "r", encoding="utf8") as f:
             if os.stat(f"{RYBKA_MODE}/ktbr").st_size == 0:
-                log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/ktbr] file exists, but its content doesn't present the right format, modifying that right now")
+                log.INFO_BOLD(
+                    f" ✅ [{RYBKA_MODE}/ktbr] file exists, but its content doesn't present the right format, modifying that right now"
+                )
                 f.write("{}")
             else:
                 try:
@@ -406,7 +408,9 @@ def ktbr_integrity():
         log.VERBOSE(f"ktbr_integrity()'s egld balance is {balance_egld}")
 
         if round(sum_of_ktbr_cryptocurrency, 4) <= balance_egld:
-            log.INFO_BOLD(f" ✅ KTBR integrity status  -  {bcolors.PURPLE}VALID{bcolors.DARKGRAY}. Amount of EGLD bought and tracked: [{bcolors.OKGREEN}{round(sum_of_ktbr_cryptocurrency, 4)}{bcolors.DARKGRAY}]\n")
+            log.INFO_BOLD(
+                f" ✅ KTBR integrity status  -  {bcolors.PURPLE}VALID{bcolors.DARKGRAY}. Amount of EGLD bought and tracked: [{bcolors.OKGREEN}{round(sum_of_ktbr_cryptocurrency, 4)}{bcolors.DARKGRAY}]\n"
+            )
         else:
             log.FATAL_7(
                 f"KTBR integrity status  -  INVALID\nThis means that the amount of EGLD you have in cloud [{balance_egld}] is actually less now, than what you retain in the 'ktbr' file [{round(sum_of_ktbr_cryptocurrency, 4)}]. Probably you've spent a part of it in the meantime."
@@ -456,7 +460,7 @@ def create_telegram_and_rybka_tmp_files_if_not_created():
 def back_up():
     global RYBKA_MODE
 
-    back_up_dir = f'BACK_UPS_FOR_{RYBKA_MODE}'
+    back_up_dir = f"BACK_UPS_FOR_{RYBKA_MODE}"
     if os.path.isdir(back_up_dir) is False:
         os.makedirs(back_up_dir)
 
@@ -469,48 +473,116 @@ def software_config_params():
     global TRADE_QUANTITY
     print("\n\n")
     if RYBKA_MODE.upper() == "DEMO":
-        log.PURPLE("      ___           ___           ___           ___           ___           ___           ___           ___           ___     ")
-        log.PURPLE("     /\  \         |\__\         /\  \         /\__\         /\  \         /\  \         /\  \         /\  \         /\  \    ")
-        log.PURPLE("    /::\  \        |:|  |       /::\  \       /:/  /        /::\  \       /::\  \       /::\  \       /::\  \       /::\  \   ")
-        log.PURPLE("   /:/\:\  \       |:|  |      /:/\:\  \     /:/__/        /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\:\  \  ")
-        log.PURPLE("  /::\~\:\  \      |:|__|__   /::\~\:\__\   /::\__\____   /::\~\:\  \   /:/  \:\  \   /:/  \:\  \   /::\~\:\  \   /::\~\:\  \ ")
-        log.PURPLE(" /:/\:\ \:\__\     /::::\__\ /:/\:\ \:|__| /:/\:::::\__\ /:/\:\ \:\__\ /:/__/ \:\__\ /:/__/ \:\__\ /:/\:\ \:\__\ /:/\:\ \:\__\\")
-        log.PURPLE(" \/_|::\/:/  /    /:/~~/~    \:\~\:\/:/  / \/_|:|~~|~    \/__\:\/:/  / \:\  \  \/__/ \:\  \ /:/  / \/_|::\/:/  / \:\~\:\ \/__/")
-        log.PURPLE("    |:|::/  /    /:/  /       \:\ \::/  /     |:|  |          \::/  /   \:\  \        \:\  /:/  /     |:|::/  /   \:\ \:\__\  ")
-        log.PURPLE("    |:|\/__/     \/__/         \:\/:/  /      |:|  |          /:/  /     \:\  \        \:\/:/  /      |:|\/__/     \:\ \/__/  ")
-        log.PURPLE("    |:|  |                      \::/__/       |:|  |         /:/  /       \:\__\        \::/  /       |:|  |        \:\__\    ")
-        log.PURPLE("     \|__|                       ~~            \|__|         \/__/         \/__/         \/__/         \|__|         \/__/    \n")
+        log.PURPLE(
+            "      ___           ___           ___           ___           ___           ___           ___           ___           ___     "
+        )
+        log.PURPLE(
+            "     /\  \         |\__\         /\  \         /\__\         /\  \         /\  \         /\  \         /\  \         /\  \    "
+        )
+        log.PURPLE(
+            "    /::\  \        |:|  |       /::\  \       /:/  /        /::\  \       /::\  \       /::\  \       /::\  \       /::\  \   "
+        )
+        log.PURPLE(
+            "   /:/\:\  \       |:|  |      /:/\:\  \     /:/__/        /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\:\  \  "
+        )
+        log.PURPLE(
+            "  /::\~\:\  \      |:|__|__   /::\~\:\__\   /::\__\____   /::\~\:\  \   /:/  \:\  \   /:/  \:\  \   /::\~\:\  \   /::\~\:\  \ "
+        )
+        log.PURPLE(
+            " /:/\:\ \:\__\     /::::\__\ /:/\:\ \:|__| /:/\:::::\__\ /:/\:\ \:\__\ /:/__/ \:\__\ /:/__/ \:\__\ /:/\:\ \:\__\ /:/\:\ \:\__\\"
+        )
+        log.PURPLE(
+            " \/_|::\/:/  /    /:/~~/~    \:\~\:\/:/  / \/_|:|~~|~    \/__\:\/:/  / \:\  \  \/__/ \:\  \ /:/  / \/_|::\/:/  / \:\~\:\ \/__/"
+        )
+        log.PURPLE(
+            "    |:|::/  /    /:/  /       \:\ \::/  /     |:|  |          \::/  /   \:\  \        \:\  /:/  /     |:|::/  /   \:\ \:\__\  "
+        )
+        log.PURPLE(
+            "    |:|\/__/     \/__/         \:\/:/  /      |:|  |          /:/  /     \:\  \        \:\/:/  /      |:|\/__/     \:\ \/__/  "
+        )
+        log.PURPLE(
+            "    |:|  |                      \::/__/       |:|  |         /:/  /       \:\__\        \::/  /       |:|  |        \:\__\    "
+        )
+        log.PURPLE(
+            "     \|__|                       ~~            \|__|         \/__/         \/__/         \/__/         \|__|         \/__/    \n"
+        )
 
         time.sleep(2)
 
-        log.BLUE("                          ██████╗ ███████╗███╗   ███╗ ██████╗     ███╗   ███╗ ██████╗ ██████╗ ███████╗ ")
-        log.BLUE("                          ██╔══██╗██╔════╝████╗ ████║██╔═══██╗    ████╗ ████║██╔═══██╗██╔══██╗██╔════╝ ")
-        log.BLUE("                          ██║  ██║█████╗  ██╔████╔██║██║   ██║    ██╔████╔██║██║   ██║██║  ██║█████╗   ")
-        log.BLUE("                          ██║  ██║██╔══╝  ██║╚██╔╝██║██║   ██║    ██║╚██╔╝██║██║   ██║██║  ██║██╔══╝   ")
-        log.BLUE("                          ██████╔╝███████╗██║ ╚═╝ ██║╚██████╔╝    ██║ ╚═╝ ██║╚██████╔╝██████╔╝███████╗ ")
-        log.BLUE("                          ╚═════╝ ╚══════╝╚═╝     ╚═╝ ╚═════╝     ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝ \n\n")
-    
+        log.BLUE(
+            "                          ██████╗ ███████╗███╗   ███╗ ██████╗     ███╗   ███╗ ██████╗ ██████╗ ███████╗ "
+        )
+        log.BLUE(
+            "                          ██╔══██╗██╔════╝████╗ ████║██╔═══██╗    ████╗ ████║██╔═══██╗██╔══██╗██╔════╝ "
+        )
+        log.BLUE(
+            "                          ██║  ██║█████╗  ██╔████╔██║██║   ██║    ██╔████╔██║██║   ██║██║  ██║█████╗   "
+        )
+        log.BLUE(
+            "                          ██║  ██║██╔══╝  ██║╚██╔╝██║██║   ██║    ██║╚██╔╝██║██║   ██║██║  ██║██╔══╝   "
+        )
+        log.BLUE(
+            "                          ██████╔╝███████╗██║ ╚═╝ ██║╚██████╔╝    ██║ ╚═╝ ██║╚██████╔╝██████╔╝███████╗ "
+        )
+        log.BLUE(
+            "                          ╚═════╝ ╚══════╝╚═╝     ╚═╝ ╚═════╝     ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝ \n\n"
+        )
+
     elif RYBKA_MODE.upper() == "LIVE":
-        log.CYAN("      ___           ___           ___           ___           ___           ___           ___           ___           ___     ")
-        log.CYAN("     /\  \         |\__\         /\  \         /\__\         /\  \         /\  \         /\  \         /\  \         /\  \    ")
-        log.CYAN("    /::\  \        |:|  |       /::\  \       /:/  /        /::\  \       /::\  \       /::\  \       /::\  \       /::\  \   ")
-        log.CYAN("   /:/\:\  \       |:|  |      /:/\:\  \     /:/__/        /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\:\  \  ")
-        log.CYAN("  /::\~\:\  \      |:|__|__   /::\~\:\__\   /::\__\____   /::\~\:\  \   /:/  \:\  \   /:/  \:\  \   /::\~\:\  \   /::\~\:\  \ ")
-        log.CYAN(" /:/\:\ \:\__\     /::::\__\ /:/\:\ \:|__| /:/\:::::\__\ /:/\:\ \:\__\ /:/__/ \:\__\ /:/__/ \:\__\ /:/\:\ \:\__\ /:/\:\ \:\__\\")
-        log.CYAN(" \/_|::\/:/  /    /:/~~/~    \:\~\:\/:/  / \/_|:|~~|~    \/__\:\/:/  / \:\  \  \/__/ \:\  \ /:/  / \/_|::\/:/  / \:\~\:\ \/__/")
-        log.CYAN("    |:|::/  /    /:/  /       \:\ \::/  /     |:|  |          \::/  /   \:\  \        \:\  /:/  /     |:|::/  /   \:\ \:\__\  ")
-        log.CYAN("    |:|\/__/     \/__/         \:\/:/  /      |:|  |          /:/  /     \:\  \        \:\/:/  /      |:|\/__/     \:\ \/__/  ")
-        log.CYAN("    |:|  |                      \::/__/       |:|  |         /:/  /       \:\__\        \::/  /       |:|  |        \:\__\    ")
-        log.CYAN("     \|__|                       ~~            \|__|         \/__/         \/__/         \/__/         \|__|         \/__/    \n")
-        
+        log.CYAN(
+            "      ___           ___           ___           ___           ___           ___           ___           ___           ___     "
+        )
+        log.CYAN(
+            "     /\  \         |\__\         /\  \         /\__\         /\  \         /\  \         /\  \         /\  \         /\  \    "
+        )
+        log.CYAN(
+            "    /::\  \        |:|  |       /::\  \       /:/  /        /::\  \       /::\  \       /::\  \       /::\  \       /::\  \   "
+        )
+        log.CYAN(
+            "   /:/\:\  \       |:|  |      /:/\:\  \     /:/__/        /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\:\  \  "
+        )
+        log.CYAN(
+            "  /::\~\:\  \      |:|__|__   /::\~\:\__\   /::\__\____   /::\~\:\  \   /:/  \:\  \   /:/  \:\  \   /::\~\:\  \   /::\~\:\  \ "
+        )
+        log.CYAN(
+            " /:/\:\ \:\__\     /::::\__\ /:/\:\ \:|__| /:/\:::::\__\ /:/\:\ \:\__\ /:/__/ \:\__\ /:/__/ \:\__\ /:/\:\ \:\__\ /:/\:\ \:\__\\"
+        )
+        log.CYAN(
+            " \/_|::\/:/  /    /:/~~/~    \:\~\:\/:/  / \/_|:|~~|~    \/__\:\/:/  / \:\  \  \/__/ \:\  \ /:/  / \/_|::\/:/  / \:\~\:\ \/__/"
+        )
+        log.CYAN(
+            "    |:|::/  /    /:/  /       \:\ \::/  /     |:|  |          \::/  /   \:\  \        \:\  /:/  /     |:|::/  /   \:\ \:\__\  "
+        )
+        log.CYAN(
+            "    |:|\/__/     \/__/         \:\/:/  /      |:|  |          /:/  /     \:\  \        \:\/:/  /      |:|\/__/     \:\ \/__/  "
+        )
+        log.CYAN(
+            "    |:|  |                      \::/__/       |:|  |         /:/  /       \:\__\        \::/  /       |:|  |        \:\__\    "
+        )
+        log.CYAN(
+            "     \|__|                       ~~            \|__|         \/__/         \/__/         \/__/         \|__|         \/__/    \n"
+        )
+
         time.sleep(2)
 
-        log.GREEN("                              ██╗     ██╗██╗   ██╗███████╗    ███╗   ███╗ ██████╗ ██████╗ ███████╗ ")
-        log.GREEN("                              ██║     ██║██║   ██║██╔════╝    ████╗ ████║██╔═══██╗██╔══██╗██╔════╝ ")
-        log.GREEN("                              ██║     ██║██║   ██║█████╗      ██╔████╔██║██║   ██║██║  ██║█████╗   ")
-        log.GREEN("                              ██║     ██║╚██╗ ██╔╝██╔══╝      ██║╚██╔╝██║██║   ██║██║  ██║██╔══╝   ")
-        log.GREEN("                              ███████╗██║ ╚████╔╝ ███████╗    ██║ ╚═╝ ██║╚██████╔╝██████╔╝███████╗ ")
-        log.GREEN("                              ╚══════╝╚═╝  ╚═══╝  ╚══════╝    ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝ \n\n")
+        log.GREEN(
+            "                              ██╗     ██╗██╗   ██╗███████╗    ███╗   ███╗ ██████╗ ██████╗ ███████╗ "
+        )
+        log.GREEN(
+            "                              ██║     ██║██║   ██║██╔════╝    ████╗ ████║██╔═══██╗██╔══██╗██╔════╝ "
+        )
+        log.GREEN(
+            "                              ██║     ██║██║   ██║█████╗      ██╔████╔██║██║   ██║██║  ██║█████╗   "
+        )
+        log.GREEN(
+            "                              ██║     ██║╚██╗ ██╔╝██╔══╝      ██║╚██╔╝██║██║   ██║██║  ██║██╔══╝   "
+        )
+        log.GREEN(
+            "                              ███████╗██║ ╚████╔╝ ███████╗    ██║ ╚═╝ ██║╚██████╔╝██████╔╝███████╗ "
+        )
+        log.GREEN(
+            "                              ╚══════╝╚═╝  ╚═══╝  ╚══════╝    ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝ \n\n"
+        )
 
     time.sleep(3)
     log.INFO("RybkaCore software started with the following parameters:\n")
@@ -793,8 +865,8 @@ def previous_runs_sanitation(target_folder):
         log.ORANGE(" ✅ Previous run(s)' folder(s) found and moved to the 'archived_logs' folder.")
     else:
         log.ORANGE(" ✅ Current dir is already sanitized.")
-    
-    graphs_subdir_path = 'custom_modules/telegram/data/pics'
+
+    graphs_subdir_path = "custom_modules/telegram/data/pics"
 
     if not os.path.exists(graphs_subdir_path):
         os.makedirs(graphs_subdir_path)
@@ -821,11 +893,13 @@ def move_and_replace(target_folder, path=None):
     if path:
         os.chdir(path)
 
-    with open(target_folder, encoding='utf-8') as f:
+    with open(target_folder, encoding="utf-8") as f:
         num_lines = sum(1 for line in f)
 
     if num_lines > 10000:
-        log.INFO(f"File [${target_folder}] reached more than 10k lines. Archiving it and creating a fresher one.")
+        log.INFO(
+            f"File [${target_folder}] reached more than 10k lines. Archiving it and creating a fresher one."
+        )
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         filename, extension = os.path.splitext(target_folder)
         new_filename = f"{filename}_{timestamp}{extension}"
@@ -833,9 +907,9 @@ def move_and_replace(target_folder, path=None):
         if not os.path.exists(archive_path):
             os.makedirs(archive_path)
         shutil.move(target_folder, os.path.join(archive_path, new_filename))
-        with open(target_folder, "w", encoding='utf-8') as f:
+        with open(target_folder, "w", encoding="utf-8") as f:
             f.write("")
-        
+
     if path:
         os.chdir(original_dir)
 
@@ -901,7 +975,6 @@ def main(version, mode, head):
     bnb_candle_close_price = 0
     bnb_conversion_done = 0
 
-
     if not version and not mode and not head:
         click.echo(click.get_current_context().get_help())
         sys.exit(111)
@@ -955,7 +1028,9 @@ def main(version, mode, head):
     if platform == "linux" or platform == "linux2":
         pass
     elif platform == "win32":
-        log.ORANGE("\n===========================================================================\n 📋 Checking Rybka's permissions and syncing time... Please wait!")
+        log.ORANGE(
+            "\n===========================================================================\n 📋 Checking Rybka's permissions and syncing time... Please wait!"
+        )
         if isAdmin() is not True:
             log.FATAL_7(
                 "Please run the script with admin privileges, as bot needs access to auto-update HOST's time with NIST servers!"
@@ -1148,8 +1223,10 @@ def main(version, mode, head):
             f.write(str(telegram_pid.pid))
 
     try:
-        unicorn_stream_obj = unicorn_binance_websocket_api.BinanceWebSocketApiManager(exchange="binance.com", warn_on_update=False)
-        unicorn_stream_obj.create_stream(['kline_1m'], ['EGLDUSDT', 'BNBUSDT'])
+        unicorn_stream_obj = unicorn_binance_websocket_api.BinanceWebSocketApiManager(
+            exchange="binance.com", warn_on_update=False
+        )
+        unicorn_stream_obj.create_stream(["kline_1m"], ["EGLDUSDT", "BNBUSDT"])
 
         log.INFO(
             "====================================================================================================================================="
@@ -1161,7 +1238,9 @@ def main(version, mode, head):
             "====================================================================================================================================="
         )
         if len(closed_candles) >= 10:
-            log.WARN("YOU MANUALLY ADDED A HISTORY OF PRICES! IGNORING THE 10-min TIMEFRAME OF GATHERING LAST 10 PRICES/coin!") 
+            log.WARN(
+                "YOU MANUALLY ADDED A HISTORY OF PRICES! IGNORING THE 10-min TIMEFRAME OF GATHERING LAST 10 PRICES/coin!"
+            )
         else:
             log.INFO_BOLD("Initiating a one-time 10-min info gathering timeframe. Please wait...")
         log.INFO(
@@ -1170,11 +1249,10 @@ def main(version, mode, head):
 
     except Exception as e:
         traceback.print_exc()
-        log.FATAL_7(
-            f"The Unicorn object could not be created:\n{e}"
-        )
+        log.FATAL_7(f"The Unicorn object could not be created:\n{e}")
 
     try:
+
         def balances_update_via_telegram_cmd():
             if RYBKA_BALANCES_AUX.upper() == "TRUE" and RYBKA_MODE == "LIVE":
                 for i in range(1, 11):
@@ -1235,7 +1313,6 @@ def main(version, mode, head):
                 candle_close_price = round(float(candle["data"]["k"]["c"]), 4)
 
                 if is_candle_closed and is_candle_egld_usdt == "EGLDUSDT":
-
                     closed_candles.append(candle_close_price)
 
                     bootstraping_vars()
@@ -1263,14 +1340,18 @@ def main(version, mode, head):
                         "a",
                         encoding="utf8",
                     ) as f:
-                        f.write(f"{log.logging_time()} Price of [EGLD] is [{candle_close_price} USDT]\n")
+                        f.write(
+                            f"{log.logging_time()} Price of [EGLD] is [{candle_close_price} USDT]\n"
+                        )
 
                     with open(
                         f"{current_export_dir}/BNB_USDT_historical_prices",
                         "a",
                         encoding="utf8",
                     ) as f:
-                        f.write(f"{log.logging_time()} Price of [BNB] is [{bnb_candle_close_price} USDT]\n")
+                        f.write(
+                            f"{log.logging_time()} Price of [BNB] is [{bnb_candle_close_price} USDT]\n"
+                        )
 
                     if len(closed_candles) < 11:
                         log.INFO(
@@ -1306,15 +1387,16 @@ def main(version, mode, head):
                         ################################################################################################################################
 
                         if subsequent_valid_rsi_counter != 0:
-                            log.DEBUG("Invalidating 3 RSI 1-min ticks (in care of a BUY) or 2 RSI 1-min ticks (in care of a SELL), as a transaction just occurred.\nMultiple sells don't fall under this policy\n")
+                            log.DEBUG(
+                                "Invalidating 3 RSI 1-min ticks (in care of a BUY) or 2 RSI 1-min ticks (in care of a SELL), as a transaction just occurred.\nMultiple sells don't fall under this policy\n"
+                            )
                             subsequent_valid_rsi_counter -= 1
 
                             ###################################
                             ###   END of SPECIAL POLICY 1   ###
                             ###################################
-                            
+
                         else:
-                            
                             ###################################
                             ###       SPECIAL POLICY 2      ###
                             ################################################################################################################################
@@ -1329,7 +1411,6 @@ def main(version, mode, head):
                             policy = "not_overridden"
 
                             def buy_when_most_buys_are_above():
-
                                 with open(f"{RYBKA_MODE}/ktbr", "r", encoding="utf8") as f:
                                     check_ktbr = json.loads(f.read())
                                     control = 0
@@ -1338,20 +1419,34 @@ def main(version, mode, head):
                                         control = math.floor(len(check_ktbr) / 7)
                                     elif len(check_ktbr) > 50:
                                         control = math.floor(len(check_ktbr) / 12)
-                                    
+
                                     verification_counter = 0
                                     control_zone_counter = 0
                                     for v in check_ktbr.values():
-                                        
-                                        if round(candle_close_price - math.floor(candle_close_price / 10), 2) > v[1]:
+                                        if (
+                                            round(
+                                                candle_close_price
+                                                - math.floor(candle_close_price / 10),
+                                                2,
+                                            )
+                                            > v[1]
+                                        ):
                                             verification_counter += 1
 
-                                        if v[1] > round(candle_close_price - math.floor(candle_close_price / 10), 2) and v[1] < round(candle_close_price + math.floor(candle_close_price / 10), 2):
+                                        if v[1] > round(
+                                            candle_close_price
+                                            - math.floor(candle_close_price / 10),
+                                            2,
+                                        ) and v[1] < round(
+                                            candle_close_price
+                                            + math.floor(candle_close_price / 10),
+                                            2,
+                                        ):
                                             control_zone_counter += 1
 
                                     if verification_counter > control or control_zone_counter > 1:
                                         return "not_overridden"
-                                        
+
                                     return "overridden"
 
                                 # just a reassurance if ktbr is deleted unexpectedly by "outside" means. To be sure no overridden happens if the above "with" won't evaluate.
@@ -1371,8 +1466,12 @@ def main(version, mode, head):
                             ###      in "dead time".                                                                                                     ###
                             ################################################################################################################################
 
-                            if latest_rsi < RSI_FOR_BUY or len(ktbr_config) in [0, 4] or policy == "overridden" or bnb_conversion_done == 1:
-
+                            if (
+                                latest_rsi < RSI_FOR_BUY
+                                or len(ktbr_config) in [0, 4]
+                                or policy == "overridden"
+                                or bnb_conversion_done == 1
+                            ):
                                 ###################################
                                 ###   END of SPECIAL POLICY 3   ###
                                 ###################################
@@ -1390,13 +1489,17 @@ def main(version, mode, head):
                                         except Exception as e:
                                             if i == 10:
                                                 traceback.print_exc()
-                                                log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
+                                                log.FATAL_7(
+                                                    f"Account Balance Sync. - Failed as:\n{e}"
+                                                )
                                             time.sleep(3)
 
                                 real_time_balances_update()
 
                                 safety_net_check = (
-                                    balance_usdt - 2 - TRADE_QUANTITY * round(float(candle_close_price), 4)
+                                    balance_usdt
+                                    - 2
+                                    - TRADE_QUANTITY * round(float(candle_close_price), 4)
                                 )
 
                                 if USDT_SAFETY_NET and safety_net_check < USDT_SAFETY_NET:
@@ -1416,7 +1519,9 @@ def main(version, mode, head):
                                         log.INFO("===============================")
                                     else:
                                         log.INFO("===============================")
-                                        log.INFO(f"          {bcolors.OKCYAN}BUY{bcolors.ENDC} SIGNAL!")
+                                        log.INFO(
+                                            f"          {bcolors.OKCYAN}BUY{bcolors.ENDC} SIGNAL!"
+                                        )
                                         log.INFO("===============================")
 
                                     with open(
@@ -1424,7 +1529,9 @@ def main(version, mode, head):
                                         "a",
                                         encoding="utf8",
                                     ) as f:
-                                        f.write(f"\n\n\n{log.logging_time()} Within BUY (part I):\n")
+                                        f.write(
+                                            f"\n\n\n{log.logging_time()} Within BUY (part I):\n"
+                                        )
                                         f.write(
                                             f'{log.logging_time()} {"Latest RSI (latest_rsi) is":90} {latest_rsi:40}\n'
                                         )
@@ -1467,20 +1574,45 @@ def main(version, mode, head):
                                         log.DEBUG(
                                             f"We CAN trade at this quantity: [{TRADE_QUANTITY}]. No need to enforce a higher min trading limit."
                                         )
-                                    
+
                                     if TRADE_QUANTITY < 0.01:
                                         TRADE_QUANTITY = 0.01
                                         log.DEBUG(
                                             f"Turns out that the TRADE_QUANTITY [{TRADE_QUANTITY}] is under Binance's imposed minimum of trade quantity for EGLDUSDT pair or `0.01`. Setting TRADE_QUANTITY=0.01"
                                         )
-                                        
-                                    if (round(float((round(float(balance_bnb * bnb_candle_close_price), 6)) / (round(float(0.08 / 100 * candle_close_price * TRADE_QUANTITY), 4))), 4)) >= 30:
 
-                                        log.DEBUG(f"BNB balance [{balance_bnb}] is enough for transactions.")
+                                    if (
+                                        round(
+                                            float(
+                                                (
+                                                    round(
+                                                        float(balance_bnb * bnb_candle_close_price),
+                                                        6,
+                                                    )
+                                                )
+                                                / (
+                                                    round(
+                                                        float(
+                                                            0.08
+                                                            / 100
+                                                            * candle_close_price
+                                                            * TRADE_QUANTITY
+                                                        ),
+                                                        4,
+                                                    )
+                                                )
+                                            ),
+                                            4,
+                                        )
+                                    ) >= 30:
+                                        log.DEBUG(
+                                            f"BNB balance [{balance_bnb}] is enough for transactions."
+                                        )
 
                                         if balance_usdt / 12 > 1:
                                             possible_nr_of_trades = math.floor(
-                                                (round(float(balance_usdt - USDT_SAFETY_NET), 4)) / (TRADE_QUANTITY * candle_close_price)
+                                                (round(float(balance_usdt - USDT_SAFETY_NET), 4))
+                                                / (TRADE_QUANTITY * candle_close_price)
                                             )
                                             log.INFO(
                                                 f"Remaining possible nr. of buy orders: {possible_nr_of_trades}\n"
@@ -1499,13 +1631,12 @@ def main(version, mode, head):
                                             ###      coins per interval (an interval is a 1$ frame, like 33$-34$ or 34$-35$). So it does a limited priceframe with       ###
                                             ###      nested limits all across it, per each 1$ level. Then, when the price goes up or down, the whoe frame moves, as its  ###
                                             ###      its center is always the price of EGLD in $.                                                                        ###
-                                            ###                                                                                                                          ###   
+                                            ###                                                                                                                          ###
                                             ###      It's by far the most important aspect of the bot and most sensitive core script of RybkaCore. This also allows the  ###
                                             ###      formation of inner policies controled by the user via the [RYBKA_TRADING_BOOST_LVL] variable.                       ###
                                             ################################################################################################################################
 
                                             if possible_nr_of_trades >= 0:
-
                                                 ###################################
                                                 ###       SPECIAL POLICY 5      ###
                                                 ################################################################################################################################
@@ -1516,7 +1647,10 @@ def main(version, mode, head):
                                                 ################################################################################################################################
 
                                                 if len(ktbr_config) > 5:
-                                                    if possible_nr_of_trades < len(ktbr_config) * 0.8:
+                                                    if (
+                                                        possible_nr_of_trades
+                                                        < len(ktbr_config) * 0.8
+                                                    ):
                                                         multiple_sells = "enabled"
                                                     else:
                                                         multiple_sells = "disabled"
@@ -1564,11 +1698,17 @@ def main(version, mode, head):
                                                         heatmap_limit = 1
                                                     else:
                                                         if int(TRADING_BOOST_LVL) == 1:
-                                                            heatmap_size = round(float(heatmap_actions * 0.65))
+                                                            heatmap_size = round(
+                                                                float(heatmap_actions * 0.65)
+                                                            )
                                                         elif int(TRADING_BOOST_LVL) == 2:
-                                                            heatmap_size = round(float(heatmap_actions * 0.4))
+                                                            heatmap_size = round(
+                                                                float(heatmap_actions * 0.4)
+                                                            )
                                                         elif int(TRADING_BOOST_LVL) == 3:
-                                                            heatmap_size = round(float(heatmap_actions * 0.25))
+                                                            heatmap_size = round(
+                                                                float(heatmap_actions * 0.25)
+                                                            )
                                                         elif int(TRADING_BOOST_LVL) == 4:
                                                             heatmap_size = 3
                                                         elif int(TRADING_BOOST_LVL) == 5:
@@ -1612,11 +1752,15 @@ def main(version, mode, head):
                                                             )
                                                 ############################################################################################
 
-                                                log.VERBOSE(f"possible_nr_of_trades is {possible_nr_of_trades}")
+                                                log.VERBOSE(
+                                                    f"possible_nr_of_trades is {possible_nr_of_trades}"
+                                                )
                                                 log.VERBOSE(f"heatmap_actions is {heatmap_actions}")
                                                 log.VERBOSE(f"heatmap_size is {heatmap_size}")
                                                 log.VERBOSE(f"heatmap_limit is {heatmap_limit}")
-                                                log.DEBUG(f"TRADING_BOOST_LVL is {str(TRADING_BOOST_LVL)}")
+                                                log.DEBUG(
+                                                    f"TRADING_BOOST_LVL is {str(TRADING_BOOST_LVL)}"
+                                                )
 
                                                 current_price_rounded_down = math.floor(
                                                     round(float(candle_close_price), 4)
@@ -1626,7 +1770,9 @@ def main(version, mode, head):
                                                 ktbr_config_array_of_prices = []
 
                                                 for v in ktbr_config.values():
-                                                    ktbr_config_array_of_prices.append(math.floor(float(v[1])))
+                                                    ktbr_config_array_of_prices.append(
+                                                        math.floor(float(v[1]))
+                                                    )
 
                                                 for n in range(
                                                     -round(float(heatmap_size / 2)),
@@ -1636,12 +1782,16 @@ def main(version, mode, head):
                                                         current_price_rounded_down + n
                                                         in ktbr_config_array_of_prices
                                                     ):
-                                                        heatmap_counter += ktbr_config_array_of_prices.count(
-                                                            current_price_rounded_down + n
+                                                        heatmap_counter += (
+                                                            ktbr_config_array_of_prices.count(
+                                                                current_price_rounded_down + n
+                                                            )
                                                         )
 
-                                                heatmap_center_coin_counter = ktbr_config_array_of_prices.count(
-                                                    current_price_rounded_down
+                                                heatmap_center_coin_counter = (
+                                                    ktbr_config_array_of_prices.count(
+                                                        current_price_rounded_down
+                                                    )
                                                 )
 
                                                 with open(
@@ -1690,7 +1840,9 @@ def main(version, mode, head):
                                                     )
 
                                                 if heatmap_center_coin_counter >= heatmap_limit:
-                                                    log.INFO(f"Buying not allowed!\nAt current 1$ price range of [{str(current_price_rounded_down)}-{str(current_price_rounded_down+1)}$], we have enought buys [{str(heatmap_center_coin_counter)}], considering the limit [{str(heatmap_limit)}]\n")
+                                                    log.INFO(
+                                                        f"Buying not allowed!\nAt current 1$ price range of [{str(current_price_rounded_down)}-{str(current_price_rounded_down+1)}$], we have enought buys [{str(heatmap_center_coin_counter)}], considering the limit [{str(heatmap_limit)}]\n"
+                                                    )
                                                     with open(
                                                         f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
                                                         "a",
@@ -1706,7 +1858,9 @@ def main(version, mode, head):
                                                             f"{log.logging_time()} heatmap_center_coin_counter [{heatmap_center_coin_counter}] is >= heatmap_limit [{heatmap_limit}]"
                                                         )
                                                 elif heatmap_counter >= heatmap_actions:
-                                                    log.INFO(f"Buying not allowed!\nWithin a small price range of [{str(current_price_rounded_down-round(float(heatmap_size / 2)))}-{str(current_price_rounded_down+round(float(heatmap_size / 2)))}$], we have too many buys [{str(heatmap_counter)}], considering the limit [{str(heatmap_actions)}]\n")
+                                                    log.INFO(
+                                                        f"Buying not allowed!\nWithin a small price range of [{str(current_price_rounded_down-round(float(heatmap_size / 2)))}-{str(current_price_rounded_down+round(float(heatmap_size / 2)))}$], we have too many buys [{str(heatmap_counter)}], considering the limit [{str(heatmap_actions)}]\n"
+                                                    )
 
                                                     ###################################
                                                     ###   END of SPECIAL POLICY 4   ###
@@ -1728,7 +1882,9 @@ def main(version, mode, head):
                                                         )
                                                 elif (
                                                     float(balance_usdt)
-                                                    < float(TRADE_QUANTITY) * float(candle_close_price) + 2
+                                                    < float(TRADE_QUANTITY)
+                                                    * float(candle_close_price)
+                                                    + 2
                                                 ):
                                                     log.DEBUG(
                                                         "Way too low diff between acc. balance and current price * trade quantity. Not allowing a buy transaction."
@@ -1778,20 +1934,54 @@ def main(version, mode, head):
                                                             }
                                                             order["orderId"] = order_id_tmp
                                                             order["executedQty"] = TRADE_QUANTITY
-                                                            order["fills"][0]["price"] = candle_close_price
-                                                            order["fills"][0]["commission"] = round(float(round(float(0.08 / 100 * candle_close_price * TRADE_QUANTITY), 4) / bnb_candle_close_price), 8)
+                                                            order["fills"][0][
+                                                                "price"
+                                                            ] = candle_close_price
+                                                            order["fills"][0]["commission"] = round(
+                                                                float(
+                                                                    round(
+                                                                        float(
+                                                                            0.08
+                                                                            / 100
+                                                                            * candle_close_price
+                                                                            * TRADE_QUANTITY
+                                                                        ),
+                                                                        4,
+                                                                    )
+                                                                    / bnb_candle_close_price
+                                                                ),
+                                                                8,
+                                                            )
 
-                                                            balance_usdt -= candle_close_price * TRADE_QUANTITY
+                                                            balance_usdt -= (
+                                                                candle_close_price * TRADE_QUANTITY
+                                                            )
                                                             balance_usdt = round(balance_usdt, 4)
                                                             balance_egld += TRADE_QUANTITY
                                                             balance_egld = round(balance_egld, 4)
-                                                            balance_bnb -= round(float(round(float(0.08 / 100 * candle_close_price * TRADE_QUANTITY), 4) / bnb_candle_close_price), 8)
+                                                            balance_bnb -= round(
+                                                                float(
+                                                                    round(
+                                                                        float(
+                                                                            0.08
+                                                                            / 100
+                                                                            * candle_close_price
+                                                                            * TRADE_QUANTITY
+                                                                        ),
+                                                                        4,
+                                                                    )
+                                                                    / bnb_candle_close_price
+                                                                ),
+                                                                8,
+                                                            )
                                                             balance_bnb = round(balance_bnb, 8)
 
                                                         order_time = datetime.now().strftime(
                                                             "%d/%m/%Y %H:%M:%S"
                                                         )
-                                                        log.DEBUG(f"BUY Order placed now at [{order_time}]\n")
+                                                        log.DEBUG(
+                                                            f"BUY Order placed now at [{order_time}]\n"
+                                                        )
                                                         time.sleep(5)
 
                                                         if RYBKA_MODE == "LIVE":
@@ -1812,7 +2002,7 @@ def main(version, mode, head):
                                                                             f"EGLD Buy Order status retrieval - Failed as:\n{e}"
                                                                         )
                                                                     time.sleep(3)
-                                                            
+
                                                         elif RYBKA_MODE == "DEMO":
                                                             order_status = {
                                                                 "symbol": "EGLDUSDT",
@@ -1854,7 +2044,11 @@ def main(version, mode, head):
                                                                     0.08
                                                                     / 100
                                                                     * round(
-                                                                        float(order["cummulativeQuoteQty"]),
+                                                                        float(
+                                                                            order[
+                                                                                "cummulativeQuoteQty"
+                                                                            ]
+                                                                        ),
                                                                         4,
                                                                     )
                                                                 ),
@@ -1883,12 +2077,26 @@ def main(version, mode, head):
                                                                 "w",
                                                                 encoding="utf8",
                                                             ) as f:
-                                                                f.write(str(order["fills"][0]["commission"]))
+                                                                f.write(
+                                                                    str(
+                                                                        order["fills"][0][
+                                                                            "commission"
+                                                                        ]
+                                                                    )
+                                                                )
 
                                                             ktbr_config[order["orderId"]] = [
-                                                                int(float(order["executedQty"]) * 10**4)
+                                                                int(
+                                                                    float(order["executedQty"])
+                                                                    * 10**4
+                                                                )
                                                                 / 10**4,
-                                                                int(float(order["fills"][0]["price"]) * 10**4)
+                                                                int(
+                                                                    float(
+                                                                        order["fills"][0]["price"]
+                                                                    )
+                                                                    * 10**4
+                                                                )
                                                                 / 10**4,
                                                             ]
                                                             with open(
@@ -1896,7 +2104,9 @@ def main(version, mode, head):
                                                                 "w",
                                                                 encoding="utf8",
                                                             ) as f:
-                                                                f.write(str(json.dumps(ktbr_config)))
+                                                                f.write(
+                                                                    str(json.dumps(ktbr_config))
+                                                                )
 
                                                             nr_of_trades += 1
 
@@ -1941,12 +2151,28 @@ def main(version, mode, head):
                                                                 )
 
                                                             back_up()
-                                                            move_and_replace("errors_thrown", RYBKA_MODE)
-                                                            move_and_replace("full_order_history", RYBKA_MODE)
-                                                            move_and_replace(f"{TRADE_SYMBOL}_DEBUG", current_export_dir)
-                                                            move_and_replace(f"{TRADE_SYMBOL}_historical_prices", current_export_dir)
-                                                            move_and_replace(f"BNB_USDT_historical_prices", current_export_dir)
-                                                            move_and_replace(f"{TRADE_SYMBOL}_order_history", current_export_dir)
+                                                            move_and_replace(
+                                                                "errors_thrown", RYBKA_MODE
+                                                            )
+                                                            move_and_replace(
+                                                                "full_order_history", RYBKA_MODE
+                                                            )
+                                                            move_and_replace(
+                                                                f"{TRADE_SYMBOL}_DEBUG",
+                                                                current_export_dir,
+                                                            )
+                                                            move_and_replace(
+                                                                f"{TRADE_SYMBOL}_historical_prices",
+                                                                current_export_dir,
+                                                            )
+                                                            move_and_replace(
+                                                                f"BNB_USDT_historical_prices",
+                                                                current_export_dir,
+                                                            )
+                                                            move_and_replace(
+                                                                f"{TRADE_SYMBOL}_order_history",
+                                                                current_export_dir,
+                                                            )
 
                                                             if RYBKA_MODE == "LIVE":
                                                                 for i in range(1, 11):
@@ -1967,9 +2193,15 @@ def main(version, mode, head):
                                                             real_time_balances_update()
 
                                                             if DEBUG_LVL != 3:
-                                                                log.DEBUG(f"USDT balance is [{balance_usdt}]")
-                                                                log.DEBUG(f"EGLD balance is [{balance_egld}]")
-                                                                log.DEBUG(f"BNB  balance is [{balance_bnb}]")
+                                                                log.DEBUG(
+                                                                    f"USDT balance is [{balance_usdt}]"
+                                                                )
+                                                                log.DEBUG(
+                                                                    f"EGLD balance is [{balance_egld}]"
+                                                                )
+                                                                log.DEBUG(
+                                                                    f"BNB  balance is [{balance_bnb}]"
+                                                                )
 
                                                             log.VERBOSE(
                                                                 f"After BUY - balance update. USDT balance is [{balance_usdt}]"
@@ -1980,7 +2212,7 @@ def main(version, mode, head):
                                                             log.VERBOSE(
                                                                 f"After BUY - balance update. BNB  balance is [{balance_bnb}]"
                                                             )
-                                                            
+
                                                             if RYBKA_MODE == "LIVE":
                                                                 ktbr_integrity()
 
@@ -2075,29 +2307,35 @@ def main(version, mode, head):
                                                 "a",
                                                 encoding="utf8",
                                             ) as f:
-                                                f.write(f"\n\n{log.logging_time()} Within BUY (part IX):\n")
+                                                f.write(
+                                                    f"\n\n{log.logging_time()} Within BUY (part IX):\n"
+                                                )
                                                 f.write(
                                                     f"{log.logging_time()} Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].\n"
                                                 )
                                     else:
                                         if RYBKA_MODE == "LIVE":
-                                            email_sender(f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enough BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 USDT into BNB. This does NOT take from Safety Net!"
+                                            email_sender(
+                                                f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enough BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 USDT into BNB. This does NOT take from Safety Net!"
                                             )
                                             with open(
                                                 f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
                                                 "a",
                                                 encoding="utf8",
                                             ) as f:
-                                                f.write(f"\n\n{log.logging_time()} Within BUY (part X):\n")
+                                                f.write(
+                                                    f"\n\n{log.logging_time()} Within BUY (part X):\n"
+                                                )
                                                 f.write(
                                                     f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Hence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 USDT into BNB. This does NOT take from Safety Net!\n"
                                                 )
-                                            
-                                            if round(float(balance_usdt - USDT_SAFETY_NET), 4) > 15:
 
+                                            if round(float(balance_usdt - USDT_SAFETY_NET), 4) > 15:
                                                 bnb_min_buy_share = bnb_candle_close_price / 12
-                                                bnb_min_order_quantity = round(float(1 / bnb_min_buy_share), 3)
-                                                
+                                                bnb_min_order_quantity = round(
+                                                    float(1 / bnb_min_buy_share), 3
+                                                )
+
                                                 # treating the rare case of a sky-high price of BNB (of 24001 or above, in USDT), scenario in which the value of `bnb_min_order_quantity` would be equal to `0.0`
                                                 if bnb_min_order_quantity == 0:
                                                     bnb_min_order_quantity = 0.001
@@ -2108,14 +2346,22 @@ def main(version, mode, head):
                                                 )
 
                                                 bnb_conversion_done = 1
-                                                
+
                                                 order_time = datetime.now().strftime(
                                                     "%d/%m/%Y %H:%M:%S"
                                                 )
-                                                log.DEBUG(f"BNB BUY Order placed now at [{order_time}]\n")
-                                                log.VERBOSE(f"bnb_min_order_quantity is [{str(bnb_min_order_quantity)}]\n")
-                                                log.VERBOSE(f"bnb_candle_close_price is [{str(bnb_candle_close_price)}]\n")
-                                                log.VERBOSE(f"bnb_min_buy_share is [{str(bnb_min_buy_share)}]\n")
+                                                log.DEBUG(
+                                                    f"BNB BUY Order placed now at [{order_time}]\n"
+                                                )
+                                                log.VERBOSE(
+                                                    f"bnb_min_order_quantity is [{str(bnb_min_order_quantity)}]\n"
+                                                )
+                                                log.VERBOSE(
+                                                    f"bnb_candle_close_price is [{str(bnb_candle_close_price)}]\n"
+                                                )
+                                                log.VERBOSE(
+                                                    f"bnb_min_buy_share is [{str(bnb_min_buy_share)}]\n"
+                                                )
 
                                                 time.sleep(5)
 
@@ -2124,7 +2370,9 @@ def main(version, mode, head):
                                                     "a",
                                                     encoding="utf8",
                                                 ) as f:
-                                                    f.write(f"\n\n\n{log.logging_time()} Within BNB buy order (part I):\n")
+                                                    f.write(
+                                                        f"\n\n\n{log.logging_time()} Within BNB buy order (part I):\n"
+                                                    )
                                                     f.write(
                                                         f'{log.logging_time()} {"bnb_min_order_quantity":90} {str(bnb_min_order_quantity)}\n'
                                                     )
@@ -2152,17 +2400,19 @@ def main(version, mode, head):
                                                                 f"1. BNB Buy Order status retrieval - Failed as:\n{e}"
                                                             )
                                                         time.sleep(3)
-                                                
+
                                                 with open(
                                                     f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
                                                     "a",
                                                     encoding="utf8",
                                                 ) as f:
-                                                    f.write(f"\n\n\n{log.logging_time()} Within BNB buy order (part I):\n")
+                                                    f.write(
+                                                        f"\n\n\n{log.logging_time()} Within BNB buy order (part I):\n"
+                                                    )
                                                     f.write(
                                                         f'{log.logging_time()} {"Order status is":90} {str(order_status)}\n'
                                                     )
-                                                    
+
                                                 if order_status["status"] == "FILLED":
                                                     log.INFO_BOLD_UNDERLINE(
                                                         " ✅ BNB BUY Order filled successfully!\n"
@@ -2175,7 +2425,7 @@ def main(version, mode, head):
                                                     telegram.LOG(
                                                         f" ☑️ ♻️ Bought [[{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}]] BNB at [[{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}]] USDT/BNB",
                                                     )
-                                                    
+
                                                     for i in range(1, 11):
                                                         try:
                                                             account_balance_update()
@@ -2190,14 +2440,20 @@ def main(version, mode, head):
                                                                     f"Account Balance Sync. - Failed as:\n{e}"
                                                                 )
                                                             time.sleep(3)
-    
+
                                                     real_time_balances_update()
-    
+
                                                     if DEBUG_LVL != 3:
-                                                        log.DEBUG(f"USDT balance is [{balance_usdt}]")
-                                                        log.DEBUG(f"EGLD balance is [{balance_egld}]")
-                                                        log.DEBUG(f"BNB  balance is [{balance_bnb}]")
-                                                        
+                                                        log.DEBUG(
+                                                            f"USDT balance is [{balance_usdt}]"
+                                                        )
+                                                        log.DEBUG(
+                                                            f"EGLD balance is [{balance_egld}]"
+                                                        )
+                                                        log.DEBUG(
+                                                            f"BNB  balance is [{balance_bnb}]"
+                                                        )
+
                                                 else:
                                                     with open(
                                                         f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
@@ -2226,13 +2482,15 @@ def main(version, mode, head):
                                         elif RYBKA_MODE == "DEMO":
                                             email_sender(
                                                 f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enough BNB in balance [{balance_bnb}] to sustain many more trades.\nAs we are in [RYBKA MODE - {RYBKA_MODE}] - bot will STOP at this point, as the user could've added infinite amounts of BNB at start, but decided not to.\n\n"
-                                                )
+                                            )
                                             with open(
-                                                    f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
-                                                    "a",
-                                                    encoding="utf8",
+                                                f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                                "a",
+                                                encoding="utf8",
                                             ) as f:
-                                                f.write(f"\n\n{log.logging_time()} Within BUY (part X):\n")
+                                                f.write(
+                                                    f"\n\n{log.logging_time()} Within BUY (part X):\n"
+                                                )
                                                 f.write(
                                                     f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. As we are in [RYBKA MODE - {RYBKA_MODE}] - bot will STOP at this point, as the user could've added infinite amounts of BNB at start, but decided not to.\n"
                                                 )
@@ -2256,7 +2514,9 @@ def main(version, mode, head):
                                         except Exception as e:
                                             if i == 10:
                                                 traceback.print_exc()
-                                                log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
+                                                log.FATAL_7(
+                                                    f"Account Balance Sync. - Failed as:\n{e}"
+                                                )
                                             time.sleep(3)
 
                                 real_time_balances_update()
@@ -2296,43 +2556,76 @@ def main(version, mode, head):
                                 # Hence we estimate selling half of the `ktbr` at median quantity and price in it and making sure we have over 5 times that amount in bnb, for commission
                                 # which may not be 5 times exactly, as the trade_quantity and price are not evenly distributed across `ktbr` to begin with
                                 if len(ktbr_config) == 0:
-                                    ktbr_half_length=2
+                                    ktbr_half_length = 2
                                     avg_coin_qtty = TRADE_QUANTITY
                                     avg_coin_price = candle_close_price
                                 else:
-                                    sum_coins=0
-                                    sum_price=0
+                                    sum_coins = 0
+                                    sum_price = 0
 
                                     for v in ktbr_config.values():
-                                        sum_coins+=float(v[0])
-                                        sum_price+=float(v[1])
+                                        sum_coins += float(v[0])
+                                        sum_price += float(v[1])
 
-                                    avg_coin_qtty = round(float(sum_coins/len(ktbr_config)), 4)
-                                    avg_coin_price = round(float(sum_price/len(ktbr_config)), 4)
-                                    ktbr_half_length=len(ktbr_config)/2
+                                    avg_coin_qtty = round(float(sum_coins / len(ktbr_config)), 4)
+                                    avg_coin_price = round(float(sum_price / len(ktbr_config)), 4)
+                                    ktbr_half_length = len(ktbr_config) / 2
 
-                                if (round(float((round(float(balance_bnb * bnb_candle_close_price), 6)) / (round(float(0.08 / 100 * avg_coin_price * avg_coin_qtty * round(float(ktbr_half_length), 4)), 4))), 4)) >= 5:
-
-                                    log.DEBUG(f"BNB balance [{balance_bnb}] is enough for transactions.")
+                                if (
+                                    round(
+                                        float(
+                                            (round(float(balance_bnb * bnb_candle_close_price), 6))
+                                            / (
+                                                round(
+                                                    float(
+                                                        0.08
+                                                        / 100
+                                                        * avg_coin_price
+                                                        * avg_coin_qtty
+                                                        * round(float(ktbr_half_length), 4)
+                                                    ),
+                                                    4,
+                                                )
+                                            )
+                                        ),
+                                        4,
+                                    )
+                                ) >= 5:
+                                    log.DEBUG(
+                                        f"BNB balance [{balance_bnb}] is enough for transactions."
+                                    )
 
                                     eligible_sells = []
 
                                     for k, v in ktbr_config.items():
-
-                                        future_fee = round(float(round(float(0.08 / 100 * candle_close_price * v[0]), 4) / bnb_candle_close_price), 8)
+                                        future_fee = round(
+                                            float(
+                                                round(
+                                                    float(0.08 / 100 * candle_close_price * v[0]), 4
+                                                )
+                                                / bnb_candle_close_price
+                                            ),
+                                            8,
+                                        )
                                         log.VERBOSE(f"future_fee is {future_fee}")
 
                                         min_profit_aux = MIN_PROFIT
 
                                         while MIN_PROFIT - future_fee <= 0.8 * MIN_PROFIT:
-                                            log.HIGH_VERBOSITY(f"NET MIN_PROFIT [{str(round(float(MIN_PROFIT - future_fee), 8))}] is less than 80% of MIN_PROFIT")
-                                            MIN_PROFIT += round(float(0.1*MIN_PROFIT), 8)
+                                            log.HIGH_VERBOSITY(
+                                                f"NET MIN_PROFIT [{str(round(float(MIN_PROFIT - future_fee), 8))}] is less than 80% of MIN_PROFIT"
+                                            )
+                                            MIN_PROFIT += round(float(0.1 * MIN_PROFIT), 8)
                                             MIN_PROFIT = round(MIN_PROFIT, 8)
                                         else:
-                                            log.DEBUG(f"MIN_PROFIT [{str(MIN_PROFIT)}] is more than 5x the fee [{str(future_fee)}] of the current possible sell transaction [{k}], qtty [{v[0]}] bought at price of [{v[1]}]")
+                                            log.DEBUG(
+                                                f"MIN_PROFIT [{str(MIN_PROFIT)}] is more than 5x the fee [{str(future_fee)}] of the current possible sell transaction [{k}], qtty [{v[0]}] bought at price of [{v[1]}]"
+                                            )
 
                                         if min_profit_aux != MIN_PROFIT:
-                                            log.DEBUG(f"Value of [MIN_PROFIT] ENV var got adjusted from [{str(min_profit_aux)}] to [{str(MIN_PROFIT)}], as the fee tends to be pretty high [{str(future_fee)}] is raport to profit!")
+                                            log.DEBUG(
+                                                f"Value of [MIN_PROFIT] ENV var got adjusted from [{str(min_profit_aux)}] to [{str(MIN_PROFIT)}], as the fee tends to be pretty high [{str(future_fee)}] is raport to profit!"
+                                            )
 
                                         if v[1] + MIN_PROFIT < candle_close_price:
                                             log.DEBUG(
@@ -2351,14 +2644,18 @@ def main(version, mode, head):
                                         "a",
                                         encoding="utf8",
                                     ) as f:
-                                        f.write(f"\n\n\n{log.logging_time()} Within SELL (part II):\n")
+                                        f.write(
+                                            f"\n\n\n{log.logging_time()} Within SELL (part II):\n"
+                                        )
                                         f.write(
                                             f"{log.logging_time()} {'Eligible sells (eligible_sells) is':90} {str(eligible_sells)}\n"
                                         )
 
                                     if eligible_sells:
                                         for sell in eligible_sells:
-                                            log.DEBUG(f"Selling buy [{sell}] of qtty [{ktbr_config[sell][0]}]")
+                                            log.DEBUG(
+                                                f"Selling buy [{sell}] of qtty [{ktbr_config[sell][0]}]"
+                                            )
 
                                             try:
                                                 if RYBKA_MODE == "LIVE":
@@ -2394,17 +2691,51 @@ def main(version, mode, head):
                                                     order["orderId"] = str(sell)
                                                     order["executedQty"] = ktbr_config[sell][0]
                                                     order["fills"][0]["price"] = candle_close_price
-                                                    order["fills"][0]["commission"] = round(float(round(float(0.08 / 100 * candle_close_price * ktbr_config[sell][0]), 4) / bnb_candle_close_price), 8)
+                                                    order["fills"][0]["commission"] = round(
+                                                        float(
+                                                            round(
+                                                                float(
+                                                                    0.08
+                                                                    / 100
+                                                                    * candle_close_price
+                                                                    * ktbr_config[sell][0]
+                                                                ),
+                                                                4,
+                                                            )
+                                                            / bnb_candle_close_price
+                                                        ),
+                                                        8,
+                                                    )
 
-                                                    balance_usdt += candle_close_price * ktbr_config[sell][0]
+                                                    balance_usdt += (
+                                                        candle_close_price * ktbr_config[sell][0]
+                                                    )
                                                     balance_usdt = round(balance_usdt, 4)
                                                     balance_egld -= ktbr_config[sell][0]
                                                     balance_egld = round(balance_egld, 4)
-                                                    balance_bnb -= round(float(round(float(0.08 / 100 * candle_close_price * ktbr_config[sell][0]), 4) / bnb_candle_close_price), 8)
+                                                    balance_bnb -= round(
+                                                        float(
+                                                            round(
+                                                                float(
+                                                                    0.08
+                                                                    / 100
+                                                                    * candle_close_price
+                                                                    * ktbr_config[sell][0]
+                                                                ),
+                                                                4,
+                                                            )
+                                                            / bnb_candle_close_price
+                                                        ),
+                                                        8,
+                                                    )
                                                     balance_bnb = round(balance_bnb, 8)
 
-                                                order_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                                                log.DEBUG(f"SELL Order placed now at [{order_time}]\n")
+                                                order_time = datetime.now().strftime(
+                                                    "%d/%m/%Y %H:%M:%S"
+                                                )
+                                                log.DEBUG(
+                                                    f"SELL Order placed now at [{order_time}]\n"
+                                                )
                                                 time.sleep(5)
 
                                                 if RYBKA_MODE == "LIVE":
@@ -2455,10 +2786,14 @@ def main(version, mode, head):
                                                     )
                                                     # avoid rounding up on quantity & price sold
                                                     qtty_aux = (
-                                                        int(float(order["executedQty"]) * 10**4) / 10**4
+                                                        int(float(order["executedQty"]) * 10**4)
+                                                        / 10**4
                                                     )
                                                     price_aux = (
-                                                        int(float(order["fills"][0]["price"]) * 10**4)
+                                                        int(
+                                                            float(order["fills"][0]["price"])
+                                                            * 10**4
+                                                        )
                                                         / 10**4
                                                     )
 
@@ -2504,7 +2839,9 @@ def main(version, mode, head):
                                                     ) as f:
                                                         f.write(str(total_usdt_profit))
 
-                                                    bnb_commission = float(order["fills"][0]["commission"])
+                                                    bnb_commission = float(
+                                                        order["fills"][0]["commission"]
+                                                    )
 
                                                     with open(
                                                         f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
@@ -2521,7 +2858,9 @@ def main(version, mode, head):
                                                     previous_buy_info = f"What got sold: BUY ID [{str(sell)}] of QTTY [{str(ktbr_config[sell][0])}] at bought PRICE of [{str(ktbr_config[sell][1])}] USDT"
 
                                                     del ktbr_config[sell]
-                                                    with open(f"{RYBKA_MODE}/ktbr", "w", encoding="utf8") as f:
+                                                    with open(
+                                                        f"{RYBKA_MODE}/ktbr", "w", encoding="utf8"
+                                                    ) as f:
                                                         f.write(str(json.dumps(ktbr_config)))
 
                                                     with open(
@@ -2556,17 +2895,32 @@ def main(version, mode, head):
 
                                                     back_up()
                                                     move_and_replace("errors_thrown", RYBKA_MODE)
-                                                    move_and_replace("full_order_history", RYBKA_MODE)
-                                                    move_and_replace(f"{TRADE_SYMBOL}_DEBUG", current_export_dir)
-                                                    move_and_replace(f"{TRADE_SYMBOL}_historical_prices", current_export_dir)
-                                                    move_and_replace(f"BNB_USDT_historical_prices", current_export_dir)
-                                                    move_and_replace(f"{TRADE_SYMBOL}_order_history", current_export_dir)
+                                                    move_and_replace(
+                                                        "full_order_history", RYBKA_MODE
+                                                    )
+                                                    move_and_replace(
+                                                        f"{TRADE_SYMBOL}_DEBUG", current_export_dir
+                                                    )
+                                                    move_and_replace(
+                                                        f"{TRADE_SYMBOL}_historical_prices",
+                                                        current_export_dir,
+                                                    )
+                                                    move_and_replace(
+                                                        f"BNB_USDT_historical_prices",
+                                                        current_export_dir,
+                                                    )
+                                                    move_and_replace(
+                                                        f"{TRADE_SYMBOL}_order_history",
+                                                        current_export_dir,
+                                                    )
 
                                                     if RYBKA_MODE == "LIVE":
                                                         for i in range(1, 11):
                                                             try:
                                                                 account_balance_update()
-                                                                log.DEBUG("Account Balance Sync. - Successful")
+                                                                log.DEBUG(
+                                                                    "Account Balance Sync. - Successful"
+                                                                )
                                                                 break
                                                             except Exception as e:
                                                                 if i == 10:
@@ -2655,13 +3009,17 @@ def main(version, mode, head):
                                                 )
                                         re_sync_time()
                                     else:
-                                        log.INFO("No buy transactions are eligible to be sold at this moment!\n")
+                                        log.INFO(
+                                            "No buy transactions are eligible to be sold at this moment!\n"
+                                        )
                                         with open(
                                             f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
                                             "a",
                                             encoding="utf8",
                                         ) as f:
-                                            f.write(f"\n\n{log.logging_time()} Within SELL (part VII):\n")
+                                            f.write(
+                                                f"\n\n{log.logging_time()} Within SELL (part VII):\n"
+                                            )
                                             f.write(
                                                 f"{log.logging_time()} No buy transactions are eligible to be sold at this moment!\n"
                                             )
@@ -2669,21 +3027,24 @@ def main(version, mode, head):
                                     if RYBKA_MODE == "LIVE":
                                         email_sender(
                                             f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enough BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 USDT into BNB. This does NOT take from Safety Net!"
-                                            )
+                                        )
                                         with open(
-                                                f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
-                                                "a",
-                                                encoding="utf8",
+                                            f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                            "a",
+                                            encoding="utf8",
                                         ) as f:
-                                            f.write(f"\n\n{log.logging_time()} Within BUY (part X):\n")
+                                            f.write(
+                                                f"\n\n{log.logging_time()} Within BUY (part X):\n"
+                                            )
                                             f.write(
                                                 f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Hence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 USDT into BNB. This does NOT take from Safety Net!\n"
                                             )
 
                                         if round(float(balance_usdt - USDT_SAFETY_NET), 4) > 15:
-
                                             bnb_min_buy_share = bnb_candle_close_price / 12
-                                            bnb_min_order_quantity = round(float(1 / bnb_min_buy_share), 3)
+                                            bnb_min_order_quantity = round(
+                                                float(1 / bnb_min_buy_share), 3
+                                            )
 
                                             # treating the rare case of a sky-high price of BNB (of 24001 or above, in USDT), scenario in which the value of `bnb_min_order_quantity` would be equal to `0.0`
                                             if bnb_min_order_quantity == 0:
@@ -2699,11 +3060,19 @@ def main(version, mode, head):
                                             order_time = datetime.now().strftime(
                                                 "%d/%m/%Y %H:%M:%S"
                                             )
-                                            log.DEBUG(f"BNB BUY Order placed now at [{order_time}]\n")
-                                            log.VERBOSE(f"bnb_min_order_quantity is [{str(bnb_min_order_quantity)}]\n")
-                                            log.VERBOSE(f"bnb_candle_close_price is [{str(bnb_candle_close_price)}]\n")
-                                            log.VERBOSE(f"bnb_min_buy_share is [{str(bnb_min_buy_share)}]\n")
-                                        
+                                            log.DEBUG(
+                                                f"BNB BUY Order placed now at [{order_time}]\n"
+                                            )
+                                            log.VERBOSE(
+                                                f"bnb_min_order_quantity is [{str(bnb_min_order_quantity)}]\n"
+                                            )
+                                            log.VERBOSE(
+                                                f"bnb_candle_close_price is [{str(bnb_candle_close_price)}]\n"
+                                            )
+                                            log.VERBOSE(
+                                                f"bnb_min_buy_share is [{str(bnb_min_buy_share)}]\n"
+                                            )
+
                                             time.sleep(25)
 
                                             with open(
@@ -2711,7 +3080,9 @@ def main(version, mode, head):
                                                 "a",
                                                 encoding="utf8",
                                             ) as f:
-                                                f.write(f"\n\n\n{log.logging_time()} Within BNB buy order (part II):\n")
+                                                f.write(
+                                                    f"\n\n\n{log.logging_time()} Within BNB buy order (part II):\n"
+                                                )
                                                 f.write(
                                                     f'{log.logging_time()} {"bnb_min_order_quantity":90} {str(bnb_min_order_quantity)}\n'
                                                 )
@@ -2745,7 +3116,9 @@ def main(version, mode, head):
                                                 "a",
                                                 encoding="utf8",
                                             ) as f:
-                                                f.write(f"\n\n\n{log.logging_time()} Within BNB buy order (part II):\n")
+                                                f.write(
+                                                    f"\n\n\n{log.logging_time()} Within BNB buy order (part II):\n"
+                                                )
                                                 f.write(
                                                     f'{log.logging_time()} {"Order status is":90} {str(order_status)}\n'
                                                 )
@@ -2787,9 +3160,9 @@ def main(version, mode, head):
 
                                             else:
                                                 with open(
-                                                        f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
-                                                        "a",
-                                                        encoding="utf8",
+                                                    f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                                    "a",
+                                                    encoding="utf8",
                                                 ) as f:
                                                     f.write(
                                                         f"\n\n{log.logging_time()} Within BUY (part VI):\n"
@@ -2815,18 +3188,20 @@ def main(version, mode, head):
                                             f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enough BNB in balance [{balance_bnb}] to sustain many more trades.\nAs we are in [RYBKA MODE - {RYBKA_MODE}] - bot will STOP at this point, as the user could've added infinite amounts of BNB at start, but decided not to.\n\n"
                                         )
                                         with open(
-                                                f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
-                                                "a",
-                                                encoding="utf8",
+                                            f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                                            "a",
+                                            encoding="utf8",
                                         ) as f:
-                                            f.write(f"\n\n{log.logging_time()} Within SELL (part VIII):\n")
+                                            f.write(
+                                                f"\n\n{log.logging_time()} Within SELL (part VIII):\n"
+                                            )
                                             f.write(
                                                 f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. As we are in [RYBKA MODE - {RYBKA_MODE}] - bot will STOP at this point, as the user could've added infinite amounts of BNB at start, but decided not to.\n"
                                             )
                                         log.FATAL_7(
                                             f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. As we are in [RYBKA MODE - {RYBKA_MODE}] - bot will STOP at this point, as the user could've added infinite amounts of BNB at start, but decided not to."
                                         )
-                                    
+
                         if RYBKA_MODE == "LIVE":
                             if random.randint(1, 60) <= 2:
                                 for i in range(1, 11):
@@ -2840,8 +3215,6 @@ def main(version, mode, head):
                                             log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
                                         time.sleep(3)
                                 real_time_balances_update()
-
-        
 
     except KeyboardInterrupt:
         print(
@@ -2953,7 +3326,10 @@ if __name__ == "__main__":
         else:
             parse_weights()
             for k in WEIGHTS_DICT_UPDATED.keys():
-                if WEIGHTS_DICT_UPDATED[k] != WEIGHTS_DICT_OUTDATED[k] and k != "RYBKA_BALANCES_AUX":
+                if (
+                    WEIGHTS_DICT_UPDATED[k] != WEIGHTS_DICT_OUTDATED[k]
+                    and k != "RYBKA_BALANCES_AUX"
+                ):
                     log.INFO(" ")
                     log.INFO_SPECIAL(
                         f" ⚖️  Rybka's weight: [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!"

@@ -130,7 +130,9 @@ class Rybka_py_env_bootstrap:
                 .strip()
             )
         else:
-            self.RYBKA_ALL_LOG_TLG_SWITCH = os.environ.get("RYBKA_ALL_LOG_TLG_SWITCH").strip("\n").strip()
+            self.RYBKA_ALL_LOG_TLG_SWITCH = (
+                os.environ.get("RYBKA_ALL_LOG_TLG_SWITCH").strip("\n").strip()
+            )
 
         # Binance related config.
         self.TRADE_SYMBOL = (
@@ -184,12 +186,10 @@ class Rybka_py_env_bootstrap:
 
         # DEMO mode related config.
         try:
-            self.RYBKA_DEMO_BALANCE_USDT = (
-                float(
-                    config.get(
-                        "Rybka Standalone Configuration. Only for DEMO mode",
-                        "RYBKA_DEMO_BALANCE_USDT",
-                    )
+            self.RYBKA_DEMO_BALANCE_USDT = float(
+                config.get(
+                    "Rybka Standalone Configuration. Only for DEMO mode",
+                    "RYBKA_DEMO_BALANCE_USDT",
                 )
             )
         except:
