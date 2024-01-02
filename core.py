@@ -2320,7 +2320,7 @@ def main(version, mode, head):
                                     for k, v in ktbr_config.items():
 
                                         future_fee = round(float(round(float(0.08 / 100 * candle_close_price * v[0]), 4) / bnb_candle_close_price), 8)
-                                        log.VERBOSITY(f"future_fee is {future_fee}")
+                                        log.VERBOSE(f"future_fee is {future_fee}")
 
                                         min_profit_aux = MIN_PROFIT
 
