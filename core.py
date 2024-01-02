@@ -186,8 +186,8 @@ def log_files_creation(direct_call="1"):
                 f.write(f"DEBUG_LVL       set to: {DEBUG_LVL:>50}")
             f.write(f"SOCKET          set to: {SOCKET:>50}\n")
             f.write(f"TRADE SYMBOL    set to: {TRADE_SYMBOL:>50}\n")
-            f.write(f"TRADE QUANTITY  set to: {TRADE_QUANTITY:>50} coins per transaction\n")
-            f.write(f"MIN PROFIT      set to: {MIN_PROFIT:>50} USDT per transaction\n")
+            f.write(f"TRADE QUANTITY  set to: {str(TRADE_QUANTITY):>50} coins per transaction\n")
+            f.write(f"MIN PROFIT      set to: {str(MIN_PROFIT):>50} USDT per transaction\n")
             f.write(f"USDT SAFETY NET set to: {str(USDT_SAFETY_NET):>50} USDT\n")
             f.write(f"RSI PERIOD      set to: {RSI_PERIOD:>50} minutes\n")
             f.write(f"RSI FOR BUY     set to: {RSI_FOR_BUY:>50} threshold\n")
@@ -506,10 +506,10 @@ def software_config_params():
     log.INFO_BOLD(f" 🔘 SOCKET          set to: {bcolors.PURPLE}{SOCKET:>50}")
     log.INFO_BOLD(f" 🔘 TRADE SYMBOL    set to: {bcolors.PURPLE}{TRADE_SYMBOL:>50}")
     log.INFO_BOLD(
-        f" 🔘 TRADE QUANTITY  set to: {bcolors.PURPLE}{TRADE_QUANTITY:>50}{bcolors.DARKGRAY} coins per transaction"
+        f" 🔘 TRADE QUANTITY  set to: {bcolors.PURPLE}{str(TRADE_QUANTITY):>50}{bcolors.DARKGRAY} coins per transaction"
     )
     log.INFO_BOLD(
-        f" 🔘 MIN PROFIT      set to: {bcolors.PURPLE}{MIN_PROFIT:>50}{bcolors.DARKGRAY} USDT per transaction"
+        f" 🔘 MIN PROFIT      set to: {bcolors.PURPLE}{str(MIN_PROFIT):>50}{bcolors.DARKGRAY} USDT per transaction"
     )
     log.INFO_BOLD(
         f" 🔘 USDT SAFETY NET set to: {bcolors.PURPLE}{str(USDT_SAFETY_NET):>50}{bcolors.DARKGRAY} USDT"
@@ -1142,7 +1142,10 @@ def main(version, mode, head):
         log.INFO(
             "====================================================================================================================================="
         )
-        log.INFO_BOLD("Initiating a one-time 10-min info gathering timeframe. Please wait...")
+        if len(closed_candles) >= 10:
+            log.WARN("YOU MANUALLY ADDED A HISTORY OF PRICES! IGNORING THE 10-min TIMEFRAME OF GATHERING LAST 10 PRICES/coin!") 
+        else:
+            log.INFO_BOLD("Initiating a one-time 10-min info gathering timeframe. Please wait...")
         log.INFO(
             "=====================================================================================================================================\n"
         )
@@ -1299,7 +1302,8 @@ def main(version, mode, head):
                             ###   This policy evaluates the prices compared to the other buys and if there are at least 10 buys, activates and           ###
                             ###      makes the bot buy EGLD if the current price is way below the majority of other buys and almost all the buys         ###
                             ###      under the current $ price got sold. So that it will buy even if price goes up, but ktbr contains lots of buy        ###
-                            ###      transacs. By this, we ensure a higher profit, as it makes the bot works in time, that otherwise would be skipped.   ###
+                            ###      transactions. By this, we ensure a higher profit, as it makes the bot works in time that otherwise would've been    ###
+                            ###      skipped.                                                                                                            ###
                             ################################################################################################################################
 
                             policy = "not_overridden"
@@ -1355,7 +1359,7 @@ def main(version, mode, head):
 
                                 bnb_conversion_done = 0
 
-                                log.DEBUG(f"Policy was {policy}.")
+                                log.DEBUG(f"Policy 2 was [{policy}].")
 
                                 if RYBKA_MODE == "LIVE":
                                     for i in range(1, 11):
@@ -2290,6 +2294,22 @@ def main(version, mode, head):
                                     eligible_sells = []
 
                                     for k, v in ktbr_config.items():
+
+                                        future_fee = round(float(round(float(0.08 / 100 * candle_close_price * v[0]), 4) / bnb_candle_close_price), 8)
+                                        log.DEBUG(f"future_fee is {future_fee}")
+
+                                        min_profit_aux = MIN_PROFIT
+
+                                        while MIN_PROFIT - future_fee <= 0.8 * MIN_PROFIT:
+                                            log.HIGH_VERBOSITY(f"NET MIN_PROFIT [{str(round(float(MIN_PROFIT - future_fee), 8))}] is less than 80% of MIN_PROFIT")
+                                            MIN_PROFIT += round(float(0.1*MIN_PROFIT), 8)
+                                            MIN_PROFIT = round(MIN_PROFIT, 8)
+                                        else:
+                                            log.DEBUG(f"MIN_PROFIT [{str(MIN_PROFIT)}] is more than 5x the fee [{str(future_fee)}] of the current possible sell transaction [{k}], qtty [{v[0]}] bought at price of [{v[1]}]")
+
+                                        if min_profit_aux != MIN_PROFIT:
+                                            log.WARN(f"Value of [MIN_PROFIT] ENV var got adjusted from [{str(min_profit_aux)}] to [{str(MIN_PROFIT)}], as the fee tends to be pretty high [{str(future_fee)}] is raport to profit!")
+
                                         if v[1] + MIN_PROFIT < candle_close_price:
                                             log.DEBUG(
                                                 f"Identified buy ID [{k}], qtty [{v[0]}] bought at price of [{v[1]}] as being eligible for sell"
