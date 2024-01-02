@@ -914,8 +914,8 @@ def modifcation_log_message(update, context):
     )
 
 
-def m_RYBKA_USDT_SAFETY_NET_unset_command(update, context):
-    modify_config_ini("RYBKA_USDT_SAFETY_NET", "")
+def m_RYBKA_USDT_SAFETY_NET_0_command(update, context):
+    modify_config_ini("RYBKA_USDT_SAFETY_NET", "0")
     modifcation_log_message(update, context)
 
 
@@ -1374,7 +1374,7 @@ def call_submenu_of_weight(update, context, weight):
     {'/RYBKA_USDT_SAFETY_NET'} - Checks current value
 
 🟫 Choose the value you want to set for this weight:
-    {'/RYBKA_USDT_SAFETY_NET_unset'} - Unset the value
+    {'/RYBKA_USDT_SAFETY_NET_0'} - Unset any value
     {'/RYBKA_USDT_SAFETY_NET_50'} - Set value "50"
     {'/RYBKA_USDT_SAFETY_NET_100'} - Set value "100"
     {'/RYBKA_USDT_SAFETY_NET_200'} - Set value "200"
@@ -1772,7 +1772,7 @@ def main():
     dp.add_handler(CommandHandler("RYBKA_DEBUG_LVL_3", m_RYBKA_DEBUG_LVL_3_command))
 
     dp.add_handler(CommandHandler("m_RYBKA_USDT_SAFETY_NET", modify_weights_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_unset", m_RYBKA_USDT_SAFETY_NET_unset_command))
+    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_0", m_RYBKA_USDT_SAFETY_NET_0_command))
     dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_50", m_RYBKA_USDT_SAFETY_NET_50_command))
     dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_100", m_RYBKA_USDT_SAFETY_NET_100_command))
     dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_200", m_RYBKA_USDT_SAFETY_NET_200_command))

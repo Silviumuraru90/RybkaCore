@@ -4,6 +4,7 @@
 import os
 import sys
 import time
+import traceback
 from os.path import exists
 
 import click
@@ -50,6 +51,7 @@ def main(version, mode):
             try:
                 os.makedirs(folder)
             except Exception as e:
+                traceback.print_exc()
                 log.FATAL_7(f"Attempt to create local folder [{folder}] - FAILED with error:\n{e}")
 
     TMP_folder("TEMP")

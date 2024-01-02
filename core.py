@@ -16,6 +16,7 @@ import string as string_str
 import subprocess
 import sys
 import time
+import traceback
 import uuid
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
@@ -69,6 +70,7 @@ def user_initial_config():
         client = Client(bootstrap.RYBKA_BIN_KEY, bootstrap.RYBKA_BIN_SECRET)
         log.INFO_BOLD(f" ✅ Client initial config  -  {bcolors.PURPLE}DONE")
     except Exception as e:
+        traceback.print_exc()
         log.FATAL_7(
             f"Client initial config  -  FAILED\nError encountered at setting user config. via API KEY and API SECRET. Please check error below:\n{e}"
         )
@@ -203,6 +205,7 @@ def log_files_creation(direct_call="1"):
             log.INFO("==============================================")
 
     except Exception as e:
+        traceback.print_exc()
         log.FATAL_7(
             f"Attempt to create local folder [{current_export_dir}] and inner files for output analysis FAILED - with error:\n{e}"
         )
@@ -214,6 +217,7 @@ def rybka_mode_folder_creation():
         try:
             os.makedirs(RYBKA_MODE)
         except Exception as e:
+            traceback.print_exc()
             log.FATAL_7(
                 f"Attempt to create local folder for the mode in which software runs - [{RYBKA_MODE}] - FAILED with error:\n{e}"
             )
@@ -224,6 +228,7 @@ def TMP_folder(folder):
         try:
             os.makedirs(folder)
         except Exception as e:
+            traceback.print_exc()
             log.FATAL_7(f"Attempt to create local folder [{folder}] - FAILED with error:\n{e}")
 
 
@@ -249,6 +254,7 @@ def ktbr_configuration():
                             f" 💳 Transaction [{k}]  ---  [{bcolors.OKGREEN}{bcolors.BOLD}{v[0]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t EGLD bought at price of [{bcolors.OKGREEN}{bcolors.BOLD}{v[1]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t USDT per EGLD{bcolors.ENDC}"
                         )
                 except Exception as e:
+                    traceback.print_exc()
                     log.FATAL_7(
                         f"[{RYBKA_MODE}/ktbr] file contains wrong formatted content!\nFailing with error:\n{e}"
                     )
@@ -258,6 +264,7 @@ def ktbr_configuration():
                 f.write("{}")
             log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/ktbr] file created!")
         except Exception as e:
+            traceback.print_exc()
             log.FATAL_7(f"[{RYBKA_MODE}/ktbr] file could NOT be created!\nFailing with error:\n{e}")
     log.INFO(
         "====================================================================================================================================="
@@ -281,6 +288,7 @@ def profit_file():
                         f" ✅ [{RYBKA_MODE}/usdt_profit] file contains the following already done profit: [{bcolors.PURPLE}{total_usdt_profit}{bcolors.DARKGRAY}] USDT"
                     )
                 except Exception as e:
+                    traceback.print_exc()
                     log.FATAL_7(
                         f"[{RYBKA_MODE}/usdt_profit] file contains wrong formatted content!\nFailing with error:\n{e}"
                     )
@@ -289,6 +297,7 @@ def profit_file():
             open(f"{RYBKA_MODE}/usdt_profit", "w", encoding="utf8").close()
             log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/usdt_profit] file created!")
         except Exception as e:
+            traceback.print_exc()
             log.FATAL_7(
                 f"[{RYBKA_MODE}/usdt_profit] file could NOT be created!\nFailing with error:\n{e}"
             )
@@ -314,6 +323,7 @@ def nr_of_trades_file():
                         f" ✅ [{RYBKA_MODE}/number_of_buy_trades] file shows historical nr. of buy trades raising to: [{bcolors.PURPLE}{nr_of_trades}{bcolors.DARKGRAY}]"
                     )
                 except Exception as e:
+                    traceback.print_exc()
                     log.FATAL_7(
                         f"[{RYBKA_MODE}/number_of_buy_trades] file contains wrong formatted content!\nFailing with error:\n{e}"
                     )
@@ -322,6 +332,7 @@ def nr_of_trades_file():
             open(f"{RYBKA_MODE}/number_of_buy_trades", "w", encoding="utf8").close()
             log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/number_of_buy_trades] file created!")
         except Exception as e:
+            traceback.print_exc()
             log.FATAL_7(
                 f"[{RYBKA_MODE}/number_of_buy_trades] file could NOT be created!\nFailing with error:\n{e}"
             )
@@ -348,6 +359,7 @@ def full_order_history_file():
             open(f"{RYBKA_MODE}/full_order_history", "w", encoding="utf8").close()
             log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/full_order_history] file created!")
         except Exception as e:
+            traceback.print_exc()
             log.FATAL_7(
                 f"[{RYBKA_MODE}/full_order_history] file could NOT be created!\nFailing with error:\n{e}"
             )
@@ -368,6 +380,7 @@ def real_time_balances():
             open(f"{RYBKA_MODE}/real_time_balances", "w", encoding="utf8").close()
             log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/real_time_balances] file created!")
         except Exception as e:
+            traceback.print_exc()
             log.FATAL_7(
                 f"[{RYBKA_MODE}/real_time_balances] file could NOT be created!\nFailing with error:\n{e}"
             )
@@ -410,6 +423,7 @@ def all_errors_file():
             open(f"{RYBKA_MODE}/errors_thrown", "w", encoding="utf8").close()
             log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/errors_thrown] file created!")
         except Exception as e:
+            traceback.print_exc()
             log.FATAL_7(
                 f"[{RYBKA_MODE}/errors_thrown] file could NOT be created!\nFailing with error:\n{e}"
             )
@@ -927,6 +941,7 @@ def main(version, mode, head):
         archived_logs_folder = "archived_logs"
         TMP_folder(archived_logs_folder)
     except Exception as e:
+        traceback.print_exc()
         log.FATAL_7(
             f"[{archived_logs_folder}] folder could not be created. Reason for failure:\n{e}"
         )
@@ -934,6 +949,7 @@ def main(version, mode, head):
     try:
         previous_runs_sanitation(archived_logs_folder)
     except Exception as e:
+        traceback.print_exc()
         log.FATAL_7(f"[SANITATION] process failed. Reason for failure:\n{e}")
 
     if platform == "linux" or platform == "linux2":
@@ -1024,6 +1040,7 @@ def main(version, mode, head):
                 break
             except Exception as e:
                 if i == 5:
+                    traceback.print_exc()
                     log.FATAL_7(
                         f"Account-related functions failed to proceed successfully. Error:\n{e}"
                     )
@@ -1113,6 +1130,7 @@ def main(version, mode, head):
                     # not so likely for Telegram PID to not still exist, but treating the case nonetheless
                     telegram_pid = handling_open_of_telegram_listener()
         except Exception as e:
+            traceback.print_exc()
             log.FATAL_7(
                 f"Some helper files do not exist. They are needed in order for the Telegram Listener to work well\n{e}"
             )
@@ -1151,6 +1169,7 @@ def main(version, mode, head):
         )
 
     except Exception as e:
+        traceback.print_exc()
         log.FATAL_7(
             f"The Unicorn object could not be created:\n{e}"
         )
@@ -1165,6 +1184,7 @@ def main(version, mode, head):
                         break
                     except Exception as e:
                         if i == 10:
+                            traceback.print_exc()
                             log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
                         time.sleep(3)
 
@@ -1369,6 +1389,7 @@ def main(version, mode, head):
                                             break
                                         except Exception as e:
                                             if i == 10:
+                                                traceback.print_exc()
                                                 log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
                                             time.sleep(3)
 
@@ -1786,6 +1807,7 @@ def main(version, mode, head):
                                                                     break
                                                                 except Exception as e:
                                                                     if i == 10:
+                                                                        traceback.print_exc()
                                                                         log.FATAL_7(
                                                                             f"EGLD Buy Order status retrieval - Failed as:\n{e}"
                                                                         )
@@ -1936,6 +1958,7 @@ def main(version, mode, head):
                                                                         break
                                                                     except Exception as e:
                                                                         if i == 10:
+                                                                            traceback.print_exc()
                                                                             log.FATAL_7(
                                                                                 f"Account Balance Sync. - Failed as:\n{e}"
                                                                             )
@@ -2023,6 +2046,7 @@ def main(version, mode, head):
                                                             f.write(
                                                                 f"{log.logging_time()} Order could NOT be placed due to an error:\n{e}\n"
                                                             )
+                                                        traceback.print_exc()
                                                         log.FATAL_7(
                                                             f"Make sure the [RYBKA_BIN_KEY] and [RYBKA_BIN_SECRET] ENV vars have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}"
                                                         )
@@ -2125,6 +2149,7 @@ def main(version, mode, head):
                                                         break
                                                     except Exception as e:
                                                         if i == 10:
+                                                            traceback.print_exc()
                                                             log.FATAL_7(
                                                                 f"1. BNB Buy Order status retrieval - Failed as:\n{e}"
                                                             )
@@ -2162,6 +2187,7 @@ def main(version, mode, head):
                                                             break
                                                         except Exception as e:
                                                             if i == 10:
+                                                                traceback.print_exc()
                                                                 log.FATAL_7(
                                                                     f"Account Balance Sync. - Failed as:\n{e}"
                                                                 )
@@ -2231,6 +2257,7 @@ def main(version, mode, head):
                                             break
                                         except Exception as e:
                                             if i == 10:
+                                                traceback.print_exc()
                                                 log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
                                             time.sleep(3)
 
@@ -2296,7 +2323,7 @@ def main(version, mode, head):
                                     for k, v in ktbr_config.items():
 
                                         future_fee = round(float(round(float(0.08 / 100 * candle_close_price * v[0]), 4) / bnb_candle_close_price), 8)
-                                        log.DEBUG(f"future_fee is {future_fee}")
+                                        log.VERBOSITY(f"future_fee is {future_fee}")
 
                                         min_profit_aux = MIN_PROFIT
 
@@ -2308,7 +2335,7 @@ def main(version, mode, head):
                                             log.DEBUG(f"MIN_PROFIT [{str(MIN_PROFIT)}] is more than 5x the fee [{str(future_fee)}] of the current possible sell transaction [{k}], qtty [{v[0]}] bought at price of [{v[1]}]")
 
                                         if min_profit_aux != MIN_PROFIT:
-                                            log.WARN(f"Value of [MIN_PROFIT] ENV var got adjusted from [{str(min_profit_aux)}] to [{str(MIN_PROFIT)}], as the fee tends to be pretty high [{str(future_fee)}] is raport to profit!")
+                                            log.DEBUG(f"Value of [MIN_PROFIT] ENV var got adjusted from [{str(min_profit_aux)}] to [{str(MIN_PROFIT)}], as the fee tends to be pretty high [{str(future_fee)}] is raport to profit!")
 
                                         if v[1] + MIN_PROFIT < candle_close_price:
                                             log.DEBUG(
@@ -2396,6 +2423,7 @@ def main(version, mode, head):
                                                             break
                                                         except Exception as e:
                                                             if i == 10:
+                                                                traceback.print_exc()
                                                                 log.FATAL_7(
                                                                     f"EGLD Sell Order status retrieval - Failed as:\n{e}"
                                                                 )
@@ -2438,7 +2466,7 @@ def main(version, mode, head):
                                                     )
 
                                                     log.INFO_SPECIAL(
-                                                        f" 🟢 Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT. Previously bought at [{str(ktbr_config[sell][1])}] USDT"
+                                                        f" 🟢 Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT. Previously bought at [{str(ktbr_config[sell][1])}] USDT\n"
                                                     )
                                                     telegram.LOG(
                                                         f" 🟢 Sold [[{qtty_aux}]] EGLD at [[{price_aux}]] USDT/EGLD.\nWas bought at [[{str(ktbr_config[sell][1])}]] USDT/EGLD",
@@ -2545,6 +2573,7 @@ def main(version, mode, head):
                                                                 break
                                                             except Exception as e:
                                                                 if i == 10:
+                                                                    traceback.print_exc()
                                                                     log.FATAL_7(
                                                                         f"Account Balance Sync. - Failed as:\n{e}"
                                                                     )
@@ -2623,6 +2652,7 @@ def main(version, mode, head):
                                                     f.write(
                                                         f"{log.logging_time()} Order could NOT be placed due to an error:\n{e}\n"
                                                     )
+                                                traceback.print_exc()
                                                 log.FATAL_7(
                                                     f"Make sure the [RYBKA_BIN_KEY] and [RYBKA_BIN_SECRET] ENV vars have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}"
                                                 )
@@ -2707,6 +2737,7 @@ def main(version, mode, head):
                                                     break
                                                 except Exception as e:
                                                     if i == 10:
+                                                        traceback.print_exc()
                                                         log.FATAL_7(
                                                             f"2. BNB Buy Order status retrieval - Failed as:\n{e}"
                                                         )
@@ -2744,6 +2775,7 @@ def main(version, mode, head):
                                                         break
                                                     except Exception as e:
                                                         if i == 10:
+                                                            traceback.print_exc()
                                                             log.FATAL_7(
                                                                 f"Account Balance Sync. - Failed as:\n{e}"
                                                             )
@@ -2807,6 +2839,7 @@ def main(version, mode, head):
                                         break
                                     except Exception as e:
                                         if i == 10:
+                                            traceback.print_exc()
                                             log.FATAL_7(f"Account Balance Sync. - Failed as:\n{e}")
                                         time.sleep(3)
                                 real_time_balances_update()
@@ -2824,6 +2857,7 @@ def main(version, mode, head):
         print(
             f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL (7)] {log.logging_time()}      > Stopping ... just wait a few seconds!\n{e}{bcolors.ENDC}"
         )
+        traceback.print_exc()
         unicorn_stream_obj.stop_manager_with_all_streams()
         email_sender(
             f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working.\n\n Check terminal / log files for more details."
