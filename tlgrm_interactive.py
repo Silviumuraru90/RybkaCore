@@ -285,7 +285,7 @@ def weight_modification_command(update, context):
     {'/m_RYBKA_TELEGRAM_SWITCH'}
     {'/m_RYBKA_ALL_LOG_TLG_SWITCH'}
     {'/m_RYBKA_USDT_SAFETY_NET'}
-    
+
 
     🔄 {'/help'}  -  Back to parent menu
 
@@ -323,7 +323,7 @@ def stop_rybka_command(update, context):
 
 ❓ Are you sure ❓:
     {'/yes_stop_it'}
-    
+
 
     🔄 {'/help'}  -  Back to parent menu
         """
@@ -796,12 +796,6 @@ def m_RYBKA_TRADING_BOOST_LVL_5_command(update, context):
 ####################################################
 
 
-def modifcation_log_message(update, context):
-    update.message.reply_text(
-        " 🟪 Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!"
-    )
-
-
 def m_RYBKA_RSI_FOR_BUY_20_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_BUY", "20")
     modifcation_log_message(update, context)
@@ -840,12 +834,6 @@ def m_RYBKA_RSI_FOR_BUY_40_command(update, context):
 ####################################################
 ##     RYBKA_RSI_FOR_SELL-specific functions      ##
 ####################################################
-
-
-def modifcation_log_message(update, context):
-    update.message.reply_text(
-        " 🟪 Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!"
-    )
 
 
 def m_RYBKA_RSI_FOR_SELL_60_command(update, context):
@@ -888,12 +876,6 @@ def m_RYBKA_RSI_FOR_SELL_80_command(update, context):
 ####################################################
 
 
-def modifcation_log_message(update, context):
-    update.message.reply_text(
-        " 🟪 Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!"
-    )
-
-
 def m_RYBKA_DEBUG_LVL_unset_command(update, context):
     modify_config_ini("RYBKA_DEBUG_LVL", "")
     modifcation_log_message(update, context)
@@ -917,12 +899,6 @@ def m_RYBKA_DEBUG_LVL_3_command(update, context):
 ####################################################
 ##    RYBKA_USDT_SAFETY_NET-specific functions    ##
 ####################################################
-
-
-def modifcation_log_message(update, context):
-    update.message.reply_text(
-        " 🟪 Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!"
-    )
 
 
 def m_RYBKA_USDT_SAFETY_NET_0_command(update, context):
@@ -1577,7 +1553,7 @@ def local_pic(update, image):
             bootstrap.TELE_CHAT_ID,
             photo=open(f"custom_modules/telegram/data/pics/{image}.png", "rb"),
         )
-    except Exception as e:
+    except Exception:
         update.message.reply_text("Local image could not be sent via TELEGRAM!")
 
 

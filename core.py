@@ -158,7 +158,7 @@ def log_files_creation(direct_call="1"):
                 encoding="utf8",
             ) as f:
                 f.write(
-                    f"Here is a detailed view of the history of candle prices for the [BNB-USDT] currency pair:\n\n"
+                    "Here is a detailed view of the history of candle prices for the [BNB-USDT] currency pair:\n\n"
                 )
             with open(
                 f"{current_export_dir}/{TRADE_SYMBOL}_historical_prices",
@@ -2166,7 +2166,7 @@ def main(version, mode, head):
                                                                 current_export_dir,
                                                             )
                                                             move_and_replace(
-                                                                f"BNB_USDT_historical_prices",
+                                                                "BNB_USDT_historical_prices",
                                                                 current_export_dir,
                                                             )
                                                             move_and_replace(
@@ -2906,7 +2906,7 @@ def main(version, mode, head):
                                                         current_export_dir,
                                                     )
                                                     move_and_replace(
-                                                        f"BNB_USDT_historical_prices",
+                                                        "BNB_USDT_historical_prices",
                                                         current_export_dir,
                                                     )
                                                     move_and_replace(

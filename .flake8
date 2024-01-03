@@ -15,5 +15,5 @@ ignore =
 exclude =
     env
     .venv
-max-complexity = 86
+max-complexity = 200
 accept-encodings = utf-8

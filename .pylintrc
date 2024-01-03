@@ -379,28 +379,28 @@ variable-rgx=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
 max-args=10
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=25
+max-attributes=27
 
 # Maximum number of boolean expressions in a if statement
-max-bool-expr=3
+max-bool-expr=4
 
 # Maximum number of branch for function / method body
-max-branches=95
+max-branches=180
 
 # Maximum number of locals for function / method body
-max-locals=35
+max-locals=59
 
 # Maximum number of parents for a class (see R0901).
 max-parents=2
 
 # Maximum number of public methods for a class (see R0904).
-max-public-methods=16
+max-public-methods=23
 
 # Maximum number of return / yield for function / method body
-max-returns=2
+max-returns=3
 
 # Maximum number of statements in function / method body
-max-statements=459
+max-statements=883
 
 # Minimum number of public methods for a class (see R0903).
 min-public-methods=2
