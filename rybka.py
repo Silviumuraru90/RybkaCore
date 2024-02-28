@@ -153,9 +153,10 @@ def main(version, mode):
                 log.FATAL(
                     f" 🔴 Rybka bot errored out with code [{status}],\n\nWhich is user stoppage. Shutting down Rybka."
                 )
+            # 1792 is not a one-time error 'code, usually indicates a persistent one, hence software should not go into retry mode upon this one getting thrown.
             elif status == 1792:
                 log.FATAL(
-                    f" 🔴 Rybka bot errored out with code [{status}].\n\nShutting down Rybka, it seems your API Key is either outdated or it doesn't have the permissions for [Spot & Margin Trading] enabled on it"
+                    f" 🔴 Rybka bot errored out with code [{status}].\n\nShutting down Rybka."
                 )
             elif status == 7:
                 log.FATAL(
