@@ -755,7 +755,12 @@ def email_sender(email_message):
 
         s = smtplib.SMTP(host="smtp.gmail.com", port=587)
         s.starttls()
-        s.login(RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_SENDER_DEVICE_PASSWORD)
+        try:
+            s.login(RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_SENDER_DEVICE_PASSWORD)
+        except Exception as e:
+            log.FATAL_7(
+            f"Email credentials got rejected. Please verify their validity and check the error thrown, below:\n\n{e}\n\n"
+        )
 
         msg = MIMEMultipart()
 
