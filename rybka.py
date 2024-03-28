@@ -90,6 +90,10 @@ def main(version, mode):
         sys.exit(0)
 
     if mode:
+        # This var is usually set in subprocess ('core.py'), but when that fails and a FATAL from it turns into a FATAL from current file, it then
+        # calls "custom_modules.logging.logging import log" - RYBKA_MODE being None there, hence this solution had to be applied in order to propagate a value to it
+        os.environ["RYBKA_MODE"] = mode.upper()
+
         while True:
             core_runs += 1
             log.DEBUG(f"Run nr. [{core_runs}] of RybkaCore Software\n\n")
