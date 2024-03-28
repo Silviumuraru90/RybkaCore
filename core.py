@@ -2037,7 +2037,7 @@ def main(version, mode, head):
                                                             )
 
                                                             # avoid rounding up on quantity & price bought
-                                                            log.INFO_SPECIAL(
+                                                            log.INFO_SPECIAL_PURPLE(
                                                                 f" 🟣 [{RYBKA_MODE}] Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT\n"
                                                             )
                                                             telegram.LOG(
@@ -2424,7 +2424,7 @@ def main(version, mode, head):
                                                     )
 
                                                     # avoid rounding up on quantity & price bought
-                                                    log.INFO_SPECIAL(
+                                                    log.INFO_SPECIAL_PURPLE(
                                                         f" ☑️  ♻️  Bought [{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}] BNB at price per 1 BNB of [{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}] USDT\n"
                                                     )
                                                     telegram.LOG(
@@ -2802,7 +2802,7 @@ def main(version, mode, head):
                                                         / 10**4
                                                     )
 
-                                                    log.INFO_SPECIAL(
+                                                    log.INFO_SPECIAL_GREEN(
                                                         f" 🟢 [{RYBKA_MODE}] Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT. Previously bought at [{str(ktbr_config[sell][1])}] USDT\n"
                                                     )
                                                     telegram.LOG(
@@ -3134,7 +3134,7 @@ def main(version, mode, head):
                                                 )
 
                                                 # avoid rounding up on quantity & price bought
-                                                log.INFO_SPECIAL(
+                                                log.INFO_SPECIAL_PURPLE(
                                                     f" ☑️  ♻️  Bought [{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}] BNB at price per 1 BNB of [{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}] USDT\n"
                                                 )
                                                 telegram.LOG(
@@ -3336,7 +3336,7 @@ if __name__ == "__main__":
                     and k != "RYBKA_BALANCES_AUX"
                 ):
                     log.INFO(" ")
-                    log.INFO_SPECIAL(
+                    log.MAGENTA(
                         f" ⚖️  Rybka's weight: [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!"
                     )
                     telegram.LOG(

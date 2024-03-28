@@ -124,9 +124,16 @@ class RybkaLogging:
         if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
             telegram.LOG(message, "INFO")
 
-    def INFO_SPECIAL(self, message):
+    def INFO_SPECIAL_GREEN(self, message):
         print(
             f"{bcolors.OKGREEN}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {message}{bcolors.ENDC}"
+        )
+        if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
+            telegram.LOG(message, "INFO")
+
+    def INFO_SPECIAL_PURPLE(self, message):
+        print(
+            f"{bcolors.PURPLE}◻️ [{os.environ.get('RYBKA_MODE')}] [INFO] {self.logging_time()}        > {message}{bcolors.ENDC}"
         )
         if bootstrap.RYBKA_ALL_LOG_TLG_SWITCH.upper() == "TRUE":
             telegram.LOG(message, "INFO")
