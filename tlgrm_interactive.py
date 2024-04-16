@@ -770,7 +770,7 @@ def modify_config_ini(weight, value):
 ####################################################
 
 
-def modifcation_log_message(update, context):
+def modification_notice_log(update, context):
     update.message.reply_text(
         " 🟪 Modify signal sent\nPlease wait for confirmation from bot (< 1 min)!"
     )
@@ -778,27 +778,27 @@ def modifcation_log_message(update, context):
 
 def m_RYBKA_TRADING_BOOST_LVL_1_command(update, context):
     modify_config_ini("RYBKA_TRADING_BOOST_LVL", "1")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADING_BOOST_LVL_2_command(update, context):
     modify_config_ini("RYBKA_TRADING_BOOST_LVL", "2")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADING_BOOST_LVL_3_command(update, context):
     modify_config_ini("RYBKA_TRADING_BOOST_LVL", "3")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADING_BOOST_LVL_4_command(update, context):
     modify_config_ini("RYBKA_TRADING_BOOST_LVL", "4")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADING_BOOST_LVL_5_command(update, context):
     modify_config_ini("RYBKA_TRADING_BOOST_LVL", "5")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 ####################################################
@@ -808,12 +808,12 @@ def m_RYBKA_TRADING_BOOST_LVL_5_command(update, context):
 
 def m_RYBKA_ALLOW_ONLY_BUYS_0_command(update, context):
     modify_config_ini("RYBKA_ALLOW_ONLY_BUYS", "0")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_ALLOW_ONLY_BUYS_1_command(update, context):
     modify_config_ini("RYBKA_ALLOW_ONLY_BUYS", "1")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 ####################################################
@@ -823,37 +823,37 @@ def m_RYBKA_ALLOW_ONLY_BUYS_1_command(update, context):
 
 def m_RYBKA_RSI_FOR_BUY_20_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_BUY", "20")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_RSI_FOR_BUY_25_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_BUY", "25")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_RSI_FOR_BUY_28_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_BUY", "28")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_RSI_FOR_BUY_30_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_BUY", "30")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_RSI_FOR_BUY_32_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_BUY", "32")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_RSI_FOR_BUY_35_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_BUY", "35")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_RSI_FOR_BUY_40_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_BUY", "40")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 ####################################################
@@ -863,37 +863,37 @@ def m_RYBKA_RSI_FOR_BUY_40_command(update, context):
 
 def m_RYBKA_RSI_FOR_SELL_60_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_SELL", "60")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_RSI_FOR_SELL_65_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_SELL", "65")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_RSI_FOR_SELL_68_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_SELL", "68")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_RSI_FOR_SELL_70_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_SELL", "70")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_RSI_FOR_SELL_72_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_SELL", "72")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_RSI_FOR_SELL_75_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_SELL", "75")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_RSI_FOR_SELL_80_command(update, context):
     modify_config_ini("RYBKA_RSI_FOR_SELL", "80")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 ####################################################
@@ -903,22 +903,22 @@ def m_RYBKA_RSI_FOR_SELL_80_command(update, context):
 
 def m_RYBKA_DEBUG_LVL_unset_command(update, context):
     modify_config_ini("RYBKA_DEBUG_LVL", "")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_DEBUG_LVL_1_command(update, context):
     modify_config_ini("RYBKA_DEBUG_LVL", "1")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_DEBUG_LVL_2_command(update, context):
     modify_config_ini("RYBKA_DEBUG_LVL", "2")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_DEBUG_LVL_3_command(update, context):
     modify_config_ini("RYBKA_DEBUG_LVL", "3")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 ####################################################
@@ -928,62 +928,62 @@ def m_RYBKA_DEBUG_LVL_3_command(update, context):
 
 def m_RYBKA_USDT_SAFETY_NET_0_command(update, context):
     modify_config_ini("RYBKA_USDT_SAFETY_NET", "0")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_USDT_SAFETY_NET_50_command(update, context):
     modify_config_ini("RYBKA_USDT_SAFETY_NET", "50")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_USDT_SAFETY_NET_100_command(update, context):
     modify_config_ini("RYBKA_USDT_SAFETY_NET", "100")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_USDT_SAFETY_NET_200_command(update, context):
     modify_config_ini("RYBKA_USDT_SAFETY_NET", "200")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_USDT_SAFETY_NET_350_command(update, context):
     modify_config_ini("RYBKA_USDT_SAFETY_NET", "350")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_USDT_SAFETY_NET_500_command(update, context):
     modify_config_ini("RYBKA_USDT_SAFETY_NET", "500")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_USDT_SAFETY_NET_750_command(update, context):
     modify_config_ini("RYBKA_USDT_SAFETY_NET", "750")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_USDT_SAFETY_NET_1000_command(update, context):
     modify_config_ini("RYBKA_USDT_SAFETY_NET", "1000")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_USDT_SAFETY_NET_1500_command(update, context):
     modify_config_ini("RYBKA_USDT_SAFETY_NET", "1500")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_USDT_SAFETY_NET_3000_command(update, context):
     modify_config_ini("RYBKA_USDT_SAFETY_NET", "3000")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_USDT_SAFETY_NET_5000_command(update, context):
     modify_config_ini("RYBKA_USDT_SAFETY_NET", "5000")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_USDT_SAFETY_NET_7500_command(update, context):
     modify_config_ini("RYBKA_USDT_SAFETY_NET", "7500")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 ####################################################
@@ -993,107 +993,107 @@ def m_RYBKA_USDT_SAFETY_NET_7500_command(update, context):
 
 def m_RYBKA_TRADE_QUANTITY_0_1_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "0.1")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_0_2_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "0.2")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_0_3_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "0.3")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_0_4_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "0.4")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_0_5_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "0.5")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_0_6_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "0.6")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_0_7_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "0.7")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_0_8_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "0.8")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_0_9_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "0.9")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_1_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "1")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_1_2_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "1.2")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_1_5_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "1.5")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_1_8_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "1.8")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_2_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "2")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_2_2_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "2.2")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_2_5_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "2.5")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_2_8_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "2.8")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_3_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "3")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_3_5_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "3.5")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_4_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "4")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TRADE_QUANTITY_5_command(update, context):
     modify_config_ini("RYBKA_TRADE_QUANTITY", "5")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 ####################################################
@@ -1103,107 +1103,107 @@ def m_RYBKA_TRADE_QUANTITY_5_command(update, context):
 
 def m_RYBKA_MIN_PROFIT_0_1_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "0.1")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_0_2_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "0.2")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_0_3_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "0.3")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_0_4_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "0.4")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_0_5_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "0.5")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_0_6_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "0.6")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_0_7_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "0.7")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_0_8_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "0.8")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_0_9_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "0.9")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_1_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "1")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_1_2_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "1.2")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_1_5_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "1.5")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_1_8_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "1.8")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_2_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "2")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_2_2_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "2.2")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_2_5_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "2.5")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_2_8_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "2.8")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_3_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "3")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_3_5_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "3.5")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_4_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "4")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_MIN_PROFIT_5_command(update, context):
     modify_config_ini("RYBKA_MIN_PROFIT", "5")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 ####################################################
@@ -1213,12 +1213,12 @@ def m_RYBKA_MIN_PROFIT_5_command(update, context):
 
 def m_RYBKA_EMAIL_SWITCH_true_command(update, context):
     modify_config_ini("RYBKA_EMAIL_SWITCH", "True")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_EMAIL_SWITCH_false_command(update, context):
     modify_config_ini("RYBKA_EMAIL_SWITCH", "False")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 ####################################################
@@ -1228,12 +1228,12 @@ def m_RYBKA_EMAIL_SWITCH_false_command(update, context):
 
 def m_RYBKA_TELEGRAM_SWITCH_true_command(update, context):
     modify_config_ini("RYBKA_TELEGRAM_SWITCH", "True")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_TELEGRAM_SWITCH_false_command(update, context):
     modify_config_ini("RYBKA_TELEGRAM_SWITCH", "False")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 ####################################################
@@ -1243,12 +1243,12 @@ def m_RYBKA_TELEGRAM_SWITCH_false_command(update, context):
 
 def m_RYBKA_ALL_LOG_TLG_SWITCH_true_command(update, context):
     modify_config_ini("RYBKA_ALL_LOG_TLG_SWITCH", "True")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 def m_RYBKA_ALL_LOG_TLG_SWITCH_false_command(update, context):
     modify_config_ini("RYBKA_ALL_LOG_TLG_SWITCH", "False")
-    modifcation_log_message(update, context)
+    modification_notice_log(update, context)
 
 
 ####################################################
