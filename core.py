@@ -393,6 +393,7 @@ def real_time_balances():
 
 def ktbr_integrity():
     global balance_egld
+    global sum_of_ktbr_cryptocurrency
     global RYBKA_MODE
     ktbr_config_check = {}
     sum_of_ktbr_cryptocurrency = 0
@@ -851,6 +852,7 @@ def real_time_balances_update():
             f.write(f"\n{log.logging_time()} EGLD balance is: {balance_egld}")
             f.write(f"\n{log.logging_time()} USDT balance is: {balance_usdt}")
             f.write(f"\n{log.logging_time()} BNB  balance is: {balance_bnb}")
+            f.write(f"\n 🔶 Only [[{round(sum_of_ktbr_cryptocurrency, 4)}]] EGLDs are tracked by bot, out of [[{balance_egld}]]")
     except Exception as e:
         log.WARN(f"Could not update balance file due to error: \n{e}")
 
