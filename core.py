@@ -962,6 +962,7 @@ def main(version, mode, head):
     global RYBKA_ALL_LOG_TLG_SWITCH
     global RYBKA_BALANCES_AUX
     global SET_DISCLAIMER
+    global ALLOW_ONLY_BUYS
 
     global balance_usdt, balance_egld, balance_bnb
     global locked_balance_usdt, locked_balance_egld, locked_balance_bnb
@@ -1384,6 +1385,7 @@ def main(version, mode, head):
                         latest_rsi = round(rsi[-1], 2)
 
                         log.VERBOSE(f"Latest RSI indicates {latest_rsi}")
+                        log.VERBOSE(f"Bot's [ALLOW_ONLY_BUYS] var is set as {str(ALLOW_ONLY_BUYS)}")
 
                         ###################################
                         ###       SPECIAL POLICY 1      ###
@@ -2508,7 +2510,7 @@ def main(version, mode, head):
                                                 f"BNB balance [{balance_bnb}] is NOT enough to sustain many more transactions. As we are in [RYBKA MODE - {RYBKA_MODE}] - bot will STOP at this point, as the user could've added infinite amounts of BNB at start, but decided not to."
                                             )
 
-                            if latest_rsi > RSI_FOR_SELL or bnb_conversion_done == 1:
+                            if latest_rsi > RSI_FOR_SELL and ALLOW_ONLY_BUYS == 0 or bnb_conversion_done == 1 and ALLOW_ONLY_BUYS == 0:
                                 log.INFO("================================")
                                 log.INFO(f"          {bcolors.OKCYAN}SELL{bcolors.ENDC} SIGNAL!")
                                 log.INFO("================================")
@@ -3283,8 +3285,15 @@ if __name__ == "__main__":
         global RYBKA_ALL_LOG_TLG_SWITCH
         global RYBKA_BALANCES_AUX
         global SET_DISCLAIMER
+        global ALLOW_ONLY_BUYS
 
         DEBUG_LVL = bootstrap.DEBUG_LVL
+
+        ALLOW_ONLY_BUYS = bootstrap.ALLOW_ONLY_BUYS
+        if ALLOW_ONLY_BUYS not in [0, 1]:
+            log.FATAL_7(
+                f"Please consult [README.md] file for valid values of [ALLOW_ONLY_BUYS] var.\n[{str(ALLOW_ONLY_BUYS)}] is not a valid value!"
+            )
 
         TRADING_BOOST_LVL = bootstrap.TRADING_BOOST_LVL
         if TRADING_BOOST_LVL not in [1, 2, 3, 4, 5]:
@@ -3313,6 +3322,7 @@ if __name__ == "__main__":
 
         def parse_weights():
             WEIGHTS_DICT_UPDATED.update({"RYBKA_DEBUG_LVL": DEBUG_LVL})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_ALLOW_ONLY_BUYS": ALLOW_ONLY_BUYS})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_TRADING_BOOST_LVL": TRADING_BOOST_LVL})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_RSI_FOR_BUY": RSI_FOR_BUY})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_RSI_FOR_SELL": RSI_FOR_SELL})
