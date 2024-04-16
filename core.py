@@ -3394,4 +3394,6 @@ if __name__ == "__main__":
 
     current_export_dir = ""
 
+    sum_of_ktbr_cryptocurrency = 0
+
     main()
