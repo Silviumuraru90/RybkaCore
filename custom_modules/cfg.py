@@ -41,7 +41,20 @@ class Rybka_py_env_bootstrap:
                 os.environ.get("RYBKA_ALLOW_ONLY_BUYS").strip("\n").strip()
             )
 
-        # Heatmap algorith overriden for trading boost
+        # Var to set the bot only in SELL mode, disallowing buys
+        if not os.environ.get("RYBKA_ALLOW_ONLY_SELLS"):
+            self.ALLOW_ONLY_SELLS = int(
+                config.get(
+                    "Rybka Standalone Configuration. For LIVE and DEMO modes",
+                    "RYBKA_ALLOW_ONLY_SELLS",
+                )
+            )
+        else:
+            self.ALLOW_ONLY_SELLS = int(
+                os.environ.get("RYBKA_ALLOW_ONLY_SELLS").strip("\n").strip()
+            )
+
+        # Heatmap algorithm controlled via such var, for a trading boost or the opposite
         if not os.environ.get("RYBKA_TRADING_BOOST_LVL"):
             self.TRADING_BOOST_LVL = int(
                 config.get(

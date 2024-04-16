@@ -247,6 +247,7 @@ def weights_info_command(update, context):
 🟪 Update-on-the-fly weights:
     {'/RYBKA_DEBUG_LVL'}
     {'/RYBKA_ALLOW_ONLY_BUYS'}
+    {'/RYBKA_ALLOW_ONLY_SELLS'}
     {'/RYBKA_TRADING_BOOST_LVL'}
     {'/RYBKA_RSI_FOR_BUY'}
     {'/RYBKA_RSI_FOR_SELL'}
@@ -277,6 +278,7 @@ def weight_modification_command(update, context):
 
 🟪 Modify weights:
     {'/m_RYBKA_ALLOW_ONLY_BUYS'}
+    {'/m_RYBKA_ALLOW_ONLY_SELLS'}
     {'/m_RYBKA_TRADING_BOOST_LVL'}
     {'/m_RYBKA_RSI_FOR_BUY'}
     {'/m_RYBKA_RSI_FOR_SELL'}
@@ -682,6 +684,14 @@ def modify_config_ini(weight, value):
             new_line = re.sub(pattern, replacement, line)
             print(new_line, end="")
 
+    elif weight == "RYBKA_ALLOW_ONLY_SELLS":
+        pattern = r"RYBKA_ALLOW_ONLY_SELLS = \d+"
+        replacement = f"RYBKA_ALLOW_ONLY_SELLS = {value}"
+
+        for line in fileinput.input("config.ini", inplace=True):
+            new_line = re.sub(pattern, replacement, line)
+            print(new_line, end="")
+
     elif weight == "RYBKA_RSI_FOR_BUY":
         pattern = r"RYBKA_RSI_FOR_BUY = \d+"
         replacement = f"RYBKA_RSI_FOR_BUY = {value}"
@@ -813,6 +823,21 @@ def m_RYBKA_ALLOW_ONLY_BUYS_0_command(update, context):
 
 def m_RYBKA_ALLOW_ONLY_BUYS_1_command(update, context):
     modify_config_ini("RYBKA_ALLOW_ONLY_BUYS", "1")
+    modification_notice_log(update, context)
+
+
+####################################################
+##    RYBKA_ALLOW_ONLY_SELLS-specific functions   ##
+####################################################
+
+
+def m_RYBKA_ALLOW_ONLY_SELLS_0_command(update, context):
+    modify_config_ini("RYBKA_ALLOW_ONLY_SELLS", "0")
+    modification_notice_log(update, context)
+
+
+def m_RYBKA_ALLOW_ONLY_SELLS_1_command(update, context):
+    modify_config_ini("RYBKA_ALLOW_ONLY_SELLS", "1")
     modification_notice_log(update, context)
 
 
@@ -1321,6 +1346,29 @@ def call_submenu_of_weight(update, context, weight):
         """
         )
 
+    elif weight == "RYBKA_ALLOW_ONLY_SELLS":
+        update.message.reply_text(
+            f"""Available [RYBKA_ALLOW_ONLY_SELLS] weight modification commands are ⤵️
+
+
+❔ Firstly you may want to check the current value of this weight:
+    {'/RYBKA_ALLOW_ONLY_SELLS'} - Checks current value
+
+🟫 Choose the value you want to set for this weight:
+    {'/RYBKA_ALLOW_ONLY_SELLS_0'} - Set value "0"
+    {'/RYBKA_ALLOW_ONLY_SELLS_1'} - Set value "1"
+
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/modify_weights'}  -  Back to parent menu
+
+
+❕ Weights specific to DEMO mode are not included!
+        """
+        )
+
     elif weight == "RYBKA_RSI_FOR_BUY":
         update.message.reply_text(
             f"""Available [RYBKA_RSI_FOR_BUY] weight modification commands are ⤵️
@@ -1777,6 +1825,7 @@ def main():
     dp.add_handler(CommandHandler("RYBKA_RSI_PERIOD", weights_command))
     dp.add_handler(CommandHandler("RYBKA_DEBUG_LVL", weights_command))
     dp.add_handler(CommandHandler("RYBKA_ALLOW_ONLY_BUYS", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_ALLOW_ONLY_SELLS", weights_command))
     dp.add_handler(CommandHandler("RYBKA_TRADING_BOOST_LVL", weights_command))
     dp.add_handler(CommandHandler("RYBKA_RSI_FOR_BUY", weights_command))
     dp.add_handler(CommandHandler("RYBKA_RSI_FOR_SELL", weights_command))
@@ -1804,6 +1853,10 @@ def main():
     dp.add_handler(CommandHandler("m_RYBKA_ALLOW_ONLY_BUYS", modify_weights_command))
     dp.add_handler(CommandHandler("RYBKA_ALLOW_ONLY_BUYS_0", m_RYBKA_ALLOW_ONLY_BUYS_0_command))
     dp.add_handler(CommandHandler("RYBKA_ALLOW_ONLY_BUYS_1", m_RYBKA_ALLOW_ONLY_BUYS_1_command))
+
+    dp.add_handler(CommandHandler("m_RYBKA_ALLOW_ONLY_SELLS", modify_weights_command))
+    dp.add_handler(CommandHandler("RYBKA_ALLOW_ONLY_SELLS_0", m_RYBKA_ALLOW_ONLY_SELLS_0_command))
+    dp.add_handler(CommandHandler("RYBKA_ALLOW_ONLY_SELLS_1", m_RYBKA_ALLOW_ONLY_SELLS_1_command))
 
     dp.add_handler(CommandHandler("m_RYBKA_RSI_FOR_BUY", modify_weights_command))
     dp.add_handler(CommandHandler("RYBKA_RSI_FOR_BUY_20", m_RYBKA_RSI_FOR_BUY_20_command))

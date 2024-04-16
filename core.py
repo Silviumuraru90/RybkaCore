@@ -962,7 +962,7 @@ def main(version, mode, head):
     global RYBKA_ALL_LOG_TLG_SWITCH
     global RYBKA_BALANCES_AUX
     global SET_DISCLAIMER
-    global ALLOW_ONLY_BUYS
+    global ALLOW_ONLY_BUYS, ALLOW_ONLY_SELLS
 
     global balance_usdt, balance_egld, balance_bnb
     global locked_balance_usdt, locked_balance_egld, locked_balance_bnb
@@ -1386,6 +1386,7 @@ def main(version, mode, head):
 
                         log.VERBOSE(f"Latest RSI indicates {latest_rsi}")
                         log.VERBOSE(f"Bot's [ALLOW_ONLY_BUYS] var is set as {str(ALLOW_ONLY_BUYS)}")
+                        log.VERBOSE(f"Bot's [ALLOW_ONLY_SELLS] var is set as {str(ALLOW_ONLY_SELLS)}")
 
                         ###################################
                         ###       SPECIAL POLICY 1      ###
@@ -1476,13 +1477,13 @@ def main(version, mode, head):
                             ################################################################################################################################
 
                             if (
-                                latest_rsi < RSI_FOR_BUY
-                                or len(ktbr_config) in [0, 4]
-                                or (policy == "overridden" and balance_usdt > 100 and len(ktbr_config) > 5)
-                                or (policy == "overridden" and balance_usdt > 500 and len(ktbr_config) > 25)
-                                or (policy == "overridden" and balance_usdt > 2500 and len(ktbr_config) > 125)
-                                or (policy == "overridden" and balance_usdt > 10000 and len(ktbr_config) > 300)
-                                or bnb_conversion_done == 1
+                                latest_rsi < RSI_FOR_BUY and ALLOW_ONLY_SELLS == 0
+                                or len(ktbr_config) in [0, 4] and ALLOW_ONLY_SELLS == 0
+                                or (policy == "overridden" and balance_usdt > 100 and len(ktbr_config) > 5 and ALLOW_ONLY_SELLS == 0)
+                                or (policy == "overridden" and balance_usdt > 500 and len(ktbr_config) > 25 and ALLOW_ONLY_SELLS == 0)
+                                or (policy == "overridden" and balance_usdt > 2500 and len(ktbr_config) > 125 and ALLOW_ONLY_SELLS == 0)
+                                or (policy == "overridden" and balance_usdt > 10000 and len(ktbr_config) > 300 and ALLOW_ONLY_SELLS == 0)
+                                or bnb_conversion_done == 1 and ALLOW_ONLY_SELLS == 0
                             ):
                                 ###################################
                                 ###   END of SPECIAL POLICY 3   ###
@@ -3285,7 +3286,7 @@ if __name__ == "__main__":
         global RYBKA_ALL_LOG_TLG_SWITCH
         global RYBKA_BALANCES_AUX
         global SET_DISCLAIMER
-        global ALLOW_ONLY_BUYS
+        global ALLOW_ONLY_BUYS, ALLOW_ONLY_SELLS
 
         DEBUG_LVL = bootstrap.DEBUG_LVL
 
@@ -3293,6 +3294,12 @@ if __name__ == "__main__":
         if ALLOW_ONLY_BUYS not in [0, 1]:
             log.FATAL_7(
                 f"Please consult [README.md] file for valid values of [ALLOW_ONLY_BUYS] var.\n[{str(ALLOW_ONLY_BUYS)}] is not a valid value!"
+            )
+
+        ALLOW_ONLY_SELLS = bootstrap.ALLOW_ONLY_SELLS
+        if ALLOW_ONLY_SELLS not in [0, 1]:
+            log.FATAL_7(
+                f"Please consult [README.md] file for valid values of [ALLOW_ONLY_SELLS] var.\n[{str(ALLOW_ONLY_SELLS)}] is not a valid value!"
             )
 
         TRADING_BOOST_LVL = bootstrap.TRADING_BOOST_LVL
@@ -3323,6 +3330,7 @@ if __name__ == "__main__":
         def parse_weights():
             WEIGHTS_DICT_UPDATED.update({"RYBKA_DEBUG_LVL": DEBUG_LVL})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_ALLOW_ONLY_BUYS": ALLOW_ONLY_BUYS})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_ALLOW_ONLY_SELLS": ALLOW_ONLY_SELLS})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_TRADING_BOOST_LVL": TRADING_BOOST_LVL})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_RSI_FOR_BUY": RSI_FOR_BUY})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_RSI_FOR_SELL": RSI_FOR_SELL})
