@@ -77,6 +77,8 @@
 ✅ `Safety net` implementation for USDT <br>
 ✅ Various `graphs` generated on the spot and provided via Telegram <br>
 ✅ When it remains without too much currency for trade fees (BNB) - it will automatically convert between 10 and 15 USDT into BNB. This, of course, doesn't take from the safety net of USDT <br>
+✅ Added a submode to allow only BUYs and no SELLs. Can be controlled via a weight and of course - remotely, via Telegram <br>
+✅ Added a submode to allow only SELLs and no BUYs. Can be controlled via a weight and of course - remotely, via Telegram <br>
 
 
 <br><br>
