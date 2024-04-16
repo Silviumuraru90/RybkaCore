@@ -1514,7 +1514,7 @@ def main(version, mode, head):
 
                                 if USDT_SAFETY_NET and safety_net_check < USDT_SAFETY_NET:
                                     log.INFO(
-                                        f"Another buy may bring the safety net for USDT to [{str(safety_net_check)}]. Which is lower than the one imposed, of [{str(USDT_SAFETY_NET)}]. Hence, it's not permitted!"
+                                        f"Another buy may bring the safety net for USDT to [{str(round(float(safety_net_check), 4))}]. Which is lower than the one imposed, of [{str(USDT_SAFETY_NET)}]. Hence, it's not permitted!"
                                     )
                                 else:
                                     log.VERBOSE(f"safety_net_check is {str(safety_net_check)}")
