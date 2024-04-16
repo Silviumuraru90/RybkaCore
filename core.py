@@ -1474,7 +1474,10 @@ def main(version, mode, head):
                             if (
                                 latest_rsi < RSI_FOR_BUY
                                 or len(ktbr_config) in [0, 4]
-                                or policy == "overridden"
+                                or (policy == "overridden" and balance_usdt > 100 and len(ktbr_config) > 5)
+                                or (policy == "overridden" and balance_usdt > 500 and len(ktbr_config) > 25)
+                                or (policy == "overridden" and balance_usdt > 2500 and len(ktbr_config) > 125)
+                                or (policy == "overridden" and balance_usdt > 10000 and len(ktbr_config) > 300)
                                 or bnb_conversion_done == 1
                             ):
                                 ###################################
