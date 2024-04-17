@@ -260,6 +260,25 @@ bnb_min_order_quantity = round(float(1 / bnb_min_buy_share), 3)
 
 🟣 What is `ktbr`? It stands for `keep-the-business-running` and is the most important file created by the bot. It keeps track of bot's buy transactions in an individual way. There is also an `integrity` function (to which you'll see a log in terminal) that runs once in a while that constantly verifies if the user has not altered the amount of balances the bot is aware of, in the cloud. If there is a misalignment - it will stop and let you know about it. The sum of `cryptocoin` across all the buy transactions in the `ktbr` file should at all times be equal or less than the sum of `cryptocoin` you have in your Binance account. Should you want to transfer some to any other wallet, edit this ktbr file, while keeping its `json` format;
 <br><br></br>
+❗️ Note for `shutting down the bot`:  It can be done in two `safe` ways.<br>
+&emsp;&emsp;&emsp;&emsp;<b>`1`</b> Via Telegram command `/stop_rybka`<br>
+&emsp;&emsp;&emsp;&emsp;<b>`2`</b> Via CLI by pressing together, jsut once, `ctrl+c`. The moment you do this, bot will begin the shutdown process showing such log:<br><br>
+
+<div align="center">
+  <img src="MEDIA/shutdown_log_1.png">
+</div>
+<br>
+
+`Please` wait for a few seconds until you see this continuation in your terminal:<br><br>
+
+<div align="center">
+  <img src="MEDIA/shutdown_log_2.png">
+</div>
+<br>
+
+Moment in which you can press `y` and hit `Enter`. That way you made sure you didn't sped up the process and cut it "mid-air".
+<br><br></br>
+
 ❗️ Note for `transaction fees`:  For each transaction the bot is doing (buy or sell), it is paying a fee of `0.08%` of the `trading-quantity-of-the-coin` * `current-coin-price`;
 <br><br></br>
 ❗️ Note for `minimum profit`: [`RYBKA_MIN_PROFIT`] ENV var's value represents a `gross` value. So that it will be `auto-adjusted` to a higher value and `inform the user` upon action, if the user sets it to be so small that the `net` minimum (`RYBKA_MIN_PROFIT`-`commision per a specific transaction`) is below <b>80%</b> (It had to be at least 50%, as even if the profit is grabbed once, per sell transaction, the fee is also considered at the buy phase, so 80% is a very good margin) of the `gross` [`RYBKA_MIN_PROFIT`]. This is calculated `individually`, on each sell transaction;
