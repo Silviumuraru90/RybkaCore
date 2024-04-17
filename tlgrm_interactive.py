@@ -196,6 +196,22 @@ https://gitlab.com/Silviu_space/rybka/-/issues/350
     {'/BTC'}
     {'/ETH'}
     {'/BNB'}
+    {'/ADA'}
+    {'/SOL'}
+    {'/DOGE'}
+    {'/DOT'}
+    {'/DAI'}
+    {'/OP'}
+    {'/ARB'}
+    {'/LINK'}
+    {'/FIL'}
+    {'/LTC'}
+    {'/UNI'}
+    {'/ATOM'}
+    {'/BCH'}
+    {'/ALGO'}
+    {'/XMR'}
+    {'/XRP'}
 
 
     🔄 {'/help'}  -  Back to parent menu
@@ -205,7 +221,7 @@ https://gitlab.com/Silviu_space/rybka/-/issues/350
 
 def cryptocoin_command(update, context):
     update.message.reply_text(
-        f"""Available EGLD-graphs are ⤵️
+        f"""Available Egold graphs are ⤵️
 
 
 🟪 Cryptocurrency submenus:
@@ -223,7 +239,7 @@ def cryptocoin_command(update, context):
 
 def btc_command(update, context):
     update.message.reply_text(
-        f"""Available BTC-graphs are ⤵️
+        f"""Available Bitcoin graphs are ⤵️
 
 
 🟪 Cryptocurrency submenus:
@@ -241,7 +257,7 @@ def btc_command(update, context):
 
 def eth_command(update, context):
     update.message.reply_text(
-        f"""Available ETH-graphs are ⤵️
+        f"""Available Ethereum graphs are ⤵️
 
 
 🟪 Cryptocurrency submenus:
@@ -259,7 +275,7 @@ def eth_command(update, context):
 
 def bnb_command(update, context):
     update.message.reply_text(
-        f"""Available BNB-graphs are ⤵️
+        f"""Available Binance Coin graphs are ⤵️
 
 
 🟪 Cryptocurrency submenus:
@@ -273,6 +289,295 @@ def bnb_command(update, context):
     🔄 {'/graphs'}  -  Back to parent menu
         """
     )
+
+
+def ada_command(update, context):
+    update.message.reply_text(
+        f"""Available Cardano graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/ADA_price_in_the_last_year'}
+    {'/ADA_price_in_the_last_month'}
+    {'/ADA_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def sol_command(update, context):
+    update.message.reply_text(
+        f"""Available Solana graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/SOL_price_in_the_last_year'}
+    {'/SOL_price_in_the_last_month'}
+    {'/SOL_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def doge_command(update, context):
+    update.message.reply_text(
+        f"""Available Dogecoin graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/DOGE_price_in_the_last_year'}
+    {'/DOGE_price_in_the_last_month'}
+    {'/DOGE_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def dot_command(update, context):
+    update.message.reply_text(
+        f"""Available Polkadot graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/DOT_price_in_the_last_year'}
+    {'/DOT_price_in_the_last_month'}
+    {'/DOT_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def dai_command(update, context):
+    update.message.reply_text(
+        f"""Available Dai graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/DAI_price_in_the_last_year'}
+    {'/DAI_price_in_the_last_month'}
+    {'/DAI_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def op_command(update, context):
+    update.message.reply_text(
+        f"""Available Optimism graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/OP_price_in_the_last_year'}
+    {'/OP_price_in_the_last_month'}
+    {'/OP_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def arb_command(update, context):
+    update.message.reply_text(
+        f"""Available Arbitrum graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/ARB_price_in_the_last_year'}
+    {'/ARB_price_in_the_last_month'}
+    {'/ARB_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def link_command(update, context):
+    update.message.reply_text(
+        f"""Available Chainlink graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/LINK_price_in_the_last_year'}
+    {'/LINK_price_in_the_last_month'}
+    {'/LINK_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def fil_command(update, context):
+    update.message.reply_text(
+        f"""Available Filecoin graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/FIL_price_in_the_last_year'}
+    {'/FIL_price_in_the_last_month'}
+    {'/FIL_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def ltc_command(update, context):
+    update.message.reply_text(
+        f"""Available Litecoin graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/LTC_price_in_the_last_year'}
+    {'/LTC_price_in_the_last_month'}
+    {'/LTC_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def uni_command(update, context):
+    update.message.reply_text(
+        f"""Available Uniswap graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/UNI_price_in_the_last_year'}
+    {'/UNI_price_in_the_last_month'}
+    {'/UNI_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def atom_command(update, context):
+    update.message.reply_text(
+        f"""Available Cosmos graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/ATOM_price_in_the_last_year'}
+    {'/ATOM_price_in_the_last_month'}
+    {'/ATOM_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def bch_command(update, context):
+    update.message.reply_text(
+        f"""Available Bitcoin Cash graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/BCH_price_in_the_last_year'}
+    {'/BCH_price_in_the_last_month'}
+    {'/BCH_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def algo_command(update, context):
+    update.message.reply_text(
+        f"""Available Algorand graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/ALGO_price_in_the_last_year'}
+    {'/ALGO_price_in_the_last_month'}
+    {'/ALGO_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def xmr_command(update, context):
+    update.message.reply_text(
+        f"""Available Monero graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/XMR_price_in_the_last_year'}
+    {'/XMR_price_in_the_last_month'}
+    {'/XMR_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
+
+def xrp_command(update, context):
+    update.message.reply_text(
+        f"""Available Ripple graphs are ⤵️
+
+
+🟪 Cryptocurrency submenus:
+    {'/XRP_price_in_the_last_year'}
+    {'/XRP_price_in_the_last_month'}
+    {'/XRP_price_in_the_last_week'}
+
+
+    🔄 {'/help'}  -  Shows the `help` message
+
+    🔄 {'/graphs'}  -  Back to parent menu
+        """
+    )
+
 
 
 def weights_info_command(update, context):
@@ -1721,6 +2026,70 @@ def generate_graph_command(update, context):
             r = requests.get(
                 f"https://api.coingecko.com/api/v3/coins/binancecoin/history?date={date}&localization=false"
             )
+        elif currency == "ADA":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/cardano/history?date={date}&localization=false"
+            )
+        elif currency == "SOL":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/solana/history?date={date}&localization=false"
+            )
+        elif currency == "DOGE":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/dogecoin/history?date={date}&localization=false"
+            )
+        elif currency == "DOT":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/polkadot/history?date={date}&localization=false"
+            )
+        elif currency == "DAI":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/dai/history?date={date}&localization=false"
+            )
+        elif currency == "OP":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/optimism/history?date={date}&localization=false"
+            )
+        elif currency == "ARB":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/arbitrum/history?date={date}&localization=false"
+            )
+        elif currency == "LINK":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/chainlink/history?date={date}&localization=false"
+            )
+        elif currency == "FIL":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/filecoin/history?date={date}&localization=false"
+            )
+        elif currency == "LIT":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/litecoin/history?date={date}&localization=false"
+            )
+        elif currency == "UNI":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/uniswap/history?date={date}&localization=false"
+            )
+        elif currency == "ATOM":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/cosmos/history?date={date}&localization=false"
+            )
+        elif currency == "BCH":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/bitcoin-cash/history?date={date}&localization=false"
+            )
+        elif currency == "ALGO":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/algorand/history?date={date}&localization=false"
+            )
+        elif currency == "XMR":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/monero/history?date={date}&localization=false"
+            )
+        elif currency == "XRP":
+            r = requests.get(
+                f"https://api.coingecko.com/api/v3/coins/ripple/history?date={date}&localization=false"
+            )
 
         if r.status_code != 200:
             return "ratelimited"
@@ -2034,6 +2403,86 @@ def main():
     dp.add_handler(CommandHandler("BNB_price_in_the_last_year", generate_graph_command))
     dp.add_handler(CommandHandler("BNB_price_in_the_last_month", generate_graph_command))
     dp.add_handler(CommandHandler("BNB_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("ADA", ada_command))
+    dp.add_handler(CommandHandler("ADA_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("ADA_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("ADA_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("SOL", sol_command))
+    dp.add_handler(CommandHandler("SOL_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("SOL_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("SOL_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("DOGE", doge_command))
+    dp.add_handler(CommandHandler("DOGE_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("DOGE_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("DOGE_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("DOT", dot_command))
+    dp.add_handler(CommandHandler("DOT_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("DOT_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("DOT_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("DAI", dai_command))
+    dp.add_handler(CommandHandler("DAI_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("DAI_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("DAI_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("OP", op_command))
+    dp.add_handler(CommandHandler("OP_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("OP_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("OP_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("ARB", arb_command))
+    dp.add_handler(CommandHandler("ARB_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("ARB_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("ARB_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("LINK", link_command))
+    dp.add_handler(CommandHandler("LINK_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("LINK_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("LINK_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("FIL", fil_command))
+    dp.add_handler(CommandHandler("FIL_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("FIL_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("FIL_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("LTC", ltc_command))
+    dp.add_handler(CommandHandler("LTC_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("LTC_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("LTC_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("UNI", uni_command))
+    dp.add_handler(CommandHandler("UNI_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("UNI_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("UNI_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("ATOM", atom_command))
+    dp.add_handler(CommandHandler("ATOM_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("ATOM_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("ATOM_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("BCH", bch_command))
+    dp.add_handler(CommandHandler("BCH_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("BCH_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("BCH_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("ALGO", algo_command))
+    dp.add_handler(CommandHandler("ALGO_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("ALGO_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("ALGO_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("XMR", xmr_command))
+    dp.add_handler(CommandHandler("XMR_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("XMR_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("XMR_price_in_the_last_week", generate_graph_command))
+
+    dp.add_handler(CommandHandler("XRP", xrp_command))
+    dp.add_handler(CommandHandler("XRP_price_in_the_last_year", generate_graph_command))
+    dp.add_handler(CommandHandler("XRP_price_in_the_last_month", generate_graph_command))
+    dp.add_handler(CommandHandler("XRP_price_in_the_last_week", generate_graph_command))
 
     dp.add_handler(MessageHandler(Filters.text, handle_message))
 
