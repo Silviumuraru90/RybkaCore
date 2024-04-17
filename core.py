@@ -3302,7 +3302,7 @@ def main(version, mode, head):
             f"\n{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL (7)] {log.logging_time()}  > Process stopped by user. Wait a few seconds!\n{bcolors.ENDC}"
         )
         unicorn_stream_obj.stop_manager_with_all_streams()
-        log.FATAL_7(f" 🔴 ⓇⓎⒷⓀⒶⒸⓄⓇⒺ 🔴\n          [[{RYBKA_MODE} mode]]\n")
+        log.FATAL_7(f" 🔴 ⓇⓎⒷⓀⒶⒸⓄⓇⒺ 🔴\n\n              [[{RYBKA_MODE} mode]]\n")
 
     except Exception as e:
         print(
@@ -3313,7 +3313,7 @@ def main(version, mode, head):
         email_sender(
             f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot STOPPED working.\n\n Check terminal / log files for more details."
         )
-        log.FATAL_7(f" 🔴 ⓇⓎⒷⓀⒶⒸⓄⓇⒺ 🔴\n          [[{RYBKA_MODE} mode]]\n")
+        log.FATAL_7(f" 🔴 ⓇⓎⒷⓀⒶⒸⓄⓇⒺ 🔴\n\n              [[{RYBKA_MODE} mode]]\n")
 
 
 if __name__ == "__main__":
