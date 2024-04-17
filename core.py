@@ -1279,7 +1279,7 @@ def main(version, mode, head):
                 if exists("LIVE/real_time_balances"):
                     with open("LIVE/real_time_balances", "r", encoding="utf8") as f:
                         if os.stat("LIVE/real_time_balances").st_size == 0:
-                            telegram.LOG(" 🚫 [[LIVE/real_time_balances]] file exists but is empty")
+                            telegram.LOG(f" 🚫 [[{RYBKA_MODE}]] [[LIVE/real_time_balances]] file exists but is empty")
                         else:
                             balances = f.read()
                             for elem in balances.split("\n"):
@@ -1288,7 +1288,7 @@ def main(version, mode, head):
                                 if elem:
                                     telegram.LOG(f"{elem}")
                 else:
-                    telegram.LOG(" 🛑 The file for balances does NOT exist!")
+                    telegram.LOG(f" 🛑 [[{RYBKA_MODE}]] The file for balances does NOT exist!")
 
                 pattern = r"RYBKA_BALANCES_AUX =.*"
                 replacement = "RYBKA_BALANCES_AUX = False"
@@ -3412,7 +3412,7 @@ if __name__ == "__main__":
                         f" ⚖️  Rybka's weight: [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!"
                     )
                     telegram.LOG(
-                        f" 🟢 Rybka's weight:\n[[{k.replace('_',' ')}]]\n\n⇢ updated from [[{WEIGHTS_DICT_OUTDATED[k]}]] to [[{WEIGHTS_DICT_UPDATED[k]}]]!",
+                        f" 🟢 [[{RYBKA_MODE}]] Rybka's weight:\n[[{k.replace('_',' ')}]]\n\n⇢ updated from [[{WEIGHTS_DICT_OUTDATED[k]}]] to [[{WEIGHTS_DICT_UPDATED[k]}]]!",
                     )
                     log.INFO(" ")
                     WEIGHTS_DICT_OUTDATED.update({k: WEIGHTS_DICT_UPDATED[k]})
