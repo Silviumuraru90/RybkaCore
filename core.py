@@ -1384,9 +1384,58 @@ def main(version, mode, head):
 
                         latest_rsi = round(rsi[-1], 2)
 
+                        log.DEBUG(f"Bot's [latest_rsi] is {latest_rsi}")
+
                         log.VERBOSE(f"Latest RSI indicates {latest_rsi}")
                         log.VERBOSE(f"Bot's [ALLOW_ONLY_BUYS] var is set as {str(ALLOW_ONLY_BUYS)}")
                         log.VERBOSE(f"Bot's [ALLOW_ONLY_SELLS] var is set as {str(ALLOW_ONLY_SELLS)}")
+                        log.VERBOSE(f"Bot's [balance_bnb] is {balance_bnb}")
+                        log.VERBOSE(f"Bot's [balance_usdt] is {balance_usdt}")
+                        log.VERBOSE(f"Bot's [balance_egld] is {balance_egld}")
+                        log.VERBOSE(f"Bot's [total_usdt_profit] is {total_usdt_profit}")
+                        log.VERBOSE(f"Bot's [multiple_sells] is {multiple_sells}")
+
+                        log.HIGH_VERBOSITY(f"Bot's [TRADE_QUANTITY] is {TRADE_QUANTITY}")
+
+                        with open(
+                            f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
+                            "a",
+                            encoding="utf8",
+                        ) as f:
+                            f.write(
+                                f"\n\n\n{log.logging_time()} MAIN LOGS (part 0):\n"
+                            )
+                            f.write(
+                                f'{log.logging_time()} {"Latest RSI (latest_rsi) is":90} {latest_rsi:40}\n'
+                            )
+                            f.write(
+                                f"{log.logging_time()} {'BNB balance (balance_bnb) is':90} {balance_bnb:40}\n"
+                            )
+                            f.write(
+                                f"{log.logging_time()} {'USDT balance (balance_usdt) is':90} {balance_usdt:40}\n"
+                            )
+                            f.write(
+                                f"{log.logging_time()} {'EGLD balance (balance_egld) is':90} {balance_egld:40}\n"
+                            )
+                            f.write(
+                                f"{log.logging_time()} {'Total USDT profit (total_usdt_profit) is':90} {total_usdt_profit:40}\n"
+                            )
+                            f.write(
+                                f"{log.logging_time()} {'Multiple sells (multiple_sells) set to':90} {multiple_sells:40}\n"
+                            )
+                            f.write(
+                                f"{log.logging_time()} {'TRADE_QUANTITY (BEFORE processing) (TRADE_QUANTITY) is':90} {TRADE_QUANTITY:40}\n"
+                            )
+                            f.write(
+                                f"\n{log.logging_time()} {'Closed candles (str(closed_candles)) are':90} {str(closed_candles)}\n"
+                            )
+                            f.write(
+                                f"\n{log.logging_time()} {'Bot sub-mode for [ALLOW_ONLY_BUYS is]':90} {str(ALLOW_ONLY_BUYS)}\n"
+                            )
+                            f.write(
+                                f"\n{log.logging_time()} {'Bot sub-mode for [ALLOW_ONLY_SELLS is]':90} {str(ALLOW_ONLY_SELLS)}\n"
+                            )
+
 
                         ###################################
                         ###       SPECIAL POLICY 1      ###
@@ -3130,7 +3179,7 @@ def main(version, mode, head):
                                                 encoding="utf8",
                                             ) as f:
                                                 f.write(
-                                                    f"\n\n\n{log.logging_time()} Within BNB buy order (part II):\n"
+                                                    f"\n\n\n{log.logging_time()} Within BNB buy order (part III):\n"
                                                 )
                                                 f.write(
                                                     f'{log.logging_time()} {"Order status is":90} {str(order_status)}\n'
