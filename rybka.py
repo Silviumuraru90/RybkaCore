@@ -99,7 +99,7 @@ def main(version, mode):
             log.DEBUG(f"Run nr. [{core_runs}] of RybkaCore Software\n\n")
             with open("TEMP/core_runsTmp", "w", encoding="utf8") as x:
                 x.write(str(core_runs))
-            log.ORANGE("\n\n 📡 RybkaCore bot is being started...\n\n")
+            log.CYAN("\n\n 📡 RybkaCore bot is being started...\n\n")
 
             time.sleep(1)
 
