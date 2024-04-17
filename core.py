@@ -111,26 +111,26 @@ def binance_api_account_status():
 
 def account_balance_update():
     global client
-    global balance_usdt
-    global balance_egld
+    global balance_stablecoin
+    global balance_cryptocoin
     global balance_bnb
-    global locked_balance_usdt
-    global locked_balance_egld
+    global locked_balance_stablecoin
+    global locked_balance_cryptocoin
     global locked_balance_bnb
 
-    balance_aux_usdt = client.get_asset_balance(asset="USDT")
-    if float(balance_aux_usdt["free"]) == round(float(balance_aux_usdt["free"]), 4):
-        balance_usdt = round(float(balance_aux_usdt["free"]), 4)
+    balance_aux_stablecoin = client.get_asset_balance(asset=bootstrap.STABLECOIN_SYMBOL)
+    if float(balance_aux_stablecoin["free"]) == round(float(balance_aux_stablecoin["free"]), 4):
+        balance_stablecoin = round(float(balance_aux_stablecoin["free"]), 4)
     else:
-        balance_usdt = round(float(balance_aux_usdt["free"]) + 0.0001, 4)
-    locked_balance_usdt = round(float(balance_aux_usdt["locked"]), 4)
+        balance_stablecoin = round(float(balance_aux_stablecoin["free"]) + 0.0001, 4)
+    locked_balance_stablecoin = round(float(balance_aux_stablecoin["locked"]), 4)
 
-    balance_aux_egld = client.get_asset_balance(asset="EGLD")
-    if float(balance_aux_egld["free"]) == round(float(balance_aux_egld["free"]), 4):
-        balance_egld = round(float(balance_aux_egld["free"]), 4)
+    balance_aux_cryptocoin = client.get_asset_balance(asset=bootstrap.CRYPTOCOIN_SYMBOL)
+    if float(balance_aux_cryptocoin["free"]) == round(float(balance_aux_cryptocoin["free"]), 4):
+        balance_cryptocoin = round(float(balance_aux_cryptocoin["free"]), 4)
     else:
-        balance_egld = round(float(balance_aux_egld["free"]) + 0.0001, 4)
-    locked_balance_egld = round(float(balance_aux_egld["locked"]), 4)
+        balance_cryptocoin = round(float(balance_aux_cryptocoin["free"]) + 0.0001, 4)
+    locked_balance_cryptocoin = round(float(balance_aux_cryptocoin["locked"]), 4)
 
     balance_aux_bnb = client.get_asset_balance(asset="BNB")
     balance_bnb = round(float(balance_aux_bnb["free"]), 8)
@@ -146,19 +146,19 @@ def log_files_creation(direct_call="1"):
     global current_export_dir
     global RYBKA_EMAIL_RECIPIENT_EMAIL, RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_RECIPIENT_EMAIL, RYBKA_EMAIL_SENDER_EMAIL
     global RYBKA_TELEGRAM_SWITCH, RYBKA_EMAIL_SWITCH
-    global RSI_FOR_SELL, RSI_FOR_BUY, USDT_SAFETY_NET, MIN_PROFIT, TRADE_QUANTITY, DEBUG_LVL
+    global RSI_FOR_SELL, RSI_FOR_BUY, STABLECOIN_SAFETY_NET, MIN_PROFIT, TRADE_QUANTITY, DEBUG_LVL
 
     try:
         if direct_call == "1":
             os.mkdir(current_export_dir)
 
             with open(
-                f"{current_export_dir}/BNB_USDT_historical_prices",
+                f"{current_export_dir}/BNB_TO_STABLECOIN_historical_prices",
                 "w",
                 encoding="utf8",
             ) as f:
                 f.write(
-                    "Here is a detailed view of the history of candle prices for the [BNB-USDT] currency pair:\n\n"
+                    f"Here is a detailed view of the history of candle prices for the [BNB-{bootstrap.STABLECOIN_SYMBOL}] currency pair:\n\n"
                 )
             with open(
                 f"{current_export_dir}/{TRADE_SYMBOL}_historical_prices",
@@ -189,13 +189,13 @@ def log_files_creation(direct_call="1"):
             f.write(f"SOCKET          set to: {SOCKET:>50}\n")
             f.write(f"TRADE SYMBOL    set to: {TRADE_SYMBOL:>50}\n")
             f.write(f"TRADE QUANTITY  set to: {str(TRADE_QUANTITY):>50} coins per transaction\n")
-            f.write(f"MIN PROFIT      set to: {str(MIN_PROFIT):>50} USDT per transaction\n")
-            f.write(f"USDT SAFETY NET set to: {str(USDT_SAFETY_NET):>50} USDT\n")
+            f.write(f"MIN PROFIT      set to: {str(MIN_PROFIT):>50} {bootstrap.STABLECOIN_SYMBOL} per transaction\n")
+            f.write(f"{bootstrap.STABLECOIN_SYMBOL} SAFETY NET set to: {str(STABLECOIN_SAFETY_NET):>50} {bootstrap.STABLECOIN_SYMBOL}\n")
             f.write(f"RSI PERIOD      set to: {RSI_PERIOD:>50} minutes\n")
             f.write(f"RSI FOR BUY     set to: {RSI_FOR_BUY:>50} threshold\n")
             f.write(f"RSI FOR SELL    set to: {RSI_FOR_SELL:>50} threshold\n")
             f.write(f"EMAIL SWITCH    set to: {str(RYBKA_EMAIL_SWITCH):>50}\n")
-            f.write(f"Telegram SWITCH set to: {str(RYBKA_TELEGRAM_SWITCH):>50}\n")
+            f.write(f"TELEGRAM SWITCH set to: {str(RYBKA_TELEGRAM_SWITCH):>50}\n")
             if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_RECIPIENT_EMAIL:
                 f.write(f"SENDER EMAIL    set to: {RYBKA_EMAIL_SENDER_EMAIL:>50}\n")
                 f.write(f"RECIPIENT EMAIL set to: {RYBKA_EMAIL_RECIPIENT_EMAIL:>50}\n")
@@ -253,7 +253,7 @@ def ktbr_configuration():
                     )
                     for k, v in ktbr_config.items():
                         log.INFO(
-                            f" 💳 Transaction [{k}]  ---  [{bcolors.OKGREEN}{bcolors.BOLD}{v[0]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t EGLD bought at price of [{bcolors.OKGREEN}{bcolors.BOLD}{v[1]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t USDT per EGLD{bcolors.ENDC}"
+                            f" 💳 Transaction [{k}]  ---  [{bcolors.OKGREEN}{bcolors.BOLD}{v[0]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t {bootstrap.CRYPTOCOIN_SYMBOL} bought at price of [{bcolors.OKGREEN}{bcolors.BOLD}{v[1]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t {bootstrap.STABLECOIN_SYMBOL} per {bootstrap.CRYPTOCOIN_SYMBOL}{bcolors.ENDC}"
                         )
                 except Exception as e:
                     traceback.print_exc()
@@ -274,34 +274,34 @@ def ktbr_configuration():
 
 
 def profit_file():
-    global total_usdt_profit
+    global total_stablecoin_profit
     global RYBKA_MODE
     log.VERBOSE(
         "====================================================================================================================================="
     )
-    if exists(f"{RYBKA_MODE}/usdt_profit"):
-        with open(f"{RYBKA_MODE}/usdt_profit", "r", encoding="utf8") as f:
-            if os.stat(f"{RYBKA_MODE}/usdt_profit").st_size == 0:
-                log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/usdt_profit] file exists and is empty")
+    if exists(f"{RYBKA_MODE}/stablecoin_profit"):
+        with open(f"{RYBKA_MODE}/stablecoin_profit", "r", encoding="utf8") as f:
+            if os.stat(f"{RYBKA_MODE}/stablecoin_profit").st_size == 0:
+                log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/stablecoin_profit] file exists and is empty")
             else:
                 try:
-                    total_usdt_profit = round(float(f.read()), 4)
+                    total_stablecoin_profit = round(float(f.read()), 4)
                     log.VERBOSE(
-                        f" ✅ [{RYBKA_MODE}/usdt_profit] file contains the following already done profit: [{bcolors.PURPLE}{total_usdt_profit}{bcolors.DARKGRAY}] USDT"
+                        f" ✅ [{RYBKA_MODE}/stablecoin_profit] file contains the following already done profit: [{bcolors.PURPLE}{total_stablecoin_profit}{bcolors.DARKGRAY}] {bootstrap.STABLECOIN_SYMBOL}"
                     )
                 except Exception as e:
                     traceback.print_exc()
                     log.FATAL_7(
-                        f"[{RYBKA_MODE}/usdt_profit] file contains wrong formatted content!\nFailing with error:\n{e}"
+                        f"[{RYBKA_MODE}/stablecoin_profit] file contains wrong formatted content!\nFailing with error:\n{e}"
                     )
     else:
         try:
-            open(f"{RYBKA_MODE}/usdt_profit", "w", encoding="utf8").close()
-            log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/usdt_profit] file created!")
+            open(f"{RYBKA_MODE}/stablecoin_profit", "w", encoding="utf8").close()
+            log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/stablecoin_profit] file created!")
         except Exception as e:
             traceback.print_exc()
             log.FATAL_7(
-                f"[{RYBKA_MODE}/usdt_profit] file could NOT be created!\nFailing with error:\n{e}"
+                f"[{RYBKA_MODE}/stablecoin_profit] file could NOT be created!\nFailing with error:\n{e}"
             )
     log.VERBOSE(
         "====================================================================================================================================="
@@ -392,7 +392,7 @@ def real_time_balances():
 
 
 def ktbr_integrity():
-    global balance_egld
+    global balance_cryptocoin
     global sum_of_ktbr_cryptocurrency
     global RYBKA_MODE
     ktbr_config_check = {}
@@ -406,15 +406,15 @@ def ktbr_integrity():
 
         log.VERBOSE(f"ktbr_config_check is {ktbr_config_check}")
         log.VERBOSE(f"sum_of_ktbr_cryptocurrency rounded is {round(sum_of_ktbr_cryptocurrency, 4)}")
-        log.VERBOSE(f"ktbr_integrity()'s egld balance is {balance_egld}")
+        log.VERBOSE(f"ktbr_integrity()'s [{bootstrap.CRYPTOCOIN_SYMBOL}] balance is {balance_cryptocoin}")
 
-        if round(sum_of_ktbr_cryptocurrency, 4) <= balance_egld:
+        if round(sum_of_ktbr_cryptocurrency, 4) <= balance_cryptocoin:
             log.INFO_BOLD(
-                f" ✅ KTBR integrity status  -  {bcolors.PURPLE}VALID{bcolors.DARKGRAY}. Amount of EGLD bought and tracked: [{bcolors.OKGREEN}{round(sum_of_ktbr_cryptocurrency, 4)}{bcolors.DARKGRAY}]\n"
+                f" ✅ KTBR integrity status  -  {bcolors.PURPLE}VALID{bcolors.DARKGRAY}. Amount of {bootstrap.CRYPTOCOIN_SYMBOL} bought and tracked: [{bcolors.OKGREEN}{round(sum_of_ktbr_cryptocurrency, 4)}{bcolors.DARKGRAY}]\n"
             )
         else:
             log.FATAL_7(
-                f"KTBR integrity status  -  INVALID\nThis means that the amount of EGLD you have in cloud [{balance_egld}] is actually less now, than what you retain in the 'ktbr' file [{round(sum_of_ktbr_cryptocurrency, 4)}]. Probably you've spent a part of it in the meantime."
+                f"KTBR integrity status  -  INVALID\nThis means that the amount of {bootstrap.CRYPTOCOIN_SYMBOL} you have in cloud [{balance_cryptocoin}] is actually less now, than what you retain in the 'ktbr' file [{round(sum_of_ktbr_cryptocurrency, 4)}]. Probably you've spent a part of it in the meantime."
             )
 
 
@@ -470,7 +470,7 @@ def back_up():
 
 def software_config_params():
     global RYBKA_EMAIL_RECIPIENT_EMAIL, RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_SENDER_EMAIL, RYBKA_TELEGRAM_SWITCH
-    global RYBKA_EMAIL_SWITCH, RSI_FOR_SELL, RSI_FOR_BUY, MIN_PROFIT, USDT_SAFETY_NET, TRADE_QUANTITY, DEBUG_LVL
+    global RYBKA_EMAIL_SWITCH, RSI_FOR_SELL, RSI_FOR_BUY, MIN_PROFIT, STABLECOIN_SAFETY_NET, TRADE_QUANTITY, DEBUG_LVL
     global TRADE_QUANTITY
     print("\n\n")
     if RYBKA_MODE.upper() == "DEMO":
@@ -596,10 +596,10 @@ def software_config_params():
         f" 🔘 TRADE QUANTITY  set to: {bcolors.PURPLE}{str(TRADE_QUANTITY):>50}{bcolors.DARKGRAY} coins per transaction"
     )
     log.INFO_BOLD(
-        f" 🔘 MIN PROFIT      set to: {bcolors.PURPLE}{str(MIN_PROFIT):>50}{bcolors.DARKGRAY} USDT per transaction"
+        f" 🔘 MIN PROFIT      set to: {bcolors.PURPLE}{str(MIN_PROFIT):>50}{bcolors.DARKGRAY} {bootstrap.STABLECOIN_SYMBOL} per transaction"
     )
     log.INFO_BOLD(
-        f" 🔘 USDT SAFETY NET set to: {bcolors.PURPLE}{str(USDT_SAFETY_NET):>50}{bcolors.DARKGRAY} USDT"
+        f" 🔘 {bootstrap.STABLECOIN_SYMBOL} SAFETY NET set to: {bcolors.PURPLE}{str(STABLECOIN_SAFETY_NET):>50}{bcolors.DARKGRAY} {bootstrap.STABLECOIN_SYMBOL}"
     )
     log.INFO_BOLD(
         f" 🔘 RSI PERIOD      set to: {bcolors.PURPLE}{RSI_PERIOD:>50}{bcolors.DARKGRAY} minutes"
@@ -611,7 +611,7 @@ def software_config_params():
         f" 🔘 RSI FOR SELL    set to: {bcolors.PURPLE}{RSI_FOR_SELL:>50}{bcolors.DARKGRAY} threshold"
     )
     log.INFO_BOLD(f" 🔘 EMAIL SWITCH    set to: {bcolors.PURPLE}{str(RYBKA_EMAIL_SWITCH):>50}")
-    log.INFO_BOLD(f" 🔘 Telegram SWITCH set to: {bcolors.PURPLE}{str(RYBKA_TELEGRAM_SWITCH):>50}")
+    log.INFO_BOLD(f" 🔘 TELEGRAM SWITCH set to: {bcolors.PURPLE}{str(RYBKA_TELEGRAM_SWITCH):>50}")
     if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_RECIPIENT_EMAIL:
         log.INFO_BOLD(f" 🔘 SENDER EMAIL    set to: {bcolors.PURPLE}{RYBKA_EMAIL_SENDER_EMAIL:>50}")
         log.INFO_BOLD(
@@ -634,17 +634,17 @@ def disclaimer():
     )
     time.sleep(7)
     print(
-        "\t  ❌ DO NOT CONVERT EGLD INTO ANY OTHER CURRENCY; OR IF YOU DO, DELETE THE TRADING QUANTITY FROM THE KTBR FILE, TO ASSURE THE GOOD FUTURE FUNCTIONING OF THE BOT! STOP THE BOT BEFORE DOING SUCH CHANGES, RESTART IT AFTER! \n\n\n"
+        "\t  ❌ DO NOT CONVERT THE NON-STABLE CRYPTOCOIN YOU ARE TRADING WITH INTO ANY OTHER CURRENCY; OR IF YOU DO, DELETE THE TRADING QUANTITY FROM THE KTBR FILE, TO ASSURE THE GOOD FUTURE FUNCTIONING OF THE BOT! STOP THE BOT BEFORE DOING SUCH CHANGES, RESTART IT AFTER! \n\n\n"
     )
     time.sleep(13)
     print("\t\t  YOU ARE ALLOWED TO: \n")
     time.sleep(2)
     print(
-        f"\t  ✅ TOP UP WITH EITHER PARTS OF THE TRADING PAIR [{TRADE_SYMBOL}] (EVEN DURING BOT'S RUNNING, BUT ONLY THE NEW USDT ADDED WILL BE CONSIDERED BY BOT TO BUY MORE). \n"
+        f"\t  ✅ TOP UP WITH EITHER PARTS OF THE TRADING PAIR [{TRADE_SYMBOL}] (EVEN DURING BOT'S RUNNING, BUT ONLY THE NEW {bootstrap.STABLECOIN_SYMBOL} ADDED WILL BE CONSIDERED BY BOT TO BUY MORE). \n"
     )
     time.sleep(5)
     print(
-        "\t  ✅ SELL ANY QUANTITY OF EGLD YOU HAD PREVIOUSLY BOUGHT, ASIDE FROM THE QUANTITY BOUGHT VIA BOT'S TRANSACTIONS (YOU CAN SELL IT EVEN DURING BOT'S RUNNING). \n\n\n"
+        "\t  ✅ SELL ANY QUANTITY OF THE NON-STABLE CRYPTOCOIN YOU HAD PREVIOUSLY BOUGHT, ASIDE FROM THE QUANTITY BOUGHT VIA BOT'S TRANSACTIONS (YOU CAN SELL IT EVEN DURING BOT'S RUNNING). \n\n\n"
     )
     time.sleep(10)
     print("\t\t  NOTES: \n")
@@ -721,9 +721,9 @@ def bot_uptime_and_current_price(current_price, output):
 
     if output == "CLI":
         if days < 1:
-            price_and_uptime = f"[ {bcolors.OKCYAN}EGLD{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}USDT{bcolors.DARKGRAY} ] [ ⏰ {bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ] [ 💵 {bcolors.OKGREEN}PROFIT{bcolors.DARKGRAY} = {bcolors.PURPLE}{total_usdt_profit} ₮{bcolors.DARKGRAY} ]"
+            price_and_uptime = f"[ {bcolors.OKCYAN}{bootstrap.CRYPTOCOIN_SYMBOL}{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}{bootstrap.STABLECOIN_SYMBOL}{bcolors.DARKGRAY} ] [ ⏰ {bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ] [ 💵 {bcolors.OKGREEN}PROFIT{bcolors.DARKGRAY} = {bcolors.PURPLE}{total_stablecoin_profit} ₮{bcolors.DARKGRAY} ]"
         else:
-            price_and_uptime = f"[ {bcolors.OKCYAN}EGLD{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}USDT{bcolors.DARKGRAY} ] [ ⏰ {bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ] [ 💵 {bcolors.OKGREEN}PROFIT{bcolors.DARKGRAY} = {bcolors.PURPLE}{total_usdt_profit} ₮{bcolors.DARKGRAY} ]"
+            price_and_uptime = f"[ {bcolors.OKCYAN}{bootstrap.CRYPTOCOIN_SYMBOL}{bcolors.DARKGRAY} = {bcolors.PURPLE}{current_price:5} {bcolors.OKCYAN}{bootstrap.STABLECOIN_SYMBOL}{bcolors.DARKGRAY} ] [ ⏰ {bcolors.OKGREEN}UPTIME{bcolors.DARKGRAY} = {bcolors.PURPLE}{days}d {hours_in_limit:2}h:{minutes_in_limit:2}m:{seconds_in_limit:2}s{bcolors.DARKGRAY} ] [ 💵 {bcolors.OKGREEN}PROFIT{bcolors.DARKGRAY} = {bcolors.PURPLE}{total_stablecoin_profit} ₮{bcolors.DARKGRAY} ]"
 
         log.INFO(price_and_uptime)
 
@@ -842,17 +842,17 @@ def isAdmin():
 
 def real_time_balances_update():
     global RYBKA_MODE
-    global balance_usdt
-    global balance_egld
+    global balance_stablecoin
+    global balance_cryptocoin
     global balance_bnb
 
     try:
         with open(f"{RYBKA_MODE}/real_time_balances", "w", encoding="utf8") as f:
-            f.write("Binance Account shows the following balances (EGLD, USDT and BNB only):\n")
-            f.write(f"\n{log.logging_time()} EGLD balance is: {balance_egld}")
-            f.write(f"\n{log.logging_time()} USDT balance is: {balance_usdt}")
+            f.write(f"Binance Account shows the following balances ({bootstrap.CRYPTOCOIN_SYMBOL}, {bootstrap.STABLECOIN_SYMBOL} and BNB only):\n")
+            f.write(f"\n{log.logging_time()} {bootstrap.CRYPTOCOIN_SYMBOL} balance is: {balance_cryptocoin}")
+            f.write(f"\n{log.logging_time()} {bootstrap.STABLECOIN_SYMBOL} balance is: {balance_stablecoin}")
             f.write(f"\n{log.logging_time()} BNB  balance is: {balance_bnb}")
-            f.write(f"\n 🔶 Only [[{round(sum_of_ktbr_cryptocurrency, 4)}]] EGLDs are tracked by bot, out of [[{balance_egld}]]")
+            f.write(f"\n 🔶 Only [[{round(sum_of_ktbr_cryptocurrency, 4)}]] {bootstrap.CRYPTOCOIN_SYMBOL}s are tracked by bot, out of [[{balance_cryptocoin}]]")
     except Exception as e:
         log.WARN(f"Could not update balance file due to error: \n{e}")
 
@@ -957,16 +957,16 @@ def main(version, mode, head):
     global RYBKA_MODE, DEBUG_LVL
     global RSI_PERIOD, RSI_FOR_BUY, RSI_FOR_SELL
     global TRADING_BOOST_LVL, TRADE_QUANTITY, TRADE_SYMBOL, AUX_TRADE_QUANTITY
-    global USDT_SAFETY_NET, MIN_PROFIT
+    global STABLECOIN_SAFETY_NET, MIN_PROFIT
     global RYBKA_TELEGRAM_SWITCH
     global RYBKA_ALL_LOG_TLG_SWITCH
     global RYBKA_BALANCES_AUX
     global SET_DISCLAIMER
     global ALLOW_ONLY_BUYS, ALLOW_ONLY_SELLS
 
-    global balance_usdt, balance_egld, balance_bnb
-    global locked_balance_usdt, locked_balance_egld, locked_balance_bnb
-    global total_usdt_profit
+    global balance_stablecoin, balance_cryptocoin, balance_bnb
+    global locked_balance_stablecoin, locked_balance_cryptocoin, locked_balance_bnb
+    global total_stablecoin_profit
 
     global current_export_dir, archived_logs_folder
 
@@ -978,7 +978,7 @@ def main(version, mode, head):
     global subsequent_valid_rsi_counter
     global archived_logs_folder, current_export_dir
 
-    # In need of a dummy value in the case where the candle closes for EGLDUSDT before it closed for BNBUSDT, hence the value is not attributed to the BNB side, but only after up to 1 more minute
+    # In need of a dummy value for the case where the candle closes for the main trading-pair before it got closed for the BNB-stablecoin pair, hence the value is not attributed to the BNB side, but only after up to 1 more minute
     global bnb_candle_close_price, bnb_conversion_done
     bnb_candle_close_price = 0
     bnb_conversion_done = 0
@@ -998,19 +998,20 @@ def main(version, mode, head):
         os.environ["RYBKA_MODE"] = RYBKA_MODE
 
         if RYBKA_MODE == "DEMO":
-            balance_usdt = bootstrap.RYBKA_DEMO_BALANCE_USDT
-            balance_egld = bootstrap.RYBKA_DEMO_BALANCE_EGLD
+            balance_stablecoin = bootstrap.RYBKA_DEMO_BALANCE_STABLECOIN
+            balance_cryptocoin = bootstrap.RYBKA_DEMO_BALANCE_CRYPTOCOIN
             balance_bnb = bootstrap.RYBKA_DEMO_BALANCE_BNB
         elif RYBKA_MODE == "LIVE":
-            balance_usdt = 0
-            balance_egld = 0
+            balance_stablecoin = 0
+            balance_cryptocoin = 0
             balance_bnb = 0
 
-            locked_balance_usdt = 0
-            locked_balance_egld = 0
+            locked_balance_stablecoin = 0
+            locked_balance_cryptocoin = 0
             locked_balance_bnb = 0
     else:
         sys.exit(0)
+
 
     ###############################################
     ###########   FUNCTIONS' SEQUENCE   ###########
@@ -1065,7 +1066,25 @@ def main(version, mode, head):
     current_export_dir = f'{RYBKA_MODE}_{TRADE_SYMBOL}_{datetime.now().strftime("%d_%m_%Y")}_AT_{datetime.now().strftime("%H_%M_%S")}_{id_generator()}'
     # In need for Telegram notif. file
     os.environ["CURRENT_EXPORT_DIR"] = current_export_dir
-    os.environ["TRADE_SYMBOL"] = TRADE_SYMBOL
+
+    ###############################################
+    # Assuring retro-compatibility among releases #
+    ###############################################
+
+    def rename_profit_file():
+        file_path = os.path.join(RYBKA_MODE, "usdt_profit")
+        if os.path.exists(file_path):
+            new_file_path = os.path.join(RYBKA_MODE, "stablecoin_profit")
+            os.rename(file_path, new_file_path)
+
+    def rename_bnb_price_file():
+        file_path = os.path.join(current_export_dir, "BNB_USDT_historical_prices")
+        if os.path.exists(file_path):
+            new_file_path = os.path.join(current_export_dir, "BNB_TO_STABLECOIN_historical_prices")
+            os.rename(file_path, new_file_path)
+
+    rename_profit_file()
+    rename_bnb_price_file()
 
     log_files_creation()
     time.sleep(2)
@@ -1134,13 +1153,13 @@ def main(version, mode, head):
 
     if RYBKA_MODE == "DEMO":
         log.INFO(" ")
-        if balance_usdt == 1500:
+        if balance_stablecoin == 1500:
             log.WARN(
-                f"USDT Balance of [{balance_usdt}] coins  --->  is set by default, by the bot. You can modify this value within the 'config.ini' file, for var [RYBKA_DEMO_BALANCE_USDT]"
+                f"{bootstrap.STABLECOIN_SYMBOL} Balance of [{balance_stablecoin}] coins  --->  is set by default, by the bot. You can modify this value within the 'config.ini' file, for var [RYBKA_DEMO_BALANCE_STABLECOIN]"
             )
-        if balance_egld == 100:
+        if balance_cryptocoin == 100:
             log.WARN(
-                f"EGLD Balance of [{balance_egld}]  coins  --->  is set by default, by the bot. You can modify this value within the 'config.ini' file, for var [RYBKA_DEMO_BALANCE_EGLD]"
+                f"{bootstrap.CRYPTOCOIN_SYMBOL} Balance of [{balance_cryptocoin}]  coins  --->  is set by default, by the bot. You can modify this value within the 'config.ini' file, for var [RYBKA_DEMO_BALANCE_CRYPTOCOIN]"
             )
         if balance_bnb == 0.2:
             log.WARN(
@@ -1152,14 +1171,14 @@ def main(version, mode, head):
         "====================================================================================================================================="
     )
     log.INFO_BOLD(
-        f"Account's AVAILABLE balance is:\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}USDT{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{balance_usdt}{bcolors.DARKGRAY}]\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}EGLD{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{balance_egld}{bcolors.DARKGRAY}]\n\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}BNB{bcolors.DARKGRAY}   ---  [{bcolors.OKGREEN}{balance_bnb}{bcolors.DARKGRAY}] (for transaction fees)"
+        f"Account's AVAILABLE balance is:\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}{bootstrap.STABLECOIN_SYMBOL}{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{balance_stablecoin}{bcolors.DARKGRAY}]\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}{bootstrap.CRYPTOCOIN_SYMBOL}{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{balance_cryptocoin}{bcolors.DARKGRAY}]\n\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}BNB{bcolors.DARKGRAY}   ---  [{bcolors.OKGREEN}{balance_bnb}{bcolors.DARKGRAY}] (for transaction fees)"
     )
     log.INFO(
         "====================================================================================================================================="
     )
     if RYBKA_MODE == "LIVE":
         log.INFO_BOLD(
-            f"Account's LOCKED balance in limit orders is:\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED USDT{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{locked_balance_usdt}{bcolors.DARKGRAY}]\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED EGLD{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{locked_balance_egld}{bcolors.DARKGRAY}]\n\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED BNB{bcolors.DARKGRAY}   ---  [{bcolors.OKGREEN}{locked_balance_bnb}{bcolors.DARKGRAY}]"
+            f"Account's LOCKED balance in limit orders is:\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED {bootstrap.STABLECOIN_SYMBOL}{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{locked_balance_stablecoin}{bcolors.DARKGRAY}]\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED {bootstrap.CRYPTOCOIN_SYMBOL}{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{locked_balance_cryptocoin}{bcolors.DARKGRAY}]\n\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED BNB{bcolors.DARKGRAY}   ---  [{bcolors.OKGREEN}{locked_balance_bnb}{bcolors.DARKGRAY}]"
         )
         log.INFO(
             "====================================================================================================================================="
@@ -1168,7 +1187,7 @@ def main(version, mode, head):
         "====================================================================================================================================="
     )
     log.INFO_BOLD(
-        f"Rybka's historical registered PROFIT is:\n\t\t\t\t\t\t\t💰 [{bcolors.OKGREEN}{total_usdt_profit}{bcolors.DARKGRAY}] {bcolors.PURPLE}USDT"
+        f"Rybka's historical registered PROFIT is:\n\t\t\t\t\t\t\t💰 [{bcolors.OKGREEN}{total_stablecoin_profit}{bcolors.DARKGRAY}] {bcolors.PURPLE}{bootstrap.STABLECOIN_SYMBOL}"
     )
     log.INFO(
         "====================================================================================================================================="
@@ -1234,7 +1253,7 @@ def main(version, mode, head):
         unicorn_stream_obj = unicorn_binance_websocket_api.BinanceWebSocketApiManager(
             exchange="binance.com", warn_on_update=False
         )
-        unicorn_stream_obj.create_stream(["kline_1m"], ["EGLDUSDT", "BNBUSDT"])
+        unicorn_stream_obj.create_stream(["kline_1m"], [f"{bootstrap.TRADE_SYMBOL}", f"BNB{bootstrap.STABLECOIN_SYMBOL}"])
 
         log.INFO(
             "====================================================================================================================================="
@@ -1310,17 +1329,17 @@ def main(version, mode, head):
                 candle = json.loads(oldest_data_from_stream_buffer)
 
                 # When bnb_candle_close_price is 0 (assigned above), we still have to override this just 1 time (when it is 0) with the first price a candle provides, to not make subsequent fractions divide by 0
-                if candle["data"]["s"] == "BNBUSDT" and bnb_candle_close_price == 0:
+                if candle["data"]["s"] == f"BNB{bootstrap.STABLECOIN_SYMBOL}" and bnb_candle_close_price == 0:
                     bnb_candle_close_price = round(float(candle["data"]["k"]["c"]), 4)
 
-                if candle["data"]["s"] == "BNBUSDT" and candle["data"]["k"]["x"]:
+                if candle["data"]["s"] == f"BNB{bootstrap.STABLECOIN_SYMBOL}" and candle["data"]["k"]["x"]:
                     bnb_candle_close_price = round(float(candle["data"]["k"]["c"]), 4)
 
-                is_candle_egld_usdt = candle["data"]["s"]
+                is_candle_cryptocoin_stablecoin = candle["data"]["s"]
                 is_candle_closed = candle["data"]["k"]["x"]
                 candle_close_price = round(float(candle["data"]["k"]["c"]), 4)
 
-                if is_candle_closed and is_candle_egld_usdt == "EGLDUSDT":
+                if is_candle_closed and is_candle_cryptocoin_stablecoin == bootstrap.TRADE_SYMBOL:
                     closed_candles.append(candle_close_price)
 
                     bootstraping_vars()
@@ -1349,16 +1368,16 @@ def main(version, mode, head):
                         encoding="utf8",
                     ) as f:
                         f.write(
-                            f"{log.logging_time()} Price of [EGLD] is [{candle_close_price} USDT]\n"
+                            f'{log.logging_time()} Price of [{bootstrap.CRYPTOCOIN_SYMBOL}] is [{candle_close_price} {bootstrap.STABLECOIN_SYMBOL}]\n'
                         )
 
                     with open(
-                        f"{current_export_dir}/BNB_USDT_historical_prices",
+                        f"{current_export_dir}/BNB_TO_STABLECOIN_historical_prices",
                         "a",
                         encoding="utf8",
                     ) as f:
                         f.write(
-                            f"{log.logging_time()} Price of [BNB] is [{bnb_candle_close_price} USDT]\n"
+                            f"{log.logging_time()} Price of [BNB] is [{bnb_candle_close_price} {bootstrap.STABLECOIN_SYMBOL}]\n"
                         )
 
                     if len(closed_candles) < 11:
@@ -1390,9 +1409,9 @@ def main(version, mode, head):
                         log.VERBOSE(f"Bot's [ALLOW_ONLY_BUYS] var is set as {str(ALLOW_ONLY_BUYS)}")
                         log.VERBOSE(f"Bot's [ALLOW_ONLY_SELLS] var is set as {str(ALLOW_ONLY_SELLS)}")
                         log.VERBOSE(f"Bot's [balance_bnb] is {balance_bnb}")
-                        log.VERBOSE(f"Bot's [balance_usdt] is {balance_usdt}")
-                        log.VERBOSE(f"Bot's [balance_egld] is {balance_egld}")
-                        log.VERBOSE(f"Bot's [total_usdt_profit] is {total_usdt_profit}")
+                        log.VERBOSE(f"Bot's [balance_stablecoin] is {balance_stablecoin}")
+                        log.VERBOSE(f"Bot's [balance_cryptocoin] is {balance_cryptocoin}")
+                        log.VERBOSE(f"Bot's [total_stablecoin_profit] is {total_stablecoin_profit}")
                         log.VERBOSE(f"Bot's [multiple_sells] is {multiple_sells}")
 
                         log.HIGH_VERBOSITY(f"Bot's [TRADE_QUANTITY] is {TRADE_QUANTITY}")
@@ -1412,13 +1431,13 @@ def main(version, mode, head):
                                 f"{log.logging_time()} {'BNB balance (balance_bnb) is':90} {balance_bnb:40}\n"
                             )
                             f.write(
-                                f"{log.logging_time()} {'USDT balance (balance_usdt) is':90} {balance_usdt:40}\n"
+                                f"{log.logging_time()} {f'{bootstrap.STABLECOIN_SYMBOL} balance (balance_stablecoin) is':90} {balance_stablecoin:40}\n"
                             )
                             f.write(
-                                f"{log.logging_time()} {'EGLD balance (balance_egld) is':90} {balance_egld:40}\n"
+                                f"{log.logging_time()} {f'{bootstrap.CRYPTOCOIN_SYMBOL} balance (balance_cryptocoin) is':90} {balance_cryptocoin:40}\n"
                             )
                             f.write(
-                                f"{log.logging_time()} {'Total USDT profit (total_usdt_profit) is':90} {total_usdt_profit:40}\n"
+                                f"{log.logging_time()} {f'Total {bootstrap.STABLECOIN_SYMBOL} profit (total_stablecoin_profit) is':90} {total_stablecoin_profit:40}\n"
                             )
                             f.write(
                                 f"{log.logging_time()} {'Multiple sells (multiple_sells) set to':90} {multiple_sells:40}\n"
@@ -1461,7 +1480,7 @@ def main(version, mode, head):
                             ################################################################################################################################
                             ###   Put in place to buy even though there are ktbr buy transactions above, in majority and RSI wouldn't indicate a buy.    ###
                             ###   This policy evaluates the prices compared to the other buys and if there are at least 10 buys, activates and           ###
-                            ###      makes the bot buy EGLD if the current price is way below the majority of other buys and almost all the buys         ###
+                            ###      makes the bot buy cryptocoin if the current price is way below the majority of other buys and almost all the buys   ###
                             ###      under the current $ price got sold. So that it will buy even if price goes up, but ktbr contains lots of buy        ###
                             ###      transactions. By this, we ensure a higher profit, as it makes the bot works in time that otherwise would've been    ###
                             ###      skipped.                                                                                                            ###
@@ -1528,10 +1547,10 @@ def main(version, mode, head):
                             if (
                                 latest_rsi < RSI_FOR_BUY and ALLOW_ONLY_SELLS == 0
                                 or len(ktbr_config) in [0, 4] and ALLOW_ONLY_SELLS == 0
-                                or (policy == "overridden" and balance_usdt > 100 and len(ktbr_config) > 5 and ALLOW_ONLY_SELLS == 0)
-                                or (policy == "overridden" and balance_usdt > 500 and len(ktbr_config) > 25 and ALLOW_ONLY_SELLS == 0)
-                                or (policy == "overridden" and balance_usdt > 2500 and len(ktbr_config) > 125 and ALLOW_ONLY_SELLS == 0)
-                                or (policy == "overridden" and balance_usdt > 10000 and len(ktbr_config) > 300 and ALLOW_ONLY_SELLS == 0)
+                                or (policy == "overridden" and balance_stablecoin > 100 and len(ktbr_config) > 5 and ALLOW_ONLY_SELLS == 0)
+                                or (policy == "overridden" and balance_stablecoin > 500 and len(ktbr_config) > 25 and ALLOW_ONLY_SELLS == 0)
+                                or (policy == "overridden" and balance_stablecoin > 2500 and len(ktbr_config) > 125 and ALLOW_ONLY_SELLS == 0)
+                                or (policy == "overridden" and balance_stablecoin > 10000 and len(ktbr_config) > 300 and ALLOW_ONLY_SELLS == 0)
                                 or bnb_conversion_done == 1 and ALLOW_ONLY_SELLS == 0
                             ):
                                 ###################################
@@ -1559,20 +1578,20 @@ def main(version, mode, head):
                                 real_time_balances_update()
 
                                 safety_net_check = (
-                                    balance_usdt
+                                    balance_stablecoin
                                     - 2
                                     - TRADE_QUANTITY * round(float(candle_close_price), 4)
                                 )
 
-                                if USDT_SAFETY_NET and safety_net_check < USDT_SAFETY_NET:
+                                if STABLECOIN_SAFETY_NET and safety_net_check < STABLECOIN_SAFETY_NET:
                                     log.INFO(
-                                        f"Another buy may bring the safety net for USDT to [{str(round(float(safety_net_check), 4))}]. Which is lower than the one imposed, of [{str(USDT_SAFETY_NET)}]. Hence, it's not permitted!"
+                                        f"Another buy may bring the safety net for {bootstrap.STABLECOIN_SYMBOL} to [{str(round(float(safety_net_check), 4))}]. Which is lower than the one imposed, of [{str(STABLECOIN_SAFETY_NET)}]. Hence, it's not permitted!"
                                     )
                                 else:
                                     log.VERBOSE(f"safety_net_check is {str(safety_net_check)}")
-                                    log.VERBOSE(f"USDT_SAFETY_NET is {str(USDT_SAFETY_NET)}")
+                                    log.VERBOSE(f"STABLECOIN_SAFETY_NET is {str(STABLECOIN_SAFETY_NET)}")
                                     log.DEBUG(
-                                        f"Another buy would NOT enter the safety net [{str(USDT_SAFETY_NET)}]. Permitted."
+                                        f"Another buy would NOT enter the safety net [{str(STABLECOIN_SAFETY_NET)}]. Permitted."
                                     )
 
                                     if len(ktbr_config) in [0, 4]:
@@ -1601,13 +1620,13 @@ def main(version, mode, head):
                                             f"{log.logging_time()} {'BNB balance (balance_bnb) is':90} {balance_bnb:40}\n"
                                         )
                                         f.write(
-                                            f"{log.logging_time()} {'USDT balance (balance_usdt) is':90} {balance_usdt:40}\n"
+                                            f"{log.logging_time()} {'Stablecoin balance (balance_stablecoin) is':90} {balance_stablecoin:40}\n"
                                         )
                                         f.write(
-                                            f"{log.logging_time()} {'EGLD balance (balance_egld) is':90} {balance_egld:40}\n"
+                                            f"{log.logging_time()} {'Cryptocoin balance (balance_cryptocoin) is':90} {balance_cryptocoin:40}\n"
                                         )
                                         f.write(
-                                            f"{log.logging_time()} {'Total USDT profit (total_usdt_profit) is':90} {total_usdt_profit:40}\n"
+                                            f"{log.logging_time()} {f'Total {bootstrap.STABLECOIN_SYMBOL} profit (total_stablecoin_profit) is':90} {total_stablecoin_profit:40}\n"
                                         )
                                         f.write(
                                             f"{log.logging_time()} {'Multiple sells (multiple_sells) set to':90} {multiple_sells:40}\n"
@@ -1629,7 +1648,7 @@ def main(version, mode, head):
 
                                     if min_order_quantity > TRADE_QUANTITY:
                                         log.DEBUG(
-                                            f"We can NOT trade at this quantity: [{TRADE_QUANTITY}]. Enforcing a min quantity (per buy action) of [{min_order_quantity}] EGLD coins."
+                                            f"We can NOT trade at this quantity: [{TRADE_QUANTITY}]. Enforcing a min quantity (per buy action) of [{min_order_quantity}] {bootstrap.CRYPTOCOIN_SYMBOL} coins."
                                         )
                                         TRADE_QUANTITY = min_order_quantity
                                     else:
@@ -1640,7 +1659,7 @@ def main(version, mode, head):
                                     if TRADE_QUANTITY < 0.01:
                                         TRADE_QUANTITY = 0.01
                                         log.DEBUG(
-                                            f"Turns out that the TRADE_QUANTITY [{TRADE_QUANTITY}] is under Binance's imposed minimum of trade quantity for EGLDUSDT pair or `0.01`. Setting TRADE_QUANTITY=0.01"
+                                            f"""Turns out that the TRADE_QUANTITY [{TRADE_QUANTITY}] is under Binance's imposed minimum of trade quantity for {bootstrap.CRYPTOCOIN_SYMBOL}{bootstrap.STABLECOIN_SYMBOL} pair or `0.01`. Setting TRADE_QUANTITY=0.01"""
                                         )
 
                                     if (
@@ -1671,9 +1690,9 @@ def main(version, mode, head):
                                             f"BNB balance [{balance_bnb}] is enough for transactions."
                                         )
 
-                                        if balance_usdt / 12 > 1:
+                                        if balance_stablecoin / 12 > 1:
                                             possible_nr_of_trades = math.floor(
-                                                (round(float(balance_usdt - USDT_SAFETY_NET), 4))
+                                                (round(float(balance_stablecoin - STABLECOIN_SAFETY_NET), 4))
                                                 / (TRADE_QUANTITY * candle_close_price)
                                             )
                                             log.INFO(
@@ -1686,13 +1705,13 @@ def main(version, mode, head):
                                             ###   This "HEATMAP" policy is set in place to dinamically make the bot greedy or not and adapt the greediness based on      ###
                                             ###      a heatmap it construct and widens with every new buy transaction successfully completed. The more buys, the less    ###
                                             ###      greedy it becomes. The more sells of those buys, the more greedy it becomes. But this is NOT a rule of thumb, as    ###
-                                            ###      it constructs N price-frames (limits) that dinamically move, per each 1$ the price of EGLD - USDT pair gains or     ###
-                                            ###      loses - hence the margin of such frame, might get more greedy, even though it just made a buy, because it may find  ###
-                                            ###      itself  in a totally other frame. It counts the number of buy transactions done in a frame (let's say from 33$ to   ###
-                                            ###      37$) and limits itself to do only X transactions in there, but it also dinamically limits itself to a nr. of        ###
-                                            ###      coins per interval (an interval is a 1$ frame, like 33$-34$ or 34$-35$). So it does a limited priceframe with       ###
+                                            ###      it constructs N price-frames (limits) that dinamically move, per each 1$ the price of cryptocoin - stablecoin pair  ###
+                                            ###      gains or loses - hence the margin of such frame, might get more greedy, even though it just made a buy, because it  ###
+                                            ###      may find itself in a totally other frame. It counts the number of buy transactions done in a frame (let's say from  ###
+                                            ###      33$ to 37$) and limits itself to do only X transactions in there, but it also dinamically limits itself to a nr.    ###
+                                            ###      of coins per interval (an interval is a 1$ frame, like 33$-34$ or 34$-35$). So it does a limited priceframe with    ###
                                             ###      nested limits all across it, per each 1$ level. Then, when the price goes up or down, the whoe frame moves, as its  ###
-                                            ###      its center is always the price of EGLD in $.                                                                        ###
+                                            ###      its center is always the price of cryptocoin in $.                                                                  ###
                                             ###                                                                                                                          ###
                                             ###      It's by far the most important aspect of the bot and most sensitive core script of RybkaCore. This also allows the  ###
                                             ###      formation of inner policies controled by the user via the [RYBKA_TRADING_BOOST_LVL] variable.                       ###
@@ -1723,13 +1742,13 @@ def main(version, mode, head):
                                                 ###   END of SPECIAL POLICY 5   ###
                                                 ###################################
 
-                                                #####  LEGEND  ###############################################################################################################################
-                                                ##   "heatmap_size" is the size (+ and -) from the real-time EGLD/USDT price, based on which the logics of the heatmap get applied on top   ##
-                                                ##   "heatmap_center_coin_counter" is a counter for the nr. of buy transactions bought and still tracked at current price of EGLD in USDT   ##
-                                                ##   "heatmap_limit" is a limit for the aforementioned counter                                                                              ##
-                                                ##   "heatmap_actions" is a counter for the nr. of buy transactions bought and still tracked within the current "heatmap_size"              ##
-                                                ##   "heatmap_counter" is a limit for the aforementioned counter                                                                            ##
-                                                ##############################################################################################################################################
+                                                #####  LEGEND  ###########################################################################################################################################
+                                                ##   "heatmap_size" is the size (+ and -) from the real-time cryptocoin/stablecoin price, based on which the logics of the heatmap get applied on top   ##
+                                                ##   "heatmap_center_coin_counter" is a counter for the nr. of buy transactions bought and still tracked at current price of cryptocoin in stablecoin   ##
+                                                ##   "heatmap_limit" is a limit for the aforementioned counter                                                                                          ##
+                                                ##   "heatmap_actions" is a counter for the nr. of buy transactions bought and still tracked within the current "heatmap_size"                          ##
+                                                ##   "heatmap_counter" is a limit for the aforementioned counter                                                                                        ##
+                                                ##########################################################################################################################################################
                                                 #
                                                 ########   Make sure `division by 0` is not hit when editing the weights in here   ########
                                                 if possible_nr_of_trades == 1:
@@ -1943,7 +1962,7 @@ def main(version, mode, head):
                                                             f"{log.logging_time()} heatmap_counter [{heatmap_counter}] is >= heatmap_actions [{heatmap_actions}]"
                                                         )
                                                 elif (
-                                                    float(balance_usdt)
+                                                    float(balance_stablecoin)
                                                     < float(TRADE_QUANTITY)
                                                     * float(candle_close_price)
                                                     + 2
@@ -1956,10 +1975,10 @@ def main(version, mode, head):
                                                     try:
                                                         if RYBKA_MODE == "LIVE":
                                                             log.VERBOSE(
-                                                                f"Before BUY. USDT balance is [{balance_usdt}]"
+                                                                f"Before BUY. {bootstrap.STABLECOIN_SYMBOL} balance is [{balance_stablecoin}]"
                                                             )
                                                             log.VERBOSE(
-                                                                f"Before BUY. EGLD balance is [{balance_egld}]"
+                                                                f"Before BUY. {bootstrap.CRYPTOCOIN_SYMBOL} balance is [{balance_cryptocoin}]"
                                                             )
                                                             log.VERBOSE(
                                                                 f"Before BUY. BNB  balance is [{balance_bnb}]"
@@ -1971,10 +1990,10 @@ def main(version, mode, head):
                                                         elif RYBKA_MODE == "DEMO":
                                                             order_id_tmp = id_generator()
                                                             order = {
-                                                                "symbol": "EGLDUSDT",
+                                                                "symbol": bootstrap.TRADE_SYMBOL,
                                                                 "orderId": "",
                                                                 "orderListId": -1,
-                                                                "clientOrderId": "TXgNl8RNNipASGTrleH6ZY",
+                                                                "clientOrderId": "TXgNlRANDOMRANDOMeH6ZY",
                                                                 "transactTime": 1661098548719,
                                                                 "price": "0.00000000",
                                                                 "origQty": "0.19000000",
@@ -1989,7 +2008,7 @@ def main(version, mode, head):
                                                                         "price": "",
                                                                         "qty": "0.19000000",
                                                                         "commission": "",
-                                                                        "commissionAsset": "EGLD",
+                                                                        "commissionAsset": bootstrap.CRYPTOCOIN_SYMBOL,
                                                                         "tradeId": 75747997,
                                                                     }
                                                                 ],
@@ -2015,12 +2034,12 @@ def main(version, mode, head):
                                                                 8,
                                                             )
 
-                                                            balance_usdt -= (
+                                                            balance_stablecoin -= (
                                                                 candle_close_price * TRADE_QUANTITY
                                                             )
-                                                            balance_usdt = round(balance_usdt, 4)
-                                                            balance_egld += TRADE_QUANTITY
-                                                            balance_egld = round(balance_egld, 4)
+                                                            balance_stablecoin = round(balance_stablecoin, 4)
+                                                            balance_cryptocoin += TRADE_QUANTITY
+                                                            balance_cryptocoin = round(balance_cryptocoin, 4)
                                                             balance_bnb -= round(
                                                                 float(
                                                                     round(
@@ -2054,23 +2073,23 @@ def main(version, mode, head):
                                                                         orderId=order["orderId"],
                                                                     )
                                                                     log.DEBUG(
-                                                                        "EGLD Buy Order status retrieval - Successful"
+                                                                        f"{bootstrap.CRYPTOCOIN_SYMBOL} Buy Order status retrieval - Successful"
                                                                     )
                                                                     break
                                                                 except Exception as e:
                                                                     if i == 10:
                                                                         traceback.print_exc()
                                                                         log.FATAL_7(
-                                                                            f"EGLD Buy Order status retrieval - Failed as:\n{e}"
+                                                                            f"{bootstrap.CRYPTOCOIN_SYMBOL} Buy Order status retrieval - Failed as:\n{e}"
                                                                         )
                                                                     time.sleep(3)
 
                                                         elif RYBKA_MODE == "DEMO":
                                                             order_status = {
-                                                                "symbol": "EGLDUSDT",
+                                                                "symbol": bootstrap.TRADE_SYMBOL,
                                                                 "orderId": 0,
                                                                 "orderListId": -1,
-                                                                "clientOrderId": "TXgNl8RNNipASGTrleH6ZY",
+                                                                "clientOrderId": "TXgNlRANDOMRANDOMeH6ZY",
                                                                 "price": "0.00000000",
                                                                 "origQty": "0.19000000",
                                                                 "executedQty": "0.19000000",
@@ -2095,13 +2114,13 @@ def main(version, mode, head):
 
                                                             # avoid rounding up on quantity & price bought
                                                             log.INFO_SPECIAL_PURPLE(
-                                                                f" 🟣 [{RYBKA_MODE}] Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] EGLD at price per 1 EGLD of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] USDT\n"
+                                                                f" 🟣 [{RYBKA_MODE}] Bought [{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}] {bootstrap.CRYPTOCOIN_SYMBOL} at price per 1 {bootstrap.CRYPTOCOIN_SYMBOL} of [{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}] {bootstrap.STABLECOIN_SYMBOL}\n"
                                                             )
                                                             telegram.LOG(
-                                                                f" 🟣 [[{RYBKA_MODE}]] Bought [[{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}]] EGLD at [[{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}]] USDT/EGLD",
+                                                                f" 🟣 [[{RYBKA_MODE}]] Bought [[{int(float(order['executedQty']) * 10 ** 4) / 10 ** 4}]] {bootstrap.CRYPTOCOIN_SYMBOL} at [[{int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4}]] {bootstrap.STABLECOIN_SYMBOL}/{bootstrap.CRYPTOCOIN_SYMBOL}",
                                                             )
 
-                                                            usdt_trade_fee = round(
+                                                            stablecoin_trade_fee = round(
                                                                 float(
                                                                     0.08
                                                                     / 100
@@ -2117,19 +2136,19 @@ def main(version, mode, head):
                                                                 4,
                                                             )
                                                             log.VERBOSE(
-                                                                f"BUY action's usdt trade fee is {usdt_trade_fee}"
+                                                                f"BUY action's {bootstrap.STABLECOIN_SYMBOL} trade fee is {stablecoin_trade_fee}"
                                                             )
 
-                                                            total_usdt_profit = round(
-                                                                total_usdt_profit - usdt_trade_fee,
+                                                            total_stablecoin_profit = round(
+                                                                total_stablecoin_profit - stablecoin_trade_fee,
                                                                 4,
                                                             )
                                                             with open(
-                                                                f"{RYBKA_MODE}/usdt_profit",
+                                                                f"{RYBKA_MODE}/stablecoin_profit",
                                                                 "w",
                                                                 encoding="utf8",
                                                             ) as f:
-                                                                f.write(str(total_usdt_profit))
+                                                                f.write(str(total_stablecoin_profit))
 
                                                             bnb_commission = float(
                                                                 order["fills"][0]["commission"]
@@ -2194,7 +2213,7 @@ def main(version, mode, head):
                                                                     f"{log.logging_time()} {'Order time (order_time) is':90} {str(order_time):40}"
                                                                 )
                                                                 f.write(
-                                                                    f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n"
+                                                                    f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] {bootstrap.CRYPTOCOIN_SYMBOL} at price per 1 {bootstrap.CRYPTOCOIN_SYMBOL} of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] {bootstrap.STABLECOIN_SYMBOL}\n"
                                                                 )
                                                                 f.write(
                                                                     f"{log.logging_time()} {'Order (order) is':90} {str(json.dumps(order))}\n"
@@ -2203,7 +2222,7 @@ def main(version, mode, head):
                                                                     f"{log.logging_time()} {'Order status (order_status) is':90} {str(json.dumps(order_status))}\n"
                                                                 )
                                                                 f.write(
-                                                                    f"{log.logging_time()} {'USDT trade fee (usdt_trade_fee) is':90} {str(usdt_trade_fee)}\n"
+                                                                    f"{log.logging_time()} {f'{bootstrap.STABLECOIN_SYMBOL} trade fee (stablecoin_trade_fee) is':90} {str(stablecoin_trade_fee)}\n"
                                                                 )
                                                                 f.write(
                                                                     f"{log.logging_time()} {'Order commission is':90} {str(bnb_commission):40}\n"
@@ -2228,7 +2247,7 @@ def main(version, mode, head):
                                                                 current_export_dir,
                                                             )
                                                             move_and_replace(
-                                                                "BNB_USDT_historical_prices",
+                                                                "BNB_TO_STABLECOIN_historical_prices",
                                                                 current_export_dir,
                                                             )
                                                             move_and_replace(
@@ -2256,20 +2275,20 @@ def main(version, mode, head):
 
                                                             if DEBUG_LVL != 3:
                                                                 log.DEBUG(
-                                                                    f"USDT balance is [{balance_usdt}]"
+                                                                    f"{bootstrap.STABLECOIN_SYMBOL} balance is [{balance_stablecoin}]"
                                                                 )
                                                                 log.DEBUG(
-                                                                    f"EGLD balance is [{balance_egld}]"
+                                                                    f"{bootstrap.CRYPTOCOIN_SYMBOL} balance is [{balance_cryptocoin}]"
                                                                 )
                                                                 log.DEBUG(
                                                                     f"BNB  balance is [{balance_bnb}]"
                                                                 )
 
                                                             log.VERBOSE(
-                                                                f"After BUY - balance update. USDT balance is [{balance_usdt}]"
+                                                                f"After BUY - balance update. {bootstrap.STABLECOIN_SYMBOL} balance is [{balance_stablecoin}]"
                                                             )
                                                             log.VERBOSE(
-                                                                f"After BUY - balance update. EGLD balance is [{balance_egld}]"
+                                                                f"After BUY - balance update. {bootstrap.CRYPTOCOIN_SYMBOL} balance is [{balance_cryptocoin}]"
                                                             )
                                                             log.VERBOSE(
                                                                 f"After BUY - balance update. BNB  balance is [{balance_bnb}]"
@@ -2287,7 +2306,7 @@ def main(version, mode, head):
                                                                     f"{log.logging_time()} Buy order done now at [{str(order_time)}]\n"
                                                                 )
                                                                 f.write(
-                                                                    f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n\n\n"
+                                                                    f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] {bootstrap.CRYPTOCOIN_SYMBOL} at price per 1 {bootstrap.CRYPTOCOIN_SYMBOL} of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] {bootstrap.STABLECOIN_SYMBOL}\n\n\n"
                                                                 )
                                                             with open(
                                                                 f"{RYBKA_MODE}/full_order_history",
@@ -2298,7 +2317,7 @@ def main(version, mode, head):
                                                                     f"{log.logging_time()} Buy order done now at [{str(order_time)}]\n"
                                                                 )
                                                                 f.write(
-                                                                    f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] EGLD at price per 1 EGLD of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] USDT\n\n\n"
+                                                                    f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Bought [{str(int(float(order['executedQty']) * 10 ** 4) / 10 ** 4)}] {bootstrap.CRYPTOCOIN_SYMBOL} at price per 1 {bootstrap.CRYPTOCOIN_SYMBOL} of [{str(int(float(order['fills'][0]['price']) * 10 ** 4) / 10 ** 4)}] {bootstrap.STABLECOIN_SYMBOL}\n\n\n"
                                                                 )
 
                                                             if len(ktbr_config) > 4:
@@ -2344,7 +2363,7 @@ def main(version, mode, head):
                                                         )
                                             else:
                                                 log.WARN(
-                                                    f"Bot might still be able to buy some crypto, but only at a [{min_order_quantity}] EGLD trading quantity, not at the current one set of [{TRADE_QUANTITY}] EGLD per transaction!\n"
+                                                    f"Bot might still be able to buy some crypto, but only at a [{min_order_quantity}] {bootstrap.CRYPTOCOIN_SYMBOL} trading quantity, not at the current one set of [{TRADE_QUANTITY}] {bootstrap.CRYPTOCOIN_SYMBOL} per transaction!\n"
                                                 )
                                                 with open(
                                                     f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
@@ -2355,15 +2374,15 @@ def main(version, mode, head):
                                                         f"\n\n{log.logging_time()} Within BUY (part VIII):\n"
                                                     )
                                                     f.write(
-                                                        f"{log.logging_time()} Bot might still be able to buy some crypto, but only at a [{min_order_quantity}] EGLD trading quantity, not at the current one set of [{TRADE_QUANTITY}] EGLD per transaction!\n"
+                                                        f"{log.logging_time()} Bot might still be able to buy some crypto, but only at a [{min_order_quantity}] {bootstrap.CRYPTOCOIN_SYMBOL} trading quantity, not at the current one set of [{TRADE_QUANTITY}] {bootstrap.CRYPTOCOIN_SYMBOL} per transaction!\n"
                                                     )
                                         else:
                                             log.WARN(
-                                                "Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT]."
+                                                f"Not enough [{bootstrap.STABLECOIN_SYMBOL}] to set other BUY orders! Wait for SELLS, or fill up the account with more [{bootstrap.STABLECOIN_SYMBOL}]."
                                             )
                                             # TODO add log.WARN message and email func within the same 'if' clause for enabling / disabling such emails
                                             # log.WARN(f"Notifying user (via email) that bot might need more money for buy actions, if possible.")
-                                            # email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot might be able to buy more, but doesn't have enough USDT in balance [{balance_usdt}]\n\nTOP UP if possible!")
+                                            # email_sender(f"[RYBKA MODE - {RYBKA_MODE}] Bot might be able to buy more, but doesn't have enough stablecoin in balance [{balance_stablecoin}]\n\nTOP UP if possible!")
                                             with open(
                                                 f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
                                                 "a",
@@ -2373,12 +2392,12 @@ def main(version, mode, head):
                                                     f"\n\n{log.logging_time()} Within BUY (part IX):\n"
                                                 )
                                                 f.write(
-                                                    f"{log.logging_time()} Not enough [USDT] to set other BUY orders! Wait for SELLS, or fill up the account with more [USDT].\n"
+                                                    f"{log.logging_time()} Not enough [{bootstrap.STABLECOIN_SYMBOL}] to set other BUY orders! Wait for SELLS, or fill up the account with more [{bootstrap.STABLECOIN_SYMBOL}].\n"
                                                 )
                                     else:
                                         if RYBKA_MODE == "LIVE":
                                             email_sender(
-                                                f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enough BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 USDT into BNB. This does NOT take from Safety Net!"
+                                                f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enough BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 {bootstrap.STABLECOIN_SYMBOL} into BNB. This does NOT take from Safety Net!"
                                             )
                                             with open(
                                                 f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
@@ -2389,21 +2408,21 @@ def main(version, mode, head):
                                                     f"\n\n{log.logging_time()} Within BUY (part X):\n"
                                                 )
                                                 f.write(
-                                                    f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Hence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 USDT into BNB. This does NOT take from Safety Net!\n"
+                                                    f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Hence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 {bootstrap.STABLECOIN_SYMBOL} into BNB. This does NOT take from Safety Net!\n"
                                                 )
 
-                                            if round(float(balance_usdt - USDT_SAFETY_NET), 4) > 15:
+                                            if round(float(balance_stablecoin - STABLECOIN_SAFETY_NET), 4) > 15:
                                                 bnb_min_buy_share = bnb_candle_close_price / 12
                                                 bnb_min_order_quantity = round(
                                                     float(1 / bnb_min_buy_share), 3
                                                 )
 
-                                                # treating the rare case of a sky-high price of BNB (of 24001 or above, in USDT), scenario in which the value of `bnb_min_order_quantity` would be equal to `0.0`
+                                                # treating the rare case of a sky-high price of BNB (of 24001 or above, in stablecoin), scenario in which the value of `bnb_min_order_quantity` would be equal to `0.0`
                                                 if bnb_min_order_quantity == 0:
                                                     bnb_min_order_quantity = 0.001
 
                                                 order = client.order_market_buy(
-                                                    symbol="BNBUSDT",
+                                                    symbol=f"BNB{bootstrap.STABLECOIN_SYMBOL}",
                                                     quantity=bnb_min_order_quantity,
                                                 )
 
@@ -2448,7 +2467,7 @@ def main(version, mode, head):
                                                 for i in range(1, 11):
                                                     try:
                                                         order_status = client.get_order(
-                                                            symbol="BNBUSDT",
+                                                            symbol=f"BNB{bootstrap.STABLECOIN_SYMBOL}",
                                                             orderId=order["orderId"],
                                                         )
                                                         log.DEBUG(
@@ -2482,10 +2501,10 @@ def main(version, mode, head):
 
                                                     # avoid rounding up on quantity & price bought
                                                     log.INFO_SPECIAL_PURPLE(
-                                                        f" ☑️  ♻️  Bought [{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}] BNB at price per 1 BNB of [{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}] USDT\n"
+                                                        f" ☑️  ♻️  Bought [{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}] BNB at price per 1 BNB of [{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}] {bootstrap.STABLECOIN_SYMBOL}\n"
                                                     )
                                                     telegram.LOG(
-                                                        f" ☑️ ♻️ Bought [[{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}]] BNB at [[{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}]] USDT/BNB",
+                                                        f" ☑️ ♻️ Bought [[{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}]] BNB at [[{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}]] {bootstrap.STABLECOIN_SYMBOL}/BNB",
                                                     )
 
                                                     for i in range(1, 11):
@@ -2507,10 +2526,10 @@ def main(version, mode, head):
 
                                                     if DEBUG_LVL != 3:
                                                         log.DEBUG(
-                                                            f"USDT balance is [{balance_usdt}]"
+                                                            f"{bootstrap.STABLECOIN_SYMBOL} balance is [{balance_stablecoin}]"
                                                         )
                                                         log.DEBUG(
-                                                            f"EGLD balance is [{balance_egld}]"
+                                                            f"{bootstrap.CRYPTOCOIN_SYMBOL} balance is [{balance_cryptocoin}]"
                                                         )
                                                         log.DEBUG(
                                                             f"BNB  balance is [{balance_bnb}]"
@@ -2539,7 +2558,7 @@ def main(version, mode, head):
                                                     )
                                             else:
                                                 log.FATAL_7(
-                                                    f"USDT balance [{balance_usdt}] is NOT enough to sustain many more transactions."
+                                                    f"{bootstrap.STABLECOIN_SYMBOL} balance [{balance_stablecoin}] is NOT enough to sustain many more transactions."
                                                 )
                                         elif RYBKA_MODE == "DEMO":
                                             email_sender(
@@ -2596,13 +2615,13 @@ def main(version, mode, head):
                                         f"{log.logging_time()} {'BNB balance (balance_bnb) is':90} {balance_bnb:40}\n"
                                     )
                                     f.write(
-                                        f"{log.logging_time()} {'USDT balance (balance_usdt) is':90} {balance_usdt:40}\n"
+                                        f"{log.logging_time()} {f'{bootstrap.STABLECOIN_SYMBOL} balance (balance_stablecoin) is':90} {balance_stablecoin:40}\n"
                                     )
                                     f.write(
-                                        f"{log.logging_time()} {'EGLD balance (balance_egld) is':90} {balance_egld:40}\n"
+                                        f"{log.logging_time()} {f'{bootstrap.CRYPTOCOIN_SYMBOL} balance (balance_cryptocoin) is':90} {balance_cryptocoin:40}\n"
                                     )
                                     f.write(
-                                        f"{log.logging_time()} {'Total USDT profit (total_usdt_profit) is':90} {total_usdt_profit:40}\n"
+                                        f"{log.logging_time()} {f'Total {bootstrap.STABLECOIN_SYMBOL} profit (total_stablecoin_profit) is':90} {total_stablecoin_profit:40}\n"
                                     )
                                     f.write(
                                         f"{log.logging_time()} {'Multiple sells (multiple_sells) set to':90} {multiple_sells:40}\n"
@@ -2727,10 +2746,10 @@ def main(version, mode, head):
                                                     )
                                                 elif RYBKA_MODE == "DEMO":
                                                     order = {
-                                                        "symbol": "EGLDUSDT",
+                                                        "symbol": bootstrap.TRADE_SYMBOL,
                                                         "orderId": "",
                                                         "orderListId": -1,
-                                                        "clientOrderId": "TXgNl8RNNipASGTrleH6ZY",
+                                                        "clientOrderId": "TXgNlRANDOMRANDOMeH6ZY",
                                                         "transactTime": 1661098548719,
                                                         "price": "0.00000000",
                                                         "origQty": "0.19000000",
@@ -2745,7 +2764,7 @@ def main(version, mode, head):
                                                                 "price": "",
                                                                 "qty": "0.19000000",
                                                                 "commission": "",
-                                                                "commissionAsset": "EGLD",
+                                                                "commissionAsset": bootstrap.CRYPTOCOIN_SYMBOL,
                                                                 "tradeId": 75747997,
                                                             }
                                                         ],
@@ -2769,12 +2788,12 @@ def main(version, mode, head):
                                                         8,
                                                     )
 
-                                                    balance_usdt += (
+                                                    balance_stablecoin += (
                                                         candle_close_price * ktbr_config[sell][0]
                                                     )
-                                                    balance_usdt = round(balance_usdt, 4)
-                                                    balance_egld -= ktbr_config[sell][0]
-                                                    balance_egld = round(balance_egld, 4)
+                                                    balance_stablecoin = round(balance_stablecoin, 4)
+                                                    balance_cryptocoin -= ktbr_config[sell][0]
+                                                    balance_cryptocoin = round(balance_cryptocoin, 4)
                                                     balance_bnb -= round(
                                                         float(
                                                             round(
@@ -2808,23 +2827,23 @@ def main(version, mode, head):
                                                                 orderId=order["orderId"],
                                                             )
                                                             log.DEBUG(
-                                                                "EGLD Sell Order status retrieval - Successful"
+                                                                f"{bootstrap.CRYPTOCOIN_SYMBOL} Sell Order status retrieval - Successful"
                                                             )
                                                             break
                                                         except Exception as e:
                                                             if i == 10:
                                                                 traceback.print_exc()
                                                                 log.FATAL_7(
-                                                                    f"EGLD Sell Order status retrieval - Failed as:\n{e}"
+                                                                    f"{bootstrap.CRYPTOCOIN_SYMBOL} Sell Order status retrieval - Failed as:\n{e}"
                                                                 )
                                                             time.sleep(3)
 
                                                 elif RYBKA_MODE == "DEMO":
                                                     order_status = {
-                                                        "symbol": "EGLDUSDT",
+                                                        "symbol": bootstrap.TRADE_SYMBOL,
                                                         "orderId": 953796254,
                                                         "orderListId": -1,
-                                                        "clientOrderId": "TXgNl8RNNipASGTrleH6ZY",
+                                                        "clientOrderId": "TXgNlRANDOMRANDOMeH6ZY",
                                                         "price": "0.00000000",
                                                         "origQty": "0.19000000",
                                                         "executedQty": "0.19000000",
@@ -2860,13 +2879,13 @@ def main(version, mode, head):
                                                     )
 
                                                     log.INFO_SPECIAL_GREEN(
-                                                        f" 🟢 [{RYBKA_MODE}] Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{price_aux}] USDT. Previously bought at [{str(ktbr_config[sell][1])}] USDT\n"
+                                                        f" 🟢 [{RYBKA_MODE}] Sold [{qtty_aux}] {bootstrap.CRYPTOCOIN_SYMBOL} at price per 1 {bootstrap.CRYPTOCOIN_SYMBOL} of [{price_aux}] {bootstrap.STABLECOIN_SYMBOL}. Previously bought at [{str(ktbr_config[sell][1])}] {bootstrap.STABLECOIN_SYMBOL}\n"
                                                     )
                                                     telegram.LOG(
-                                                        f" 🟢 [[{RYBKA_MODE}]] Sold [[{qtty_aux}]] EGLD at [[{price_aux}]] USDT/EGLD.\nWas bought at [[{str(ktbr_config[sell][1])}]] USDT/EGLD",
+                                                        f" 🟢 [[{RYBKA_MODE}]] Sold [[{qtty_aux}]] {bootstrap.CRYPTOCOIN_SYMBOL} at [[{price_aux}]] {bootstrap.STABLECOIN_SYMBOL}/{bootstrap.CRYPTOCOIN_SYMBOL}.\nWas bought at [[{str(ktbr_config[sell][1])}]] {bootstrap.STABLECOIN_SYMBOL}/{bootstrap.CRYPTOCOIN_SYMBOL}",
                                                     )
 
-                                                    usdt_trade_fee = round(
+                                                    stablecoin_trade_fee = round(
                                                         float(
                                                             0.08
                                                             / 100
@@ -2878,28 +2897,28 @@ def main(version, mode, head):
                                                         4,
                                                     )
                                                     log.VERBOSE(
-                                                        f"SELL action's usdt trade fee is {usdt_trade_fee}"
+                                                        f"SELL action's {bootstrap.STABLECOIN_SYMBOL} trade fee is {stablecoin_trade_fee}"
                                                     )
 
-                                                    total_usdt_profit = round(
+                                                    total_stablecoin_profit = round(
                                                         int(
                                                             (
-                                                                total_usdt_profit
+                                                                total_stablecoin_profit
                                                                 + (price_aux - ktbr_config[sell][1])
                                                                 * ktbr_config[sell][0]
                                                             )
                                                             * 10**4
                                                         )
                                                         / 10**4
-                                                        - usdt_trade_fee,
+                                                        - stablecoin_trade_fee,
                                                         4,
                                                     )
                                                     with open(
-                                                        f"{RYBKA_MODE}/usdt_profit",
+                                                        f"{RYBKA_MODE}/stablecoin_profit",
                                                         "w",
                                                         encoding="utf8",
                                                     ) as f:
-                                                        f.write(str(total_usdt_profit))
+                                                        f.write(str(total_stablecoin_profit))
 
                                                     bnb_commission = float(
                                                         order["fills"][0]["commission"]
@@ -2917,7 +2936,7 @@ def main(version, mode, head):
                                                             f"{log.logging_time()} Selling buy [{str(sell)}] {'of qtty':90} [{str(ktbr_config[sell][0])}]\n"
                                                         )
 
-                                                    previous_buy_info = f"What got sold: BUY ID [{str(sell)}] of QTTY [{str(ktbr_config[sell][0])}] at bought PRICE of [{str(ktbr_config[sell][1])}] USDT"
+                                                    previous_buy_info = f"What got sold: BUY ID [{str(sell)}] of QTTY [{str(ktbr_config[sell][0])}] at bought PRICE of [{str(ktbr_config[sell][1])}] {bootstrap.STABLECOIN_SYMBOL}"
 
                                                     del ktbr_config[sell]
                                                     with open(
@@ -2937,7 +2956,7 @@ def main(version, mode, head):
                                                             f"{log.logging_time()} {'Order time (order_time) is':90} {str(order_time):40}"
                                                         )
                                                         f.write(
-                                                            f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Sold [{qtty_aux}] EGLD at price per 1 EGLD of [{str(price_aux)}] USDT\n"
+                                                            f"{log.logging_time()} Transaction ID [{str(order['orderId'])}] - Sold [{qtty_aux}] {bootstrap.CRYPTOCOIN_SYMBOL} at price per 1 {bootstrap.CRYPTOCOIN_SYMBOL} of [{str(price_aux)}] {bootstrap.STABLECOIN_SYMBOL}\n"
                                                         )
                                                         f.write(
                                                             f"{log.logging_time()} {'Order (order) is':90} {str(json.dumps(order))}\n"
@@ -2946,7 +2965,7 @@ def main(version, mode, head):
                                                             f"{log.logging_time()} {'Order status (order_status) is':90} {str(json.dumps(order_status))}\n"
                                                         )
                                                         f.write(
-                                                            f"{log.logging_time()} {'USDT trade fee (usdt_trade_fee) is':90} {str(usdt_trade_fee)}\n"
+                                                            f"{log.logging_time()} {f'{bootstrap.STABLECOIN_SYMBOL} trade fee (stablecoin_trade_fee) is':90} {str(stablecoin_trade_fee)}\n"
                                                         )
                                                         f.write(
                                                             f"{log.logging_time()} {'Order commission is':90} {str(bnb_commission):40}\n"
@@ -2968,7 +2987,7 @@ def main(version, mode, head):
                                                         current_export_dir,
                                                     )
                                                     move_and_replace(
-                                                        "BNB_USDT_historical_prices",
+                                                        "BNB_TO_STABLECOIN_historical_prices",
                                                         current_export_dir,
                                                     )
                                                     move_and_replace(
@@ -2994,8 +3013,8 @@ def main(version, mode, head):
 
                                                     real_time_balances_update()
 
-                                                    log.DEBUG(f"USDT balance is [{balance_usdt}]")
-                                                    log.DEBUG(f"EGLD balance is [{balance_egld}]")
+                                                    log.DEBUG(f"{bootstrap.STABLECOIN_SYMBOL} balance is [{balance_stablecoin}]")
+                                                    log.DEBUG(f"{bootstrap.CRYPTOCOIN_SYMBOL} balance is [{balance_cryptocoin}]")
                                                     log.DEBUG(f"BNB  balance is [{balance_bnb}]")
 
                                                     if RYBKA_MODE == "LIVE":
@@ -3010,7 +3029,7 @@ def main(version, mode, head):
                                                             f"{log.logging_time()} Sell order done now at [{str(order_time)}]\n"
                                                         )
                                                         f.write(
-                                                            f"{log.logging_time()} Transaction ID [{order['orderId']}] - Sold [{str(qtty_aux)}] EGLD at price per 1 EGLD of [{str(price_aux)}] USDT\n"
+                                                            f"{log.logging_time()} Transaction ID [{order['orderId']}] - Sold [{str(qtty_aux)}] {bootstrap.CRYPTOCOIN_SYMBOL} at price per 1 {bootstrap.CRYPTOCOIN_SYMBOL} of [{str(price_aux)}] {bootstrap.STABLECOIN_SYMBOL}\n"
                                                         )
                                                         f.write(
                                                             f"{log.logging_time()} {previous_buy_info} \n\n\n"
@@ -3024,7 +3043,7 @@ def main(version, mode, head):
                                                             f"{log.logging_time()} Sell order done now at [{str(order_time)}]\n"
                                                         )
                                                         f.write(
-                                                            f"{log.logging_time()} Transaction ID [{order['orderId']}] - Sold [{str(qtty_aux)}] EGLD at price per 1 EGLD of [{str(price_aux)}] USDT\n"
+                                                            f"{log.logging_time()} Transaction ID [{order['orderId']}] - Sold [{str(qtty_aux)}] {bootstrap.CRYPTOCOIN_SYMBOL} at price per 1 {bootstrap.CRYPTOCOIN_SYMBOL} of [{str(price_aux)}] {bootstrap.STABLECOIN_SYMBOL}\n"
                                                         )
                                                         f.write(
                                                             f"{log.logging_time()} {previous_buy_info} \n\n\n"
@@ -3088,7 +3107,7 @@ def main(version, mode, head):
                                 else:
                                     if RYBKA_MODE == "LIVE":
                                         email_sender(
-                                            f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enough BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 USDT into BNB. This does NOT take from Safety Net!"
+                                            f"{log.logging_time()} [RYBKA MODE - {RYBKA_MODE}] Bot doesn't have enough BNB in balance [{balance_bnb}] to sustain many more trades.\n\nHence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 {bootstrap.STABLECOIN_SYMBOL} into BNB. This does NOT take from Safety Net!"
                                         )
                                         with open(
                                             f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
@@ -3099,21 +3118,21 @@ def main(version, mode, head):
                                                 f"\n\n{log.logging_time()} Within BUY (part X):\n"
                                             )
                                             f.write(
-                                                f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Hence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 USDT into BNB. This does NOT take from Safety Net!\n"
+                                                f"{log.logging_time()} BNB balance [{str(balance_bnb)}] is NOT enough to sustain many more transactions. Hence, to avoid stopping the bot, Rybka will automatically convert a bit over 10 {bootstrap.STABLECOIN_SYMBOL} into BNB. This does NOT take from Safety Net!\n"
                                             )
 
-                                        if round(float(balance_usdt - USDT_SAFETY_NET), 4) > 15:
+                                        if round(float(balance_stablecoin - STABLECOIN_SAFETY_NET), 4) > 15:
                                             bnb_min_buy_share = bnb_candle_close_price / 12
                                             bnb_min_order_quantity = round(
                                                 float(1 / bnb_min_buy_share), 3
                                             )
 
-                                            # treating the rare case of a sky-high price of BNB (of 24001 or above, in USDT), scenario in which the value of `bnb_min_order_quantity` would be equal to `0.0`
+                                            # treating the rare case of a sky-high price of BNB (of 24001 or above, in stablecoin), scenario in which the value of `bnb_min_order_quantity` would be equal to `0.0`
                                             if bnb_min_order_quantity == 0:
                                                 bnb_min_order_quantity = 0.001
 
                                             order = client.order_market_buy(
-                                                symbol="BNBUSDT",
+                                                symbol=f"BNB{bootstrap.STABLECOIN_SYMBOL}",
                                                 quantity=bnb_min_order_quantity,
                                             )
 
@@ -3158,7 +3177,7 @@ def main(version, mode, head):
                                             for i in range(1, 11):
                                                 try:
                                                     order_status = client.get_order(
-                                                        symbol="BNBUSDT",
+                                                        symbol=f"BNB{bootstrap.STABLECOIN_SYMBOL}",
                                                         orderId=order["orderId"],
                                                     )
                                                     log.DEBUG(
@@ -3192,10 +3211,10 @@ def main(version, mode, head):
 
                                                 # avoid rounding up on quantity & price bought
                                                 log.INFO_SPECIAL_PURPLE(
-                                                    f" ☑️  ♻️  Bought [{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}] BNB at price per 1 BNB of [{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}] USDT\n"
+                                                    f" ☑️  ♻️  Bought [{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}] BNB at price per 1 BNB of [{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}] {bootstrap.STABLECOIN_SYMBOL}\n"
                                                 )
                                                 telegram.LOG(
-                                                    f" ☑️ ♻️ Bought [[{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}]] BNB at [[{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}]] USDT/BNB",
+                                                    f" ☑️ ♻️ Bought [[{int(float(order['executedQty']) * 10 ** 8) / 10 ** 8}]] BNB at [[{int(float(order['fills'][0]['price']) * 10 ** 8) / 10 ** 8}]] {bootstrap.STABLECOIN_SYMBOL}/BNB",
                                                 )
 
                                                 for i in range(1, 11):
@@ -3216,8 +3235,8 @@ def main(version, mode, head):
                                                 real_time_balances_update()
 
                                                 if DEBUG_LVL != 3:
-                                                    log.DEBUG(f"USDT balance is [{balance_usdt}]")
-                                                    log.DEBUG(f"EGLD balance is [{balance_egld}]")
+                                                    log.DEBUG(f"{bootstrap.STABLECOIN_SYMBOL} balance is [{balance_stablecoin}]")
+                                                    log.DEBUG(f"{bootstrap.CRYPTOCOIN_SYMBOL} balance is [{balance_cryptocoin}]")
                                                     log.DEBUG(f"BNB  balance is [{balance_bnb}]")
 
                                             else:
@@ -3243,7 +3262,7 @@ def main(version, mode, head):
                                                 )
                                         else:
                                             log.FATAL_7(
-                                                f"USDT balance [{balance_usdt}] is NOT enough to sustain many more transactions."
+                                                f"{bootstrap.STABLECOIN_SYMBOL} balance [{balance_stablecoin}] is NOT enough to sustain many more transactions."
                                             )
                                     elif RYBKA_MODE == "DEMO":
                                         email_sender(
@@ -3280,7 +3299,7 @@ def main(version, mode, head):
 
     except KeyboardInterrupt:
         print(
-            f"{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL (7)] {log.logging_time()}  > Process stopped by user. Wait a few seconds!\n{bcolors.ENDC}"
+            f"\n{bcolors.CRED}{bcolors.BOLD}❌ [{RYBKA_MODE}] [FATAL (7)] {log.logging_time()}  > Process stopped by user. Wait a few seconds!\n{bcolors.ENDC}"
         )
         unicorn_stream_obj.stop_manager_with_all_streams()
         log.FATAL_7(f" 🔴 ⓇⓎⒷⓀⒶⒸⓄⓇⒺ 🔴\n          [[{RYBKA_MODE} mode]]\n")
@@ -3313,14 +3332,21 @@ if __name__ == "__main__":
     WEIGHTS_DICT_UPDATED = {}
 
     ###############################################
-    ########   GLOBAL VARS from ENV VARS   ########
+    ########  GLOBAL VARS from CONFIG VARS ########
     ###############################################
 
     TRADE_SYMBOL = bootstrap.TRADE_SYMBOL
     SOCKET = bootstrap.SOCKET
     RSI_PERIOD = bootstrap.RSI_PERIOD
-
     RYBKA_EMAIL_SENDER_DEVICE_PASSWORD = bootstrap.RYBKA_EMAIL_SENDER_DEVICE_PASSWORD
+
+    ###############################################
+    ########   ENV VARS from CONFIG VARS   ########
+    ###############################################
+
+    os.environ["TRADE_SYMBOL"] = bootstrap.TRADE_SYMBOL
+    os.environ["CRYPTOCOIN_SYMBOL"] = bootstrap.CRYPTOCOIN_SYMBOL
+    os.environ["STABLECOIN_SYMBOL"] = bootstrap.STABLECOIN_SYMBOL
 
     def bootstraping_vars():
         variables_reinitialization()
@@ -3329,7 +3355,7 @@ if __name__ == "__main__":
         global WEIGHTS_DICT_OUTDATED, WEIGHTS_DICT_UPDATED, TELEGRAM_WEIGHTS
 
         global DEBUG_LVL, RSI_FOR_BUY, RSI_FOR_SELL, TRADING_BOOST_LVL
-        global TRADE_QUANTITY, AUX_TRADE_QUANTITY, MIN_PROFIT, USDT_SAFETY_NET
+        global TRADE_QUANTITY, AUX_TRADE_QUANTITY, MIN_PROFIT, STABLECOIN_SAFETY_NET
         global RYBKA_EMAIL_SWITCH, RYBKA_EMAIL_SENDER_EMAIL, RYBKA_EMAIL_RECIPIENT_EMAIL, RYBKA_EMAIL_RECIPIENT_NAME
         global RYBKA_TELEGRAM_SWITCH
         global RYBKA_ALL_LOG_TLG_SWITCH
@@ -3363,7 +3389,7 @@ if __name__ == "__main__":
         TRADE_QUANTITY = round(bootstrap.TRADE_QUANTITY, 2)
         AUX_TRADE_QUANTITY = TRADE_QUANTITY
         MIN_PROFIT = bootstrap.MIN_PROFIT
-        USDT_SAFETY_NET = bootstrap.USDT_SAFETY_NET
+        STABLECOIN_SAFETY_NET = bootstrap.STABLECOIN_SAFETY_NET
 
         RYBKA_EMAIL_SWITCH = bootstrap.RYBKA_EMAIL_SWITCH
         RYBKA_EMAIL_SENDER_EMAIL = bootstrap.RYBKA_EMAIL_SENDER_EMAIL
@@ -3385,7 +3411,7 @@ if __name__ == "__main__":
             WEIGHTS_DICT_UPDATED.update({"RYBKA_RSI_FOR_SELL": RSI_FOR_SELL})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_TRADE_QUANTITY": TRADE_QUANTITY})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_MIN_PROFIT": MIN_PROFIT})
-            WEIGHTS_DICT_UPDATED.update({"RYBKA_USDT_SAFETY_NET": USDT_SAFETY_NET})
+            WEIGHTS_DICT_UPDATED.update({"RYBKA_STABLECOIN_SAFETY_NET": STABLECOIN_SAFETY_NET})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_SWITCH": RYBKA_EMAIL_SWITCH})
             WEIGHTS_DICT_UPDATED.update({"RYBKA_EMAIL_SENDER_EMAIL": RYBKA_EMAIL_SENDER_EMAIL})
             WEIGHTS_DICT_UPDATED.update(
@@ -3435,7 +3461,7 @@ if __name__ == "__main__":
     closed_candles = []
     client = ""
 
-    total_usdt_profit = 0
+    total_stablecoin_profit = 0
 
     multiple_sells = "disabled"
     nr_of_trades = 0

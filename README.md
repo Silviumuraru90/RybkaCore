@@ -13,7 +13,20 @@
 ## &emsp;&emsp; **Description**
 <br>
 📌 `RybkaCore` bot is a scalping crypto-trading-bot that currently supports the following pair(s):<br><br>
-&emsp;&emsp;✅ `EGLD`-`USDT` <br><br><br>
+
+&emsp;&emsp;✅ `EGLD` - `USDT` (tested, `default`) <br>
+&emsp;&emsp;✅ `?` - `<stablecoin>` (experimental) 
+
+<br>
+
+> `Note:` You may use other trading pairs, as long as: <br><br>
+ <b>1.</b> Their price in relative to the `stablecoin` side of the traing pair chosen is not a subunitary value and also is not expected to go on such a value level. <br>
+ <b>2.</b> You do take notice this would be purely `experimental`, if you don't use the `default` pair in the meantime for good / stable results.<br>
+ <b>3.</b> There is a valid trading pair forming as [`<cryptocoin><stablecoin>`] <br>
+ <b>4.</b> There is a valid trading pair forming as [`BNB<stablecoin>`] (for fees)<br>
+&emsp;&emsp;All Binance supported trade pair symbols are to be found here: [HERE](https://api.binance.com/api/v3/exchangeInfo)    -->   `"symbol":"<some_symbol>"`
+
+<br><br>
 
 📌 It uses 🔌 socket connection to Binance via the `unicorn-binance-suite` lib <br><br>
 
@@ -29,10 +42,11 @@
 &emsp;&emsp;❔ &nbsp;Mac OS <br><br>
 
 
-> **Legend:** &emsp; ❔ &nbsp; ⟹ &nbsp; _not tested yet_
+> **Legend:** &emsp; <br>❔ &nbsp; ⟹ &nbsp; _not tested yet_ <br><br> - Here, `cryptocoin` refers to the other half of the `stablecoin` trading pair you will use.<br>
+&emsp;&emsp;&emsp;&emsp;Example: in the `EGLDUSDT` pair, the `cryptocoin` would be `EGLD`
 
 <br><br>
-⚠️ `DISCLAIMER`: Before moving on, please understand that `RybkaCore` bot was created in the spirit of making profits getting the best out of a `market volatility`. Still, this does `NOT` mean you can't lost money using it. `(1)` If you set up a lower amount of `[RYBKA_MIN_PROFIT]` than the one put in place, `(2)` if you use the bot in `bull market`, and then the price of `EGLD` in raport to `USDT` drops dramatically and your coins remain bought very high on a price graph, rendering selling them highly unprofitable or `(3)` if unforeseen network / tech-related issues happen that somehow might make the bot behave unaccordingly to the purpose it was designed to, which is always being profitable for the user; or `(4)` any other situation I can't envision right now - then, in all of these `4` cases, you might lose money (fiat / crypto).<br>
+⚠️ `DISCLAIMER`: Before moving on, please understand that `RybkaCore` bot was created in the spirit of making profits getting the best out of a `market volatility`. Still, this does `NOT` mean you can't lose money using it. `(1)` If you set up a lower amount of `[RYBKA_MIN_PROFIT]` than the one put in place, `(2)` if you use the bot in `bull market`, and then the price of the chosen `cryptocoin` in raport to the `stablecoin` drops dramatically and your coins remain bought very high on a price graph, rendering selling them highly unprofitable or `(3)` if unforeseen network / tech-related issues happen that somehow might make the bot behave unaccordingly to the purpose it was designed to, which is always being profitable for the user; or `(4)` any other situation I can't envision right now - then, in all of these `4` cases, you might lose money (fiat / crypto).<br>
 ❗️ In any case, you also have to understand that while such `disclaimer` is necessary, I'm confident enought to use this bot in `LIVE` mode, for myself, hence I'm pretty confident in its inner workings. As it's `open-source` it can easily be audited. If you find bugs in it, I'm open to discuss them and eventually solve, just let me know via an email.
 
 <br><br>
@@ -57,7 +71,7 @@
 ✅ CLI-initiated / Telegram-initiated / GUI-initiated start <br>
 ✅ Some weights can be set from ENV, others from an `env_var_config` file. This gives possibility for some vars to be updated on the fly, while the bot is running and alter its behavior <br>
 ✅ CLI args for `RYBKA_MODE` values, to avoid faulty runs if `RYBKA_MODE` was to remain cached from ENV, even after the user had previously changed it <br>
-✅ Email notif. module. Informs the user about being low on BNB, or on USDT, or if an error occured and bot got a shutdown. Also sends emails on start / restart actions <br>
+✅ Email notif. module. Informs the user about being low on BNB, or on stablecoin, or if an error occured and bot got a shutdown. Also sends emails on start / restart actions <br>
 ✅ Dynamic adjustment (greediness) for buy-sell math of the trading pair <br>
 ✅ Live wallet data displayed for the trade pair sides and commission, dynamic adjustment with each buy - sell <br>
 ✅ Folder creation (timestamp included) with files containing important data of the current run and auto-archive system once the run is finished <br>
@@ -68,15 +82,15 @@
 ✅ Colored log output based on log-level types (INFO, WARN, FATAL and DEBUG / VERBOSE / HIGH_VERBOSITY) <br>
 ✅ Timestamp added on bot's actions - logs, back-ups, trades, etc <br>
 ✅ Cross-OS support (Win / Linux-based) <br>
-✅ Checks which amount of the USDT is locked (in limit / stop orders, etc.) and avoids using it <br>
+✅ Checks which amount of the stablecoin is locked (in limit / stop orders, etc.) and avoids using it <br>
 ✅ Local files check-up on each start / restart action, even integrity check for files' values <br>
 ✅ Telegram notifier (passive mode) <br>
 ✅ Telegram listener (interactive mode) <br>
 ✅ Controls the resulted `output files`' size
 ✅ Implementation of an `always buy` policy in which it will always buy when the price goes up and has nothing / close to nothing to sell for a better profitability over the same timeframe & graph positioning of the currency-to-stable-coin raport <br>
-✅ `Safety net` implementation for USDT <br>
+✅ `Safety net` implementation for the preferred stablecoin <br>
 ✅ Various `graphs` generated on the spot and provided via Telegram <br>
-✅ When it remains without too much currency for trade fees (BNB) - it will automatically convert between 10 and 15 USDT into BNB. This, of course, doesn't take from the safety net of USDT <br>
+✅ When it remains without too much currency for trade fees (BNB) - it will automatically convert between 10 and 15 stablecoins into BNB. This, of course, doesn't take from the safety net of the stablecoin <br>
 ✅ Added a submode to allow only BUYs and no SELLs. Can be controlled via a weight and of course - remotely, via Telegram <br>
 ✅ Added a submode to allow only SELLs and no BUYs. Can be controlled via a weight and of course - remotely, via Telegram <br>
 
@@ -177,17 +191,17 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 |`RYBKA_RSI_FOR_BUY`                     | `integer` | `Desc`: <b> RSI threshold value for BUY</b> actions <br><br> Values ➡️ (`0` ↔️ `50`) <br><br> The higher the value, the more sensitive the bot on buy actions <br><br> `Note`: Adding or subtracting `N` to / from the value of [`RYBKA_RSI_FOR_BUY`] var does <b>NOT</b> imply adding or subtracting the same `N` value from its relative [`RYBKA_RSI_FOR_SELL`] var <br> <br>(Get from config file)                           | ✅        | `30` | 
 |`RYBKA_RSI_FOR_SELL`                    | `integer` | `Desc`: <b> RSI threshold value for SELL</b> actions <br><br> Values ➡️ (`50` ↔️ `100`)<br> <br> The lower the value, the more sensitive the bot on sell actions <br><br> `Note`: Adding or subtracting `N` to / from the value of [`RYBKA_RSI_FOR_SELL`] var does <b>NOT</b> imply adding or subtracting the same `N` value from its relative [`RYBKA_RSI_FOR_BUY`] var<br> <br>(Get from config file)                           | ✅        | `70` | 
 |`RYBKA_RSI_PERIOD`                    | `integer` | `Desc`: <b> RSI period of time</b><br>upon which the bot will gather data and take 1 decision<br><br> Values ➡️ (`10` ↔️ `∞`) <br> <br>(Get from config file)                           | ✅        | `10` | 
-|`RYBKA_TRADE_QUANTITY`                  | `float` with a minimum Binance-imposed requirement of `stepSize=2`<br><br>(no more than 2 decimals) | `Desc`: The <b>crypto-coin amount</b> to buy on each EGLDUSDT transaction <br> <br>(Get from config file)                           | ✅        | `0.1` | 
-|`RYBKA_MIN_PROFIT`                      | `float` | `Desc`: The `USDT` <b>minimum profit</b>, per transaction, that allows a SELL signal to complete <br> <br>(Get from config file)                           | ✅        | `0.3` | 
-|`RYBKA_USDT_SAFETY_NET`                      | `float` | `Desc`: The `USDT` <b> amount in your Binance wallet</b> that you want the bot to NOT touch / use for buy actions <br><br>(Get from config file)                           | ❌        | `0` | 
+|`RYBKA_TRADE_QUANTITY`                  | `float` with a minimum Binance-imposed requirement of `stepSize=2`<br><br>(no more than 2 decimals) | `Desc`: The <b>crypto-coin amount</b> to buy on each cryptocoin-stablecoin transaction <br> <br>(Get from config file)                           | ✅        | `0.1` | 
+|`RYBKA_MIN_PROFIT`                      | `float` | `Desc`: The `stablecoin` <b>minimum profit</b>, per transaction, that allows a SELL signal to complete <br> <br>(Get from config file)                           | ✅        | `0.3` | 
+|`RYBKA_STABLECOIN_SAFETY_NET`                      | `float` | `Desc`: The `stablecoin` <b> amount in your Binance wallet (the stablecoin within the chosen trading pair)</b> that you want the bot to NOT touch / use for buy actions <br><br>(Get from config file)                           | ❌        | `0` | 
 |`RYBKA_EMAIL_SWITCH`                    | `boolean` | `Desc`: Enable / disable receiving important notifications via email<br><br>Values ➡️ `True` or `False` <br><br> `True` will enable Email Notifications <br>`False` will disable them<br> <br>(Get from environment / config file)                           | ✅        | `False` | 
 |`RYBKA_EMAIL_SENDER_EMAIL`              | `string` | `Desc`: <b>Email address</b> of the account sending the email <br> <br>(Get from environment / config file)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`       | ❌ | 
 |`RYBKA_EMAIL_SENDER_DEVICE_PASSWORD`    | `string` | `Desc`: <b>DEVICE password</b>, not the emailbox password, (tested only with @gmail.com accounts) of the account sending the email  <br> <br>(Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`       | ❌ | 
 |`RYBKA_EMAIL_RECIPIENT_EMAIL`           | `string` | `Desc`: <b>Email address</b> of the account receiving the email <br> <br>(Get from environment / config file)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
 |`RYBKA_EMAIL_RECIPIENT_NAME`            | `string` | `Desc`: <b>Name</b> of the person receiving the email <br> <br>(Get from environment / config file)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | `User` | 
 |`RYBKA_DISCLAIMER`                      | `boolean` | `Desc`: Enable / disable viewing bot's disclaimer for its usage<br><br>Values ➡️ `True` or `False` <br> <br> `True` will enable a Safety Disclaimer <br>`False` will disable it<br><br>(Get from environment / config file)                           | ✅        | `True` | 
-|`RYBKA_DEMO_BALANCE_USDT`                      | `float` | `Desc`: Amount of `USDT` the bot is provided with, in `DEMO` mode <br> <br>(Get from config file)                           | ❌        | `1500` | 
-|`RYBKA_DEMO_BALANCE_EGLD`                      | `float` | `Desc`: Amount of `EGLD` the bot is provided with, in `DEMO` mode <br> <br>(Get from config file)                           | ❌        | `100` | 
+|`RYBKA_DEMO_BALANCE_STABLECOIN`                      | `float` | `Desc`: Amount of `stablecoin` the bot is provided with, in `DEMO` mode <br> <br>(Get from config file)                           | ❌        | `1500` | 
+|`RYBKA_DEMO_BALANCE_CRYPTOCOIN`                      | `float` | `Desc`: Amount of `cryptocoin` the bot is provided with, in `DEMO` mode <br> <br>(Get from config file)                           | ❌        | `100` | 
 |`RYBKA_DEMO_BALANCE_BNB`                      | `float` | `Desc`: Amount of `BNB` the bot is provided with, in `DEMO` mode <br> <br>(Get from config file)                           | ❌        | `0.2` | 
 |`RYBKA_TELEGRAM_SWITCH`                      | `boolean` | `Desc`: Enable / disable receiving messages via Telegram<br><br>Values ➡️ `True` or `False` <br><br> `True` will enable Telegram Notifications <br>`False` will disable them<br> <br>(Get from environment / config file)                           | ✅        | `False` |  
 |`RYBKA_TELEGRAM_API_KEY`                      | `string` | `Desc`: Bot's Telegram <b>Auth</b>orization <b>KEY</b> <br> <br>(Get from environment)                           | ✅ <br> if `RYBKA_EMAIL_SWITCH` is `True`        | ❌ | 
@@ -198,7 +212,7 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 🔘 `python3` command available to run the bot under it. Make sure all of the libs are installed under the python version considered by the `python3` command. Do the necessary `update-alternatives` / symlinks, if needed; <br>
 
-🔘 Some `USDT` for buy actions in your Binance wallet; <br>
+🔘 Some `stablecoin` for the buy actions that'll happen within your Binance wallet; <br>
 
 🔘 Some `BNB` amount in your Binance wallet (this is the currency used for trades' commission; `~100 trades = 1$ commission`); <br>
 
@@ -206,12 +220,12 @@ To run the software, beside the `prerequisites`, you will also need: <br><br>
 
 ### &emsp;&emsp;<b> 🔴 Breakpoints? (not really) 🔴 </b>
 </b><br>
-🔴 If the price of BNB would hit `24001 USDT` (`bnb_candle_close_price=24000`), bot's script part:
+🔴 If the price of BNB would hit `24001 $ / stablecoins` (`bnb_candle_close_price=24000`), bot's script part:
 ```
 bnb_min_buy_share = bnb_candle_close_price / 12
 bnb_min_order_quantity = round(float(1 / bnb_min_buy_share), 3)
 ```
-=> would make `bnb_min_order_quantity` get assigned the value of `0.0`, which is below the `LOT_SIZE`'s `minQty` of `0.001`, for `BNBUSDT` pair:
+=> would make `bnb_min_order_quantity` get assigned the value of `0.0`, which is below the `LOT_SIZE`'s `minQty` of `0.001`, for, let's take, the `BNBUSDT` pair:
 
 <div align="center">
   <img src="MEDIA/BNB_characteristics.png">
@@ -221,7 +235,7 @@ bnb_min_order_quantity = round(float(1 / bnb_min_buy_share), 3)
 => thus the buy order of more `BNB` with `USDT` - would fail. This, of course, could've represented a breakpoint, but it got solved by enforcing a minimum of `0.001` BNB to be bought in such scenario; which may then only fail if there isn't enough `USDT` in the account, look, we'll most probably never face this, ever;
 <br><br><br>
 
-🔴 If the price of `EGLD` would skyrocket, meaning that less than `0.01 EGLD` would represent more than `10 USDT` [the minimum imposed coin quantity per order for `EGLDUSDT` pair (the `MIN_NOTIONAL`'s `minNotional` value in the image below)], then the `LOT_SIZE`'s `minQty` of `0.01`, for `EGLDUSDT` pair would not be met, thus failing the transaction;
+🔴 If the price of the `cryptocoin` would skyrocket, meaning that (in the `EGLDUSDT` example) less than `0.01 EGLD` would represent more than `10 USDT` [the minimum imposed coin quantity per order for `EGLDUSDT` pair (the `MIN_NOTIONAL`'s `minNotional` value in the image below)], then the `LOT_SIZE`'s `minQty` of `0.01`, for `EGLDUSDT` pair would not be met, thus failing the transaction;
 
 <div align="center">
   <img src="MEDIA/EGLD_characteristics.png">
@@ -244,17 +258,17 @@ bnb_min_order_quantity = round(float(1 / bnb_min_buy_share), 3)
 
 <br>
 
-🟣 What is `ktbr`? It stands for `keep-the-business-running` and is the most important file created by the bot. It keeps track of bot's buy transactions in an individual way. There is also an `integrity` function (to which you'll see a log in terminal) that runs once in a while that constantly verifies if the user has not altered the amount of balances the bot is aware of, in the cloud. If there is a misalignment - it will stop and let you know about it. The sum of `EGLD` across all the buy transactions in the `ktbr` file should at all times be equal or less than the sum of `EGLD` you have in your Binance account. Should you want to transfer some to any other wallet, edit this ktbr file, while keeping its `json` format;
+🟣 What is `ktbr`? It stands for `keep-the-business-running` and is the most important file created by the bot. It keeps track of bot's buy transactions in an individual way. There is also an `integrity` function (to which you'll see a log in terminal) that runs once in a while that constantly verifies if the user has not altered the amount of balances the bot is aware of, in the cloud. If there is a misalignment - it will stop and let you know about it. The sum of `cryptocoin` across all the buy transactions in the `ktbr` file should at all times be equal or less than the sum of `cryptocoin` you have in your Binance account. Should you want to transfer some to any other wallet, edit this ktbr file, while keeping its `json` format;
 <br><br></br>
 ❗️ Note for `transaction fees`:  For each transaction the bot is doing (buy or sell), it is paying a fee of `0.08%` of the `trading-quantity-of-the-coin` * `current-coin-price`;
 <br><br></br>
 ❗️ Note for `minimum profit`: [`RYBKA_MIN_PROFIT`] ENV var's value represents a `gross` value. So that it will be `auto-adjusted` to a higher value and `inform the user` upon action, if the user sets it to be so small that the `net` minimum (`RYBKA_MIN_PROFIT`-`commision per a specific transaction`) is below <b>80%</b> (It had to be at least 50%, as even if the profit is grabbed once, per sell transaction, the fee is also considered at the buy phase, so 80% is a very good margin) of the `gross` [`RYBKA_MIN_PROFIT`]. This is calculated `individually`, on each sell transaction;
 <br><br></br>
-❗️ Note for `trade quantity`: [`RYBKA_TRADE_QUANTITY`] ENV var's value represents the trading quantity per transaction, but if this is too low when mutiplied with the `current price of 1 EGLD / USDT`, it may result in a trade sum less than `10 USDT`, which is `NOT permitted by Binance`, hence `RybkaCore will auto-adjust the quantity` to a higher one and `inform the user` upon action;
+❗️ Note for `trade quantity`: [`RYBKA_TRADE_QUANTITY`] ENV var's value represents the trading quantity per transaction, but if this is too low when mutiplied with the `current price of 1 cryptocoin / stablecoin`, it may result in a trade sum less than `10 stablecoins`, which is `NOT permitted by Binance`, hence `RybkaCore will auto-adjust the quantity` to a higher one and `inform the user` upon action;
 <br><br></br>
-❗️ Note for the `MOST efficient way of using the bot` respective to `profit`: try to aproximate the nr. of [`RYBKA_TRADE_QUANTITY`] you can buy by considering the price of `EGLD` in `USDT` and thinking how many pieces of cryptocurrency you would buy with the sum of `USDT` you have in your account, so that it will result in <b>at least</b> `30` possible buys. This will comply with the best inner policies in the bot, to maximize the profit. You can surely use `RybkaCore` with whichever sum of money, anyway, but it won't guarantee the optimal results, still, it will be capable of making considerable profits. Pay attention that when the bot will try to make a `buy`, it will also tell you in the terminal the possible number of buys (so it will also calculate itself those) and pay attention that the minimum possible order is of `10$` per Binance, but actually a minimum of `~12$`, per bot's inner logic. If you let the bot run with the predefined value of [`RYBKA_TRADE_QUANTITY`] found in `config.ini` - it will automatically calculate the minimum [`RYBKA_TRADE_QUANTITY`] required for it to always buy the smallest possible chunk of `EGLD`, so you can safely just leave it do its thing and this way let it maximize the number of possible buys;
+❗️ Note for the `MOST efficient way of using the bot` respective to `profit`: try to aproximate the nr. of [`RYBKA_TRADE_QUANTITY`] you can buy by considering the price of `cryptocoin` in `stablecoins` and thinking how many pieces of cryptocurrency you would buy with the sum of `stablecoins` you have in your account, so that it will result in <b>at least</b> `30` possible buys. This will comply with the best inner policies in the bot, to maximize the profit. You can surely use `RybkaCore` with whichever sum of money, anyway, but it won't guarantee the optimal results, still, it will be capable of making considerable profits. Pay attention that when the bot will try to make a `buy`, it will also tell you in the terminal the possible number of buys (so it will also calculate itself those) and pay attention that the minimum possible order is of `10$` per Binance, but actually a minimum of `~12$`, per bot's inner logic. If you let the bot run with the predefined value of [`RYBKA_TRADE_QUANTITY`] found in `config.ini` - it will automatically calculate the minimum [`RYBKA_TRADE_QUANTITY`] required for it to always buy the smallest possible chunk of `cryptocoin`, so you can safely just leave it do its thing and this way let it maximize the number of possible buys;
 <br><br><br>
-❗️ Note for the cryptocurrency the bot will consider. It will use only the `USDT` appearing / added later on (while the bot runs) in Binance and the `BNB` for taxes per orders (also considered on-the-fly). But it will NOT consider the new `EGLD` added into Binance, only the one that it bought already in the current / previous runs (tracked in the `ktbr` file). If some `USDT` is removed, better stop the bot before that action and restart it afterwards, as it might fail if you'll let it run. Same applies to `EGLD`, if you want to move it out of `Binance`, but this will be possible to be safely removed via a tool that will be developed in the future via [this ticket](https://gitlab.com/Silviu_space/rybka/-/issues/292). Till then, the only way to make the bot work without errors when you move EGLD (that bot `previosuly bought`) out of Binance, is to tweak accordingly the `ktbr` file in the `LIVE` folder of the bot; operation which might be dangerous if the result won't be compliant to the `json` format of the file's content or with the balance of `EGLD` remaining in `Binance`, but can be done with ease if paying attention;
+❗️ Note for the cryptocurrency the bot will consider. It will use only the `stablecoin` appearing / added later on (while the bot runs) in Binance and the `BNB` for taxes per orders (also considered on-the-fly). But it will NOT consider the new `cryptocoin` added into Binance, only the one that it bought already in the current / previous runs (tracked in the `ktbr` file). If some of the `stablecoin` is removed, better stop the bot before that action and restart it afterwards, as it might fail if the remainder amount is so low that it cannot even make 1 more buy, if you'll let it run. If you can grant it at least some 1-2 buys "space", then remove the stablecoin on-the-go, it will recalibrate itself. Same applies to the `cryptocoin`, if you want to move it out of `Binance`, but this will be possible to be safely removed via a tool that will be developed in the future via [this ticket](https://gitlab.com/Silviu_space/rybka/-/issues/292). Till then, the only way to make the bot work without errors when you move the cryptocoin (that bot `previously bought`) out of Binance, is to tweak accordingly the `ktbr` file in the `LIVE` folder of the bot; operation which might be dangerous if the result won't be compliant to the `json` format of the file's content or with the balance of `cryptocoin` remaining in `Binance`, but can be done with ease if paying attention;
 <br><br><br>
 ❗️ Note for the temporary files the bot will create & consider. Do not delete those, it will only make the process insignificantly slower, just let them persist;
 <br><br><br>

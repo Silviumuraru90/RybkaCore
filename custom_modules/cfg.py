@@ -3,6 +3,8 @@
 import configparser
 import os
 
+from termcolor import colored
+
 
 # Rybka proj. specific prerequisites
 class Rybka_py_env_bootstrap:
@@ -168,7 +170,25 @@ class Rybka_py_env_bootstrap:
             )
             .strip("\n")
             .strip()
+            .upper()
         )
+
+        def validate_and_split_trading_pair(trading_pair):
+            if trading_pair.endswith("USDT"):
+                self.CRYPTOCOIN_SYMBOL = trading_pair[:-4]
+                self.STABLECOIN_SYMBOL = "USDT"
+            else:
+                print(
+                    colored(
+                        "🔴 [FATAL] Invalid trading pair. Trading pair must end with [USDT]!",
+                        "red",
+                    )
+                )
+                exit(1)
+
+        validate_and_split_trading_pair(self.TRADE_SYMBOL)
+
+
         self.SOCKET = f"wss://stream.binance.com:9443/ws/{self.TRADE_SYMBOL.lower()}@kline_1m"
         self.RSI_PERIOD = int(
             config.get(
@@ -201,34 +221,34 @@ class Rybka_py_env_bootstrap:
             )
         )
         try:
-            self.USDT_SAFETY_NET = float(
+            self.STABLECOIN_SAFETY_NET = float(
                 config.get(
                     "Rybka Binance Configuration. For LIVE and DEMO modes",
-                    "RYBKA_USDT_SAFETY_NET",
+                    "RYBKA_STABLECOIN_SAFETY_NET",
                 )
             )
         except:
-            self.USDT_SAFETY_NET = None
+            self.STABLECOIN_SAFETY_NET = None
 
         # DEMO mode related config.
         try:
-            self.RYBKA_DEMO_BALANCE_USDT = float(
+            self.RYBKA_DEMO_BALANCE_STABLECOIN = float(
                 config.get(
                     "Rybka Standalone Configuration. Only for DEMO mode",
-                    "RYBKA_DEMO_BALANCE_USDT",
+                    "RYBKA_DEMO_BALANCE_STABLECOIN",
                 )
             )
         except:
-            self.RYBKA_DEMO_BALANCE_USDT = 1500
+            self.RYBKA_DEMO_BALANCE_STABLECOIN = 1500
         try:
-            self.RYBKA_DEMO_BALANCE_EGLD = float(
+            self.RYBKA_DEMO_BALANCE_CRYPTOCOIN = float(
                 config.get(
                     "Rybka Standalone Configuration. Only for DEMO mode",
-                    "RYBKA_DEMO_BALANCE_EGLD",
+                    "RYBKA_DEMO_BALANCE_CRYPTOCOIN",
                 )
             )
         except:
-            self.RYBKA_DEMO_BALANCE_EGLD = 100
+            self.RYBKA_DEMO_BALANCE_CRYPTOCOIN = 100
         try:
             self.RYBKA_DEMO_BALANCE_BNB = float(
                 config.get(

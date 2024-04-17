@@ -45,6 +45,19 @@ logging.getLogger().setLevel(logging.CRITICAL)
 def ORANGE(message):
     print(colored_2.fg(202) + f"{message}")
 
+class bcolors:
+    HEADER = "\033[95m"
+    OKBLUE = "\033[94m"
+    OKCYAN = "\033[96m"
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    ENDC = "\033[0m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+    CRED = "\33[31m"
+    DARKGRAY = "\033[90m"
+    PURPLE = "\033[95m"
+
 
 ###############################################
 ########      UNIQUE ID FUNCTION      #########
@@ -61,29 +74,54 @@ def id_generator(size=10, chars=string_str.ascii_uppercase + string_str.digits):
 
 
 def initialization():
+
     print(
         colored(
             """
-    #########################################################
-    #####        📡 Telegram listener activated!        #####
-    #########################################################
-    """,
+#########################################################
+#####        📡 Telegram listener activated!        #####
+#########################################################""",
             "magenta",
         ),
+        "\n\n",
+        colored(
+            f"                                                       ",
+            "blue",
+            "on_grey",
+        ),
+        "\n   ",
+        colored(
+            f'{bcolors.BOLD}<<  Bot currently tracks the [{os.environ.get("TRADE_SYMBOL")}] pair  >>{bcolors.ENDC}',
+            "blue",
+            "on_grey",
+        ),
+        "\n",
+        colored(
+            f"                                                       ",
+            "blue",
+            "on_grey",
+        ),
+        "\n",
         colored(
             """
-    #########################################################
-    #####                                               #####
-    #####  1️⃣  Open `Telegram` app on your device        #####
-    #####  2️⃣  Open your RybkaCore Telegram bot's chat   #####
-    #####  3️⃣  Type `/help` for details on how to use    #####
-    #####                                               #####
-    #########################################################
+#########################################################
+#####                                               #####
+#####  1️⃣  Open `Telegram` app on your device        #####
+#####  2️⃣  Open your RybkaCore Telegram bot's chat   #####
+#####  3️⃣  Type `/help` for details on how to use    #####
+#####                                               #####
+#########################################################
     \n""",
             "cyan",
         ),
     )
 
+    print(
+        colored(
+            f'🟢 Telegram Listener initialization finished successfully!\n',
+            "green",
+        )
+    )
 
 ####################################################
 ##############        Main Menu       ##############
@@ -102,7 +140,7 @@ def help_command(update, context):
     {'/deposits':20}    - Deposit History
     {'/withdrawals':20} - Withdrawal H.
     {'/balances':20}    - Acc. Balances
-    {'/current_price':20}  - USDT/EGLD
+    {'/current_price':20}  - $/cryptocoin
 
 🟣 FUNd handling history of RybkaCore:
     {'/current_buys':20} - Tracked Buys
@@ -147,6 +185,8 @@ def graphs_info_command(update, context):
     update.message.reply_text(
         f"""Available crypto-graphs are ⤵️
 
+⚠️ Also, this does NOT support all the coins you may want to trade with (request its addition via an email);
+
 ⚠️ Please note this has a limitation and may not work for some users;
 ⚠️ Issue tracked in order to be solved, via:
 https://gitlab.com/Silviu_space/rybka/-/issues/350
@@ -163,7 +203,7 @@ https://gitlab.com/Silviu_space/rybka/-/issues/350
     )
 
 
-def egld_command(update, context):
+def cryptocoin_command(update, context):
     update.message.reply_text(
         f"""Available EGLD-graphs are ⤵️
 
@@ -254,7 +294,7 @@ def weights_info_command(update, context):
     {'/RYBKA_TRADE_QUANTITY'}
     {'/RYBKA_MIN_PROFIT'}
     {'/RYBKA_EMAIL_SWITCH'}
-    {'/RYBKA_USDT_SAFETY_NET'}
+    {'/RYBKA_STABLECOIN_SAFETY_NET'}
     {'/RYBKA_EMAIL_SENDER_EMAIL'}
     {'/RYBKA_EMAIL_RECIPIENT_EMAIL'}
     {'/RYBKA_EMAIL_RECIPIENT_NAME'}
@@ -288,7 +328,7 @@ def weight_modification_command(update, context):
     {'/m_RYBKA_EMAIL_SWITCH'}
     {'/m_RYBKA_TELEGRAM_SWITCH'}
     {'/m_RYBKA_ALL_LOG_TLG_SWITCH'}
-    {'/m_RYBKA_USDT_SAFETY_NET'}
+    {'/m_RYBKA_STABLECOIN_SAFETY_NET'}
 
 
     🔄 {'/help'}  -  Back to parent menu
@@ -384,7 +424,7 @@ def current_buys_command(update, context):
                         )
                     for k, v in ktbr_config.items():
                         update.message.reply_text(
-                            f" 💳 Transaction [{k}]  ---  [{v[0]}] EGLD at [{v[1]}] USDT/EGLD"
+                            f' 💳 Transaction [{k}]  ---  [{v[0]}] {os.environ.get("CRYPTOCOIN_SYMBOL")} at [{v[1]}] {os.environ.get("STABLECOIN_SYMBOL")}/{os.environ.get("CRYPTOCOIN_SYMBOL")}'
                         )
                 except Exception as e:
                     update.message.reply_text(
@@ -412,16 +452,16 @@ def lifetime_buys_nr_command(update, context):
 
 
 def profit_command(update, context):
-    if exists("LIVE/usdt_profit"):
-        with open("LIVE/usdt_profit", "r", encoding="utf8") as f:
-            if os.stat("LIVE/usdt_profit").st_size == 0:
-                update.message.reply_text(" ✅ [LIVE/usdt_profit] file exists and is empty")
+    if exists("LIVE/stablecoin_profit"):
+        with open("LIVE/stablecoin_profit", "r", encoding="utf8") as f:
+            if os.stat("LIVE/stablecoin_profit").st_size == 0:
+                update.message.reply_text(" ✅ [LIVE/stablecoin_profit] file exists and is empty")
             else:
                 profit = float(f.read())
                 if not profit or profit == 0:
                     update.message.reply_text("There is no previous recorded profit!")
                 else:
-                    update.message.reply_text(f"💰 Lifetime profit is [{profit}] USDT")
+                    update.message.reply_text(f'💰 Lifetime profit is [{profit}] {os.environ["STABLECOIN_SYMBOL"]}')
     else:
         update.message.reply_text("The file for lifetime profit does NOT exist!")
 
@@ -476,7 +516,7 @@ def current_price_command(update, context):
                 pID = int(g.read())
             if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
                 current_price = float(f.read())
-                update.message.reply_text(f"🩺 Current USDT / EGLD is [{current_price}]")
+                update.message.reply_text(f'🩺 Current {os.environ["STABLECOIN_SYMBOL"]} / {os.environ["CRYPTOCOIN_SYMBOL"]} is [{current_price}]')
             else:
                 update.message.reply_text(
                     "💤 Bot is stopped. Help it get back on track for an accurate price of EGLD!"
@@ -724,9 +764,9 @@ def modify_config_ini(weight, value):
             new_line = re.sub(pattern, replacement, line)
             print(new_line, end="")
 
-    elif weight == "RYBKA_USDT_SAFETY_NET":
-        pattern = r"RYBKA_USDT_SAFETY_NET =.*"
-        replacement = f"RYBKA_USDT_SAFETY_NET = {value}"
+    elif weight == "RYBKA_STABLECOIN_SAFETY_NET":
+        pattern = r"RYBKA_STABLECOIN_SAFETY_NET =.*"
+        replacement = f"RYBKA_STABLECOIN_SAFETY_NET = {value}"
 
         for line in fileinput.input("config.ini", inplace=True):
             new_line = re.sub(pattern, replacement, line)
@@ -947,67 +987,67 @@ def m_RYBKA_DEBUG_LVL_3_command(update, context):
 
 
 ####################################################
-##    RYBKA_USDT_SAFETY_NET-specific functions    ##
+##    RYBKA_STABLECOIN_SAFETY_NET-specific functions    ##
 ####################################################
 
 
-def m_RYBKA_USDT_SAFETY_NET_0_command(update, context):
-    modify_config_ini("RYBKA_USDT_SAFETY_NET", "0")
+def m_RYBKA_STABLECOIN_SAFETY_NET_0_command(update, context):
+    modify_config_ini("RYBKA_STABLECOIN_SAFETY_NET", "0")
     modification_notice_log(update, context)
 
 
-def m_RYBKA_USDT_SAFETY_NET_50_command(update, context):
-    modify_config_ini("RYBKA_USDT_SAFETY_NET", "50")
+def m_RYBKA_STABLECOIN_SAFETY_NET_50_command(update, context):
+    modify_config_ini("RYBKA_STABLECOIN_SAFETY_NET", "50")
     modification_notice_log(update, context)
 
 
-def m_RYBKA_USDT_SAFETY_NET_100_command(update, context):
-    modify_config_ini("RYBKA_USDT_SAFETY_NET", "100")
+def m_RYBKA_STABLECOIN_SAFETY_NET_100_command(update, context):
+    modify_config_ini("RYBKA_STABLECOIN_SAFETY_NET", "100")
     modification_notice_log(update, context)
 
 
-def m_RYBKA_USDT_SAFETY_NET_200_command(update, context):
-    modify_config_ini("RYBKA_USDT_SAFETY_NET", "200")
+def m_RYBKA_STABLECOIN_SAFETY_NET_200_command(update, context):
+    modify_config_ini("RYBKA_STABLECOIN_SAFETY_NET", "200")
     modification_notice_log(update, context)
 
 
-def m_RYBKA_USDT_SAFETY_NET_350_command(update, context):
-    modify_config_ini("RYBKA_USDT_SAFETY_NET", "350")
+def m_RYBKA_STABLECOIN_SAFETY_NET_350_command(update, context):
+    modify_config_ini("RYBKA_STABLECOIN_SAFETY_NET", "350")
     modification_notice_log(update, context)
 
 
-def m_RYBKA_USDT_SAFETY_NET_500_command(update, context):
-    modify_config_ini("RYBKA_USDT_SAFETY_NET", "500")
+def m_RYBKA_STABLECOIN_SAFETY_NET_500_command(update, context):
+    modify_config_ini("RYBKA_STABLECOIN_SAFETY_NET", "500")
     modification_notice_log(update, context)
 
 
-def m_RYBKA_USDT_SAFETY_NET_750_command(update, context):
-    modify_config_ini("RYBKA_USDT_SAFETY_NET", "750")
+def m_RYBKA_STABLECOIN_SAFETY_NET_750_command(update, context):
+    modify_config_ini("RYBKA_STABLECOIN_SAFETY_NET", "750")
     modification_notice_log(update, context)
 
 
-def m_RYBKA_USDT_SAFETY_NET_1000_command(update, context):
-    modify_config_ini("RYBKA_USDT_SAFETY_NET", "1000")
+def m_RYBKA_STABLECOIN_SAFETY_NET_1000_command(update, context):
+    modify_config_ini("RYBKA_STABLECOIN_SAFETY_NET", "1000")
     modification_notice_log(update, context)
 
 
-def m_RYBKA_USDT_SAFETY_NET_1500_command(update, context):
-    modify_config_ini("RYBKA_USDT_SAFETY_NET", "1500")
+def m_RYBKA_STABLECOIN_SAFETY_NET_1500_command(update, context):
+    modify_config_ini("RYBKA_STABLECOIN_SAFETY_NET", "1500")
     modification_notice_log(update, context)
 
 
-def m_RYBKA_USDT_SAFETY_NET_3000_command(update, context):
-    modify_config_ini("RYBKA_USDT_SAFETY_NET", "3000")
+def m_RYBKA_STABLECOIN_SAFETY_NET_3000_command(update, context):
+    modify_config_ini("RYBKA_STABLECOIN_SAFETY_NET", "3000")
     modification_notice_log(update, context)
 
 
-def m_RYBKA_USDT_SAFETY_NET_5000_command(update, context):
-    modify_config_ini("RYBKA_USDT_SAFETY_NET", "5000")
+def m_RYBKA_STABLECOIN_SAFETY_NET_5000_command(update, context):
+    modify_config_ini("RYBKA_STABLECOIN_SAFETY_NET", "5000")
     modification_notice_log(update, context)
 
 
-def m_RYBKA_USDT_SAFETY_NET_7500_command(update, context):
-    modify_config_ini("RYBKA_USDT_SAFETY_NET", "7500")
+def m_RYBKA_STABLECOIN_SAFETY_NET_7500_command(update, context):
+    modify_config_ini("RYBKA_STABLECOIN_SAFETY_NET", "7500")
     modification_notice_log(update, context)
 
 
@@ -1450,27 +1490,27 @@ def call_submenu_of_weight(update, context, weight):
         """
         )
 
-    elif weight == "RYBKA_USDT_SAFETY_NET":
+    elif weight == "RYBKA_STABLECOIN_SAFETY_NET":
         update.message.reply_text(
-            f"""Available [RYBKA_USDT_SAFETY_NET] weight modification commands are ⤵️
+            f"""Available [RYBKA_STABLECOIN_SAFETY_NET] weight modification commands are ⤵️
 
 
 ❔ Firstly you may want to check the current value of this weight:
-    {'/RYBKA_USDT_SAFETY_NET'} - Checks current value
+    {'/RYBKA_STABLECOIN_SAFETY_NET'} - Checks current value
 
 🟫 Choose the value you want to set for this weight:
-    {'/RYBKA_USDT_SAFETY_NET_0'} - Unset any value
-    {'/RYBKA_USDT_SAFETY_NET_50'} - Set value "50"
-    {'/RYBKA_USDT_SAFETY_NET_100'} - Set value "100"
-    {'/RYBKA_USDT_SAFETY_NET_200'} - Set value "200"
-    {'/RYBKA_USDT_SAFETY_NET_350'} - Set value "350"
-    {'/RYBKA_USDT_SAFETY_NET_500'} - Set value "500"
-    {'/RYBKA_USDT_SAFETY_NET_750'} - Set value "750"
-    {'/RYBKA_USDT_SAFETY_NET_1000'} - Set value "1000"
-    {'/RYBKA_USDT_SAFETY_NET_1500'} - Set value "1500"
-    {'/RYBKA_USDT_SAFETY_NET_3000'} - Set value "3000"
-    {'/RYBKA_USDT_SAFETY_NET_5000'} - Set value "5000"
-    {'/RYBKA_USDT_SAFETY_NET_7500'} - Set value "7500"
+    {'/RYBKA_STABLECOIN_SAFETY_NET_0'} - Unset any value
+    {'/RYBKA_STABLECOIN_SAFETY_NET_50'} - Set value "50"
+    {'/RYBKA_STABLECOIN_SAFETY_NET_100'} - Set value "100"
+    {'/RYBKA_STABLECOIN_SAFETY_NET_200'} - Set value "200"
+    {'/RYBKA_STABLECOIN_SAFETY_NET_350'} - Set value "350"
+    {'/RYBKA_STABLECOIN_SAFETY_NET_500'} - Set value "500"
+    {'/RYBKA_STABLECOIN_SAFETY_NET_750'} - Set value "750"
+    {'/RYBKA_STABLECOIN_SAFETY_NET_1000'} - Set value "1000"
+    {'/RYBKA_STABLECOIN_SAFETY_NET_1500'} - Set value "1500"
+    {'/RYBKA_STABLECOIN_SAFETY_NET_3000'} - Set value "3000"
+    {'/RYBKA_STABLECOIN_SAFETY_NET_5000'} - Set value "5000"
+    {'/RYBKA_STABLECOIN_SAFETY_NET_7500'} - Set value "7500"
 
 
 
@@ -1831,7 +1871,7 @@ def main():
     dp.add_handler(CommandHandler("RYBKA_RSI_FOR_SELL", weights_command))
     dp.add_handler(CommandHandler("RYBKA_TRADE_QUANTITY", weights_command))
     dp.add_handler(CommandHandler("RYBKA_MIN_PROFIT", weights_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET", weights_command))
+    dp.add_handler(CommandHandler("RYBKA_STABLECOIN_SAFETY_NET", weights_command))
     dp.add_handler(CommandHandler("RYBKA_EMAIL_SWITCH", weights_command))
     dp.add_handler(CommandHandler("RYBKA_EMAIL_SENDER_EMAIL", weights_command))
     dp.add_handler(CommandHandler("RYBKA_EMAIL_RECIPIENT_EMAIL", weights_command))
@@ -1882,28 +1922,28 @@ def main():
     dp.add_handler(CommandHandler("RYBKA_DEBUG_LVL_2", m_RYBKA_DEBUG_LVL_2_command))
     dp.add_handler(CommandHandler("RYBKA_DEBUG_LVL_3", m_RYBKA_DEBUG_LVL_3_command))
 
-    dp.add_handler(CommandHandler("m_RYBKA_USDT_SAFETY_NET", modify_weights_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_0", m_RYBKA_USDT_SAFETY_NET_0_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_50", m_RYBKA_USDT_SAFETY_NET_50_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_100", m_RYBKA_USDT_SAFETY_NET_100_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_200", m_RYBKA_USDT_SAFETY_NET_200_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_350", m_RYBKA_USDT_SAFETY_NET_350_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_500", m_RYBKA_USDT_SAFETY_NET_500_command))
-    dp.add_handler(CommandHandler("RYBKA_USDT_SAFETY_NET_750", m_RYBKA_USDT_SAFETY_NET_750_command))
+    dp.add_handler(CommandHandler("m_RYBKA_STABLECOIN_SAFETY_NET", modify_weights_command))
+    dp.add_handler(CommandHandler("RYBKA_STABLECOIN_SAFETY_NET_0", m_RYBKA_STABLECOIN_SAFETY_NET_0_command))
+    dp.add_handler(CommandHandler("RYBKA_STABLECOIN_SAFETY_NET_50", m_RYBKA_STABLECOIN_SAFETY_NET_50_command))
+    dp.add_handler(CommandHandler("RYBKA_STABLECOIN_SAFETY_NET_100", m_RYBKA_STABLECOIN_SAFETY_NET_100_command))
+    dp.add_handler(CommandHandler("RYBKA_STABLECOIN_SAFETY_NET_200", m_RYBKA_STABLECOIN_SAFETY_NET_200_command))
+    dp.add_handler(CommandHandler("RYBKA_STABLECOIN_SAFETY_NET_350", m_RYBKA_STABLECOIN_SAFETY_NET_350_command))
+    dp.add_handler(CommandHandler("RYBKA_STABLECOIN_SAFETY_NET_500", m_RYBKA_STABLECOIN_SAFETY_NET_500_command))
+    dp.add_handler(CommandHandler("RYBKA_STABLECOIN_SAFETY_NET_750", m_RYBKA_STABLECOIN_SAFETY_NET_750_command))
     dp.add_handler(
-        CommandHandler("RYBKA_USDT_SAFETY_NET_1000", m_RYBKA_USDT_SAFETY_NET_1000_command)
+        CommandHandler("RYBKA_STABLECOIN_SAFETY_NET_1000", m_RYBKA_STABLECOIN_SAFETY_NET_1000_command)
     )
     dp.add_handler(
-        CommandHandler("RYBKA_USDT_SAFETY_NET_1500", m_RYBKA_USDT_SAFETY_NET_1500_command)
+        CommandHandler("RYBKA_STABLECOIN_SAFETY_NET_1500", m_RYBKA_STABLECOIN_SAFETY_NET_1500_command)
     )
     dp.add_handler(
-        CommandHandler("RYBKA_USDT_SAFETY_NET_3000", m_RYBKA_USDT_SAFETY_NET_3000_command)
+        CommandHandler("RYBKA_STABLECOIN_SAFETY_NET_3000", m_RYBKA_STABLECOIN_SAFETY_NET_3000_command)
     )
     dp.add_handler(
-        CommandHandler("RYBKA_USDT_SAFETY_NET_5000", m_RYBKA_USDT_SAFETY_NET_5000_command)
+        CommandHandler("RYBKA_STABLECOIN_SAFETY_NET_5000", m_RYBKA_STABLECOIN_SAFETY_NET_5000_command)
     )
     dp.add_handler(
-        CommandHandler("RYBKA_USDT_SAFETY_NET_7500", m_RYBKA_USDT_SAFETY_NET_7500_command)
+        CommandHandler("RYBKA_STABLECOIN_SAFETY_NET_7500", m_RYBKA_STABLECOIN_SAFETY_NET_7500_command)
     )
 
     dp.add_handler(CommandHandler("m_RYBKA_TRADE_QUANTITY", modify_weights_command))
@@ -1975,7 +2015,7 @@ def main():
     # Graphs
     dp.add_handler(CommandHandler("graphs", graphs_info_command))
 
-    dp.add_handler(CommandHandler("EGLD", egld_command))
+    dp.add_handler(CommandHandler("EGLD", cryptocoin_command))
     dp.add_handler(CommandHandler("EGLD_price_in_the_last_year", generate_graph_command))
     dp.add_handler(CommandHandler("EGLD_price_in_the_last_month", generate_graph_command))
     dp.add_handler(CommandHandler("EGLD_price_in_the_last_week", generate_graph_command))

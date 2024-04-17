@@ -7,7 +7,7 @@ def sample_responses(input_text):
     if user_message in ("who are you?!"):
         return """I am RybkaCore bot!
 
-        - I'm an Open Source Crypto Trading bot that trades the EGLD-USDT pair
+        - I'm an Open Source Crypto Trading bot
         - Designed to work on Binance
         - Per RC release updates (starting with 0.8.19-RC), bot may very well surpass 100% ROI Y2Y, if the best-practices in README.md are followed through and market doesn't go into an ATH phase
 
