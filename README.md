@@ -46,7 +46,7 @@
 &emsp;&emsp;&emsp;&emsp;Example: in the `EGLDUSDT` pair, the `cryptocoin` would be `EGLD`
 
 <br><br>
-⚠️ `DISCLAIMER`: Before moving on, please understand that `RybkaCore` bot was created in the spirit of making profits getting the best out of a `market volatility`. Still, this does `NOT` mean you can't lose money using it. `(1)` If you set up a lower amount of `[RYBKA_MIN_PROFIT]` than the one put in place, `(2)` if you use the bot in `bull market`, and then the price of the chosen `cryptocoin` in raport to the `stablecoin` drops dramatically and your coins remain bought very high on a price graph, rendering selling them highly unprofitable or `(3)` if unforeseen network / tech-related issues happen that somehow might make the bot behave unaccordingly to the purpose it was designed to, which is always being profitable for the user; or `(4)` any other situation I can't envision right now - then, in all of these `4` cases, you might lose money (fiat / crypto).<br>
+⚠️ `DISCLAIMER`: Before moving on, please understand that `RybkaCore` bot was created in the spirit of making profits getting the best out of a `market volatility`. Still, this does `NOT` mean you can't lose money using it. `(1)` If you set up a lower amount of `[RYBKA_MIN_PROFIT]` than the one put in place, `(2)` if you use the bot in `bull market`, and then the price of the chosen `cryptocoin` in raport to the `stablecoin` drops dramatically and your coins remain bought very high on a price graph, rendering selling them highly unprofitable or `(3)` if unforeseen network / tech-related issues happen that somehow might make the bot behave unaccordingly to the purpose it was designed to, which is always being profitable for the user; or `(4)` if the `stablecoin` you use will experience a `depeg` event, silimar to what happened to USDT in the summer of 2023; or `(5)` any other situation I can't envision right now - then, in all of these cases, you might lose money (fiat / crypto). Yes, the bot is developed in good faith, but not everything can be predicted / dealt with;<br>
 ❗️ In any case, you also have to understand that while such `disclaimer` is necessary, I'm confident enought to use this bot in `LIVE` mode, for myself, hence I'm pretty confident in its inner workings. As it's `open-source` it can easily be audited. If you find bugs in it, I'm open to discuss them and eventually solve, just let me know via an email.
 
 <br><br>
@@ -76,7 +76,7 @@
 ✅ Live wallet data displayed for the trade pair sides and commission, dynamic adjustment with each buy - sell <br>
 ✅ Folder creation (timestamp included) with files containing important data of the current run and auto-archive system once the run is finished <br>
 ✅ Make bot sell multiple bought crypto-coins at once, if signal allows it (dynamically) <br>
-✅ Upscale the trading quantity if user set it too low, so low that it hits the minimum 10💲 lower limit Binance imposed for a buy action <br>
+✅ Upscale the trading quantity if user set it too low, so low that it hits the minimum 10💲lower limit Binance imposed for a buy action <br>
 ✅ Clear profit tracked in time <br>
 ✅ Nr. of buy trades tracked in time <br>
 ✅ Colored log output based on log-level types (INFO, WARN, FATAL and DEBUG / VERBOSE / HIGH_VERBOSITY) <br>
