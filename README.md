@@ -269,15 +269,24 @@ bnb_min_order_quantity = round(float(1 / bnb_min_buy_share), 3)
 </div>
 <br>
 
-`Please` wait for a few seconds until you see this continuation in your terminal:<br><br>
+- `Please` wait for a few seconds until you see this continuation in your terminal:<br><br>
 
 <div align="center">
   <img src="MEDIA/shutdown_log_2.png">
 </div>
 <br>
 
-Moment in which you can press `y` and hit `Enter`. That way you made sure you didn't sped up the process and cut it "mid-air".
-<br><br></br>
+- Moment in which you can press `y` and hit `Enter`. That way you made sure you didn't sped up the process and cut it "mid-air".
+- One other mention though, is that the above happens within a `cmd` shell within `Visual Studio Code` in Windows, but in a Linux distro, in a usual terminal window, it might look differently:<br><br>
+
+<div align="center">
+  <img src="MEDIA/shutdown_log_3.png">
+</div>
+<br>
+
+- The `^C` represent the `ctrl+c` action, after which it safely got shutdown by itself, without a further need to press `y` and hit `Enter`.
+
+<br><br>
 
 ❗️ Note for `transaction fees`:  For each transaction the bot is doing (buy or sell), it is paying a fee of `0.08%` of the `trading-quantity-of-the-coin` * `current-coin-price`;
 <br><br></br>
