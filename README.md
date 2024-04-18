@@ -102,11 +102,16 @@
 ## &emsp;&emsp; **Prerequisites**
 <br>
 As `rybka` is not a standalone executable software yet, for any of the aforementioned OS listed, it manages to achieve cross-OS status directly via `python3`. Currently compatible python versions: <br><br>
+
 &emsp;&emsp;✅ Python 3.6 <br>
 &emsp;&emsp;✅ Python 3.7 <br>
 &emsp;&emsp;✅ Python 3.8 <br>
 &emsp;&emsp;✅ Python 3.9 <br>
-&emsp;&emsp;✅ Python 3.10 <br><br><br>
+&emsp;&emsp;✅ Python 3.10 <br>
+&emsp;&emsp;✅ Python 3.11 (`3.11.9 is last one tested`)<br>
+&emsp;&emsp;❌ Python 3.12 (`As of April 2024 - this version of python is identifying escape strings where there are just substring chars`)
+
+<br><br>
 
 Hence, at the moment, you will need 🐍 `python` in your OS to run the software. Via `pip`, some modules would then come on top of your on-prem python installation. Follow these steps: <br><br>
 
