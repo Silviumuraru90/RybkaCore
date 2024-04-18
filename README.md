@@ -119,6 +119,7 @@ Hence, at the moment, you will need 🐍 `python` in your OS to run the software
 ```
 pip install -r requirements.txt
 ```
+<br>
 
 2. Downsgrade subdeps of `unicorn-binance-suite`, to respect the `MIT License` of that version:
 ```
@@ -129,10 +130,14 @@ pip install unicorn-binance-trailing-stop-loss==1.1.0 unicorn-binance-websocket-
 <div align="center">
   <img src="MEDIA/unicorn_versioning_deps.png">
 </div>
-<br>
+
+- I needed to impose such versioning limits in order to respect the MIT License [HERE](https://github.com/LUCIT-Systems-and-Development/unicorn-binance-websocket-api/blob/1.46.2/LICENSE)
+- If you would like to use their latest version of the `unicorn-binance-suite` library, which by the way, I strongly recommend you to do, as they are doing some awesome work over there, grab their [latest version of the software (any 2.0.0)](https://github.com/LUCIT-Systems-and-Development/unicorn-binance-websocket-api/releases) and obtain a [license](https://shop.lucit.services/software/unicorn-binance-suite) for it. I'll leave [here](https://medium.lucit.tech/how-to-obtain-and-use-a-unicorn-binance-suite-license-key-and-run-the-ubs-module-according-to-best-87b0088124a8#4ca4) and article with a more in-depth perspective<br><br>
 
 
-3. While via `pip3` you are able to install almost all of the modules, `TA-Lib` is not currently available to be installed from the official `pypi` list, hence you can download the `wheel` file that matches your `python` version and then install it via `pip`.
+
+3. While via `pip3` you are able to install almost all of the modules, `TA-Lib` is not currently available to be installed from the official `pypi` list, hence you can download the `wheel` file that matches your `python` version and then install it via `pip`:
+
 <br>
 
  📁 Grab the file from 📦 [HERE](https://github.com/cgohlke/talib-build/releases); <br>
