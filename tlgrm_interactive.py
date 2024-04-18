@@ -840,7 +840,7 @@ def yes_start_it(update, context):
                 subprocess.Popen(
                     [
                         "python3",
-                        "rybka.py",
+                        "rybkacore.py",
                         "-m",
                         f"{str(update.message.text).lower().split('_')[4]}",
                     ]
