@@ -205,7 +205,7 @@ lines_of_code_badge:
   script:
     - !reference [.debug_template, script]
     - |
-      total_lines_of_code=$(curl -Ss --request GET "https://api.codetabs.com/v1/loc/?gitlab=Silviu_space/rybka" | jq -r '.[8] | .linesOfCode')
+      total_lines_of_code=$(curl -Ss --request GET "https://api.codetabs.com/v1/loc/?gitlab=Silviu_space/rybka" | jq -r '.[10] | .linesOfCode')
     - anybadge -l CodeLines -v $total_lines_of_code -f lines_of_code.svg -c green
     - echo "Lines of code count is [${total_lines_of_code}]"
   rules:
