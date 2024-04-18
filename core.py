@@ -904,9 +904,14 @@ def move_and_replace(target_folder, path=None):
         num_lines = sum(1 for line in f)
 
     if num_lines > 10000:
-        log.INFO(
-            f"File [${target_folder}] reached more than 10k lines. Archiving it and creating a fresher one."
-        )
+        if path:
+            log.INFO(
+                f"File [{path}/{target_folder}] reached more than 10k lines. Archiving it and creating a fresher one."
+            )
+        else:
+            log.INFO(
+            f"File [./{target_folder}] reached more than 10k lines. Archiving it and creating a fresher one."
+            )
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         filename, extension = os.path.splitext(target_folder)
         new_filename = f"{filename}_{timestamp}{extension}"
