@@ -78,50 +78,25 @@ def initialization():
     print(
         colored(
             """
-#########################################################
-#####        📡 Telegram listener activated!        #####
-#########################################################""",
+                        #########################################################
+                        #####        📡 Telegram listener activated!        #####
+                        #########################################################""",
             "magenta",
         ),
-        "\n\n",
-        colored(
-            f"                                                       ",
-            "blue",
-            "on_grey",
-        ),
-        "\n   ",
-        colored(
-            f'{bcolors.BOLD}<<  Bot currently tracks the [{os.environ.get("TRADE_SYMBOL")}] pair  >>{bcolors.ENDC}',
-            "blue",
-            "on_grey",
-        ),
-        "\n",
-        colored(
-            f"                                                       ",
-            "blue",
-            "on_grey",
-        ),
-        "\n",
         colored(
             """
-#########################################################
-#####                                               #####
-#####  1️⃣  Open `Telegram` app on your device        #####
-#####  2️⃣  Open your RybkaCore Telegram bot's chat   #####
-#####  3️⃣  Type `/help` for details on how to use    #####
-#####                                               #####
-#########################################################
+                        #########################################################
+                        #####                                               #####
+                        #####  1️⃣  Open `Telegram` app on your device        #####
+                        #####  2️⃣  Open your RybkaCore Telegram bot's chat   #####
+                        #####  3️⃣  Type `/help` for details on how to use    #####
+                        #####                                               #####
+                        #########################################################
     \n""",
             "cyan",
         ),
     )
 
-    print(
-        colored(
-            f'🟢 Telegram Listener initialization finished successfully!\n',
-            "green",
-        )
-    )
 
 ####################################################
 ##############        Main Menu       ##############
@@ -965,14 +940,7 @@ def check_existing_bot_process():
     try:
         with open("TEMP/core_pidTmp", "r", encoding="utf8") as f:
             pID = int(f.read())
-        if psutil.pid_exists(pID) and "python" in psutil.Process(pID).name():
-            print(
-                colored(
-                    "\n🟢 Telegram Listener started and connected to bot!\n",
-                    "green",
-                )
-            )
-        else:
+        if not psutil.pid_exists(pID):
             print(
                 colored(
                     "\n🔴 No bot process for the Telegram Listener to connect to! Running this would be unnecessary...\n",
@@ -1116,8 +1084,6 @@ def modify_config_ini(weight, value):
         for line in fileinput.input("config.ini", inplace=True):
             new_line = re.sub(pattern, replacement, line)
             print(new_line, end="")
-
-    time.sleep(1)
 
 
 ####################################################

@@ -201,8 +201,8 @@ def log_files_creation(direct_call="1"):
                 f.write(f"RECIPIENT EMAIL set to: {RYBKA_EMAIL_RECIPIENT_EMAIL:>50}\n")
 
         if direct_call == "1":
-            log.INFO_BOLD(f" ✅ Files creation status  -  {bcolors.PURPLE}DONE")
-            log.INFO("==============================================")
+            log.DEBUG(f" ✅ Files creation status  -  {bcolors.PURPLE}DONE")
+            log.DEBUG("==============================================")
 
     except Exception as e:
         traceback.print_exc()
@@ -235,9 +235,7 @@ def TMP_folder(folder):
 def ktbr_configuration():
     global ktbr_config
     global RYBKA_MODE
-    log.INFO(
-        "====================================================================================================================================="
-    )
+
     if exists(f"{RYBKA_MODE}/ktbr"):
         with open(f"{RYBKA_MODE}/ktbr", "r", encoding="utf8") as f:
             if os.stat(f"{RYBKA_MODE}/ktbr").st_size == 0:
@@ -248,9 +246,10 @@ def ktbr_configuration():
             else:
                 try:
                     ktbr_config = json.loads(f.read())
-                    log.INFO_BOLD(
-                        f" ✅ [{RYBKA_MODE}/ktbr] file contains the following past transactions:\n"
-                    )
+                    if len(ktbr_config):
+                        log.INFO_BOLD(
+                            f" ✅ [{RYBKA_MODE}/ktbr] file contains the following past transactions:\n"
+                        )
                     for k, v in ktbr_config.items():
                         log.INFO(
                             f" 💳 Transaction [{k}]  ---  [{bcolors.OKGREEN}{bcolors.BOLD}{v[0]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t {bootstrap.CRYPTOCOIN_SYMBOL} bought at price of [{bcolors.OKGREEN}{bcolors.BOLD}{v[1]}{bcolors.ENDC}{bcolors.DARKGRAY}] \t {bootstrap.STABLECOIN_SYMBOL} per {bootstrap.CRYPTOCOIN_SYMBOL}{bcolors.ENDC}"
@@ -268,16 +267,17 @@ def ktbr_configuration():
         except Exception as e:
             traceback.print_exc()
             log.FATAL_7(f"[{RYBKA_MODE}/ktbr] file could NOT be created!\nFailing with error:\n{e}")
-    log.INFO(
-        "====================================================================================================================================="
-    )
+    if len(ktbr_config):
+        log.INFO(
+            "=========================================================================================================\n"
+        )
 
 
 def profit_file():
     global total_stablecoin_profit
     global RYBKA_MODE
     log.VERBOSE(
-        "====================================================================================================================================="
+        "========================================================================================================="
     )
     if exists(f"{RYBKA_MODE}/stablecoin_profit"):
         with open(f"{RYBKA_MODE}/stablecoin_profit", "r", encoding="utf8") as f:
@@ -304,24 +304,24 @@ def profit_file():
                 f"[{RYBKA_MODE}/stablecoin_profit] file could NOT be created!\nFailing with error:\n{e}"
             )
     log.VERBOSE(
-        "====================================================================================================================================="
+        "========================================================================================================="
     )
 
 
 def nr_of_trades_file():
     global nr_of_trades
     global RYBKA_MODE
-    log.INFO(
-        "====================================================================================================================================="
+    log.DEBUG(
+        "========================================================================================================="
     )
     if exists(f"{RYBKA_MODE}/number_of_buy_trades"):
         with open(f"{RYBKA_MODE}/number_of_buy_trades", "r", encoding="utf8") as f:
             if os.stat(f"{RYBKA_MODE}/number_of_buy_trades").st_size == 0:
-                log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/number_of_buy_trades] file exists and is empty")
+                log.DEBUG(f" ✅ [{RYBKA_MODE}/number_of_buy_trades] file exists and is empty")
             else:
                 try:
                     nr_of_trades = int(f.read())
-                    log.INFO_BOLD(
+                    log.DEBUG(
                         f" ✅ [{RYBKA_MODE}/number_of_buy_trades] file shows historical nr. of buy trades raising to: [{bcolors.PURPLE}{nr_of_trades}{bcolors.DARKGRAY}]"
                     )
                 except Exception as e:
@@ -332,62 +332,62 @@ def nr_of_trades_file():
     else:
         try:
             open(f"{RYBKA_MODE}/number_of_buy_trades", "w", encoding="utf8").close()
-            log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/number_of_buy_trades] file created!")
+            log.DEBUG(f" ✅ [{RYBKA_MODE}/number_of_buy_trades] file created!")
         except Exception as e:
             traceback.print_exc()
             log.FATAL_7(
                 f"[{RYBKA_MODE}/number_of_buy_trades] file could NOT be created!\nFailing with error:\n{e}"
             )
-    log.INFO(
-        "====================================================================================================================================="
+    log.DEBUG(
+        "========================================================================================================="
     )
 
 
 def full_order_history_file():
     global RYBKA_MODE
-    log.INFO(
-        "====================================================================================================================================="
+    log.DEBUG(
+        "========================================================================================================="
     )
     if exists(f"{RYBKA_MODE}/full_order_history"):
         with open(f"{RYBKA_MODE}/full_order_history", "r", encoding="utf8"):
             if os.stat(f"{RYBKA_MODE}/full_order_history").st_size == 0:
-                log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/full_order_history] file exists and is empty")
+                log.DEBUG(f" ✅ [{RYBKA_MODE}/full_order_history] file exists and is empty")
             else:
-                log.INFO_BOLD(
+                log.DEBUG(
                     f" ✅ [{RYBKA_MODE}/full_order_history] file exists and contains past information!"
                 )
     else:
         try:
             open(f"{RYBKA_MODE}/full_order_history", "w", encoding="utf8").close()
-            log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/full_order_history] file created!")
+            log.DEBUG(f" ✅ [{RYBKA_MODE}/full_order_history] file created!")
         except Exception as e:
             traceback.print_exc()
             log.FATAL_7(
                 f"[{RYBKA_MODE}/full_order_history] file could NOT be created!\nFailing with error:\n{e}"
             )
-    log.INFO(
-        "====================================================================================================================================="
+    log.DEBUG(
+        "========================================================================================================="
     )
 
 
 def real_time_balances():
     global RYBKA_MODE
-    log.INFO(
-        "====================================================================================================================================="
+    log.DEBUG(
+        "========================================================================================================="
     )
     if exists(f"{RYBKA_MODE}/real_time_balances"):
-        log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/real_time_balances] file already exists!")
+        log.DEBUG(f" ✅ [{RYBKA_MODE}/real_time_balances] file already exists!")
     else:
         try:
             open(f"{RYBKA_MODE}/real_time_balances", "w", encoding="utf8").close()
-            log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/real_time_balances] file created!")
+            log.DEBUG(f" ✅ [{RYBKA_MODE}/real_time_balances] file created!")
         except Exception as e:
             traceback.print_exc()
             log.FATAL_7(
                 f"[{RYBKA_MODE}/real_time_balances] file could NOT be created!\nFailing with error:\n{e}"
             )
-    log.INFO(
-        "====================================================================================================================================="
+    log.DEBUG(
+        "========================================================================================================="
     )
 
 
@@ -410,7 +410,10 @@ def ktbr_integrity():
 
         if round(sum_of_ktbr_cryptocurrency, 4) <= balance_cryptocoin:
             log.INFO_BOLD(
-                f" ✅ KTBR integrity status  -  {bcolors.PURPLE}VALID{bcolors.DARKGRAY}. Amount of {bootstrap.CRYPTOCOIN_SYMBOL} bought and tracked: [{bcolors.OKGREEN}{round(sum_of_ktbr_cryptocurrency, 4)}{bcolors.DARKGRAY}]\n"
+                f" ✅ KTBR integrity status  -  {bcolors.PURPLE}VALID{bcolors.DARKGRAY}\n"
+            )
+            log.INFO_BOLD(
+                f" ✅ Amount of {bootstrap.CRYPTOCOIN_SYMBOL} bought and tracked: [{bcolors.OKGREEN}{round(sum_of_ktbr_cryptocurrency, 4)}{bcolors.DARKGRAY}]\n"
             )
         else:
             log.FATAL_7(
@@ -420,19 +423,19 @@ def ktbr_integrity():
 
 def all_errors_file():
     global RYBKA_MODE
-    log.INFO("==============================================")
+    log.DEBUG("==============================================")
     if exists(f"{RYBKA_MODE}/errors_thrown"):
-        log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/errors_thrown] file already exists!")
+        log.DEBUG(f" ✅ [{RYBKA_MODE}/errors_thrown] file already exists!")
     else:
         try:
             open(f"{RYBKA_MODE}/errors_thrown", "w", encoding="utf8").close()
-            log.INFO_BOLD(f" ✅ [{RYBKA_MODE}/errors_thrown] file created!")
+            log.DEBUG(f" ✅ [{RYBKA_MODE}/errors_thrown] file created!")
         except Exception as e:
             traceback.print_exc()
             log.FATAL_7(
                 f"[{RYBKA_MODE}/errors_thrown] file could NOT be created!\nFailing with error:\n{e}"
             )
-    log.INFO("==============================================")
+    log.DEBUG("==============================================")
 
 
 def create_telegram_and_rybka_tmp_files_if_not_created():
@@ -508,8 +511,6 @@ def software_config_params():
             "     \|__|                       ~~            \|__|         \/__/         \/__/         \/__/         \|__|         \/__/    \n"
         )
 
-        time.sleep(2)
-
         log.BLUE(
             "                          ██████╗ ███████╗███╗   ███╗ ██████╗     ███╗   ███╗ ██████╗ ██████╗ ███████╗ "
         )
@@ -564,7 +565,6 @@ def software_config_params():
             "     \|__|                       ~~            \|__|         \/__/         \/__/         \/__/         \|__|         \/__/    \n"
         )
 
-        time.sleep(2)
 
         log.GREEN(
             "                              ██╗     ██╗██╗   ██╗███████╗    ███╗   ███╗ ██████╗ ██████╗ ███████╗ "
@@ -585,8 +585,9 @@ def software_config_params():
             "                              ╚══════╝╚═╝  ╚═══╝  ╚══════╝    ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝ \n\n"
         )
 
-    time.sleep(3)
-    log.INFO("RybkaCore software started with the following parameters:\n")
+    time.sleep(1)
+
+    log.DEBUG("RybkaCore software started with the following parameters:\n")
     log.INFO_BOLD(f" 🔘 RYBKA_MODE      set to: {bcolors.PURPLE}{RYBKA_MODE:>50}")
     if DEBUG_LVL:
         log.INFO_BOLD(f"{bcolors.OKCYAN} 🔘 DEBUG_LVL       set to: {DEBUG_LVL:>50}{bcolors.ENDC}")
@@ -615,11 +616,8 @@ def software_config_params():
     if RYBKA_EMAIL_SENDER_EMAIL and RYBKA_EMAIL_RECIPIENT_EMAIL:
         log.INFO_BOLD(f" 🔘 SENDER EMAIL    set to: {bcolors.PURPLE}{RYBKA_EMAIL_SENDER_EMAIL:>50}")
         log.INFO_BOLD(
-            f" 🔘 RECIPIENT EMAIL set to: {bcolors.PURPLE}{RYBKA_EMAIL_RECIPIENT_EMAIL:>50}"
+            f" 🔘 RECIPIENT EMAIL set to: {bcolors.PURPLE}{RYBKA_EMAIL_RECIPIENT_EMAIL:>50}\n\n"
         )
-    log.INFO(" ")
-    log.INFO(" ")
-    log.INFO(" ")
     log.INFO_BOLD(f" ✅ Initial params config  -  {bcolors.PURPLE}DONE")
 
 
@@ -680,11 +678,12 @@ def email_engine_params(direct_call="1"):
             )
     else:
         if direct_call == "1":
-            log.INFO(" ")
             log.WARN(
-                "Emails are turned [OFF]. Set [RYBKA_EMAIL_SWITCH] var as 'True' in env / config.ini. if you want email notifications enabled!"
+                "Emails are turned [OFF]\n"
             )
-            log.INFO(" ")
+            log.DEBUG(
+                "Set [RYBKA_EMAIL_SWITCH] var as 'True' in env / config.ini. if you want email notifications enabled!"
+            )
 
 
 def telegram_engine_switch(direct_call="1"):
@@ -692,18 +691,19 @@ def telegram_engine_switch(direct_call="1"):
     if RYBKA_TELEGRAM_SWITCH.upper() == "TRUE":
         if bootstrap.TELE_KEY and bootstrap.TELE_CHAT_ID:
             if direct_call == "1":
-                log.INFO_BOLD(f" ✅ Telegram params in ENV -  {bcolors.PURPLE}SET")
+                log.INFO_BOLD(f" ✅ Telegram params in ENV -  {bcolors.PURPLE}SET\n")
         else:
             log.FATAL_7(
-                "Telegram params in ENV -  NOT SET\nAs long as you have [RYBKA_TELEGRAM_SWITCH] set as [True], make sure you also set up the [RYBKA_TELEGRAM_API_KEY, RYBKA_TELEGRAM_CHAT_ID] vars in your ENV!"
+                "Telegram params in ENV -  NOT SET\nAs long as you have [RYBKA_TELEGRAM_SWITCH] set as [True], make sure you also set up the [RYBKA_TELEGRAM_API_KEY, RYBKA_TELEGRAM_CHAT_ID] vars in your ENV!\n"
             )
     else:
         if direct_call == "1":
-            log.INFO(" ")
             log.WARN(
-                "Telegram notifications are turned [OFF]. Set [RYBKA_TELEGRAM_SWITCH] var as 'True' in env / config.ini. if you want Telegram notifications enabled!"
+                "Telegram notifications are turned [OFF]"
             )
-            log.INFO(" ")
+            log.DEBUG(
+                "Set [RYBKA_TELEGRAM_SWITCH] var as 'True' in env / config.ini. if you want Telegram notifications enabled!\n"
+            )
 
 
 def bot_uptime_and_current_price(current_price, output):
@@ -869,23 +869,23 @@ def previous_runs_sanitation(target_folder):
             shutil.move(folder, target_folder)
 
     if found_match:
-        log.CYAN(" ✅ Previous run(s)' folder(s) found and moved to the 'archived_logs' folder.")
+        log.VERBOSE(" ✅ Previous run(s)' folder(s) found and moved to the 'archived_logs' folder.")
     else:
-        log.CYAN(" ✅ Current dir is already sanitized.")
+        log.VERBOSE(" ✅ Current dir is already sanitized.")
 
     graphs_subdir_path = "custom_modules/telegram/data/pics"
 
     if not os.path.exists(graphs_subdir_path):
         os.makedirs(graphs_subdir_path)
-        print(f"\n ✅ Created subdirectory: {graphs_subdir_path}")
+        log.VERBOSE(f"\n ✅ Created subdirectory: {graphs_subdir_path}")
     else:
-        print(f"\n ✅ Subdirectory already exists: [{graphs_subdir_path}]")
+        log.VERBOSE(f"\n ✅ Subdirectory already exists: [{graphs_subdir_path}]")
 
     graphs_list = os.listdir(graphs_subdir_path)
     if graphs_list != []:
-        log.CYAN("\n ⚠️  Residual graph files found. Deleting them:")
+        log.VERBOSE("\n ⚠️  Residual graph files found. Deleting them:")
     else:
-        log.CYAN("\n ✅ No residual graph files found.")
+        log.VERBOSE("\n ✅ No residual graph files found.")
 
     for graph_name in graphs_list:
         graph_path = os.path.join(graphs_subdir_path, graph_name)
@@ -1022,8 +1022,6 @@ def main(version, mode, head):
     ###########   FUNCTIONS' SEQUENCE   ###########
     ###############################################
 
-    clear_terminal()
-
     try:
         archived_logs_folder = "archived_logs"
         TMP_folder(archived_logs_folder)
@@ -1042,8 +1040,8 @@ def main(version, mode, head):
     if platform == "linux" or platform == "linux2":
         pass
     elif platform == "win32":
-        log.CYAN(
-            "\n===========================================================================\n 📋 Checking Rybka's permissions and syncing time... Please wait!"
+        log.VERBOSE(
+            "\n 📋 Checking Rybka's permissions and syncing time... Please wait!"
         )
         if isAdmin() is not True:
             log.FATAL_7(
@@ -1052,18 +1050,14 @@ def main(version, mode, head):
 
     re_sync_time()
 
-    time.sleep(2)
-
     ###########  Prerequisites - start  ###########
-    log.CYAN("\n 📋 PREREQUISITE PROCESS STARTING...\n")
-    time.sleep(1)
+    log.VERBOSE("\n 📋 PREREQUISITE PROCESS STARTING...\n")
 
     process_pid = os.getpid()
     log.DEBUG(f"Allocating other PIDs [{process_pid}, ...]\n\n\n")
     TMP_folder("TEMP")
     with open("TEMP/core_pidTmp", "w", encoding="utf8") as f:
         f.write(str(process_pid))
-    time.sleep(1)
 
     rybka_mode_folder_creation()
     all_errors_file()
@@ -1090,9 +1084,8 @@ def main(version, mode, head):
 
     rename_profit_file()
     rename_bnb_price_file()
-
     log_files_creation()
-    time.sleep(2)
+
     ###########   Prerequisites - end   ###########
 
     clear_terminal()
@@ -1118,21 +1111,19 @@ def main(version, mode, head):
 
     software_config_params()
     user_initial_config()
-    email_engine_params()
     binance_system_status()
     telegram_engine_switch()
+    email_engine_params()
 
-    log.INFO(" ")
     log.INFO(
-        "====================================================================================================================================="
+        "========================================================================================================="
     )
     log.INFO(
-        f" Check files created for this run, under the newly created local folder {bcolors.BOLD}[{bcolors.PURPLE}{current_export_dir}{bcolors.DARKGRAY}]{bcolors.ENDC}"
+        f" Check here files for this run: {bcolors.BOLD}[{bcolors.PURPLE}{current_export_dir}{bcolors.DARKGRAY}]{bcolors.ENDC}"
     )
     log.INFO(
-        "====================================================================================================================================="
+        "=========================================================================================================\n"
     )
-    log.INFO(" ")
 
     # Needs to be set before any [ktbr_integrity()] call, to make sure this is firstly created, in LIVE mode, if non-existing
     ktbr_configuration()
@@ -1157,48 +1148,28 @@ def main(version, mode, head):
     real_time_balances_update()
 
     if RYBKA_MODE == "DEMO":
-        log.INFO(" ")
         if balance_stablecoin == 1500:
-            log.WARN(
+            log.DEBUG(
                 f"{bootstrap.STABLECOIN_SYMBOL} Balance of [{balance_stablecoin}] coins  --->  is set by default, by the bot. You can modify this value within the 'config.ini' file, for var [RYBKA_DEMO_BALANCE_STABLECOIN]"
             )
         if balance_cryptocoin == 100:
-            log.WARN(
+            log.DEBUG(
                 f"{bootstrap.CRYPTOCOIN_SYMBOL} Balance of [{balance_cryptocoin}]  coins  --->  is set by default, by the bot. You can modify this value within the 'config.ini' file, for var [RYBKA_DEMO_BALANCE_CRYPTOCOIN]"
             )
         if balance_bnb == 0.2:
-            log.WARN(
+            log.DEBUG(
                 f"BNB  Balance of [{balance_bnb}]  coins  --->  is set by default, by the bot. You can modify this value within the 'config.ini' file, for var [RYBKA_DEMO_BALANCE_BNB]"
             )
-        log.INFO(" ")
 
-    log.INFO(
-        "====================================================================================================================================="
-    )
     log.INFO_BOLD(
-        f"Account's AVAILABLE balance is:\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}{bootstrap.STABLECOIN_SYMBOL}{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{balance_stablecoin}{bcolors.DARKGRAY}]\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}{bootstrap.CRYPTOCOIN_SYMBOL}{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{balance_cryptocoin}{bcolors.DARKGRAY}]\n\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}BNB{bcolors.DARKGRAY}   ---  [{bcolors.OKGREEN}{balance_bnb}{bcolors.DARKGRAY}] (for transaction fees)"
-    )
-    log.INFO(
-        "====================================================================================================================================="
+        f"Account's AVAILABLE balance is:\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}{bootstrap.STABLECOIN_SYMBOL}{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{balance_stablecoin}{bcolors.DARKGRAY}]\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}{bootstrap.CRYPTOCOIN_SYMBOL}{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{balance_cryptocoin}{bcolors.DARKGRAY}]\n\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}BNB{bcolors.DARKGRAY}   ---  [{bcolors.OKGREEN}{balance_bnb}{bcolors.DARKGRAY}] (for transaction fees)\n\n"
     )
     if RYBKA_MODE == "LIVE":
         log.INFO_BOLD(
-            f"Account's LOCKED balance in limit orders is:\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED {bootstrap.STABLECOIN_SYMBOL}{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{locked_balance_stablecoin}{bcolors.DARKGRAY}]\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED {bootstrap.CRYPTOCOIN_SYMBOL}{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{locked_balance_cryptocoin}{bcolors.DARKGRAY}]\n\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED BNB{bcolors.DARKGRAY}   ---  [{bcolors.OKGREEN}{locked_balance_bnb}{bcolors.DARKGRAY}]"
+            f"Account's LOCKED balance in limit orders is:\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED {bootstrap.STABLECOIN_SYMBOL}{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{locked_balance_stablecoin}{bcolors.DARKGRAY}]\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED {bootstrap.CRYPTOCOIN_SYMBOL}{bcolors.DARKGRAY}  ---  [{bcolors.OKGREEN}{locked_balance_cryptocoin}{bcolors.DARKGRAY}]\n\n\t\t\t\t\t\t\t⚖️  {bcolors.PURPLE}LOCKED BNB{bcolors.DARKGRAY}   ---  [{bcolors.OKGREEN}{locked_balance_bnb}{bcolors.DARKGRAY}]\n\n"
         )
-        log.INFO(
-            "====================================================================================================================================="
-        )
-    log.INFO(
-        "====================================================================================================================================="
-    )
     log.INFO_BOLD(
-        f"Rybka's historical registered PROFIT is:\n\t\t\t\t\t\t\t💰 [{bcolors.OKGREEN}{total_stablecoin_profit}{bcolors.DARKGRAY}] {bcolors.PURPLE}{bootstrap.STABLECOIN_SYMBOL}"
-    )
-    log.INFO(
-        "====================================================================================================================================="
-    )
-    log.INFO(
-        "====================================================================================================================================="
+        f"Rybka's historical registered PROFIT is:\n\t\t\t\t\t\t\t💰 [{bcolors.OKGREEN}{total_stablecoin_profit}{bcolors.DARKGRAY}] {bcolors.PURPLE}{bootstrap.STABLECOIN_SYMBOL}\n\n"
     )
 
     telegram.LOG(f" 🟢 🅡🅨🅑🅚🅐🅒🅞🅡🅔 🟢\n          [[{RYBKA_MODE} mode]]")
@@ -1242,13 +1213,13 @@ def main(version, mode, head):
                 f"Some helper files do not exist. They are needed in order for the Telegram Listener to work well\n{e}"
             )
     else:
-        log.INFO(" ")
         log.WARN(
-            "Telegram Listener is turned [OFF]. Set [RYBKA_TELEGRAM_SWITCH] var as 'True' in env / config.ini. if you want Telegram notifications enabled!"
+            "\nTelegram Listener is turned [OFF]\n"
         )
-        log.INFO(" ")
+        log.DEBUG(
+            "Set [RYBKA_TELEGRAM_SWITCH] var as 'True' in env / config.ini. if you want Telegram notifications enabled!"
+        )
 
-    time.sleep(1)
 
     if telegram_pid != "placeholder":
         with open("TEMP/telegram_pidTmp", "w", encoding="utf8") as f:
@@ -1261,13 +1232,13 @@ def main(version, mode, head):
         unicorn_stream_obj.create_stream(["kline_1m"], [f"{bootstrap.TRADE_SYMBOL}", f"BNB{bootstrap.STABLECOIN_SYMBOL}"])
 
         log.INFO(
-            "====================================================================================================================================="
+            "========================================================================================================="
         )
         log.INFO_BOLD(
             f"Connection to Binance servers established, listening to [{bcolors.PURPLE}{TRADE_SYMBOL}{bcolors.DARKGRAY}] data"
         )
         log.INFO(
-            "====================================================================================================================================="
+            "========================================================================================================="
         )
         if len(closed_candles) >= 10:
             log.WARN(
@@ -1276,7 +1247,7 @@ def main(version, mode, head):
         else:
             log.INFO_BOLD("Initiating a one-time 10-min info gathering timeframe. Please wait...")
         log.INFO(
-            "=====================================================================================================================================\n"
+            "=========================================================================================================\n"
         )
 
     except Exception as e:
@@ -1386,14 +1357,11 @@ def main(version, mode, head):
                         )
 
                     if len(closed_candles) < 11:
-                        log.INFO(
-                            "#####################################################################################################################################"
+                        log.VERBOSE(
+                            f"\n                                                    Bot is gathering data for technical analysis\n"
                         )
-                        log.INFO_BOLD(
-                            f"#####################  Bot is gathering data for technical analysis. Currently at min {bcolors.OKGREEN}[{len(closed_candles):2} of 10]{bcolors.ENDC}{bcolors.DARKGRAY} of processing  #####################"
-                        )
-                        log.INFO(
-                            "#####################################################################################################################################"
+                        print(
+                            f"\n                                                    Currently at min {bcolors.OKGREEN}[{len(closed_candles):2} of 10]{bcolors.ENDC}{bcolors.DARKGRAY} of processing  \n"
                         )
                     log.DEBUG(f"History of target prices is {closed_candles}")
 
@@ -3159,7 +3127,7 @@ def main(version, mode, head):
                                                 f"bnb_min_buy_share is [{str(bnb_min_buy_share)}]\n"
                                             )
 
-                                            time.sleep(25)
+                                            time.sleep(5)
 
                                             with open(
                                                 f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
@@ -3438,14 +3406,12 @@ if __name__ == "__main__":
                     WEIGHTS_DICT_UPDATED[k] != WEIGHTS_DICT_OUTDATED[k]
                     and k != "RYBKA_BALANCES_AUX"
                 ):
-                    log.INFO(" ")
                     log.MAGENTA(
-                        f" ⚖️  Rybka's weight: [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!"
+                        f"\n ⚖️  Rybka's weight: [{k.replace('_',' ')}] got updated from [{WEIGHTS_DICT_OUTDATED[k]}] to [{WEIGHTS_DICT_UPDATED[k]}]!\n"
                     )
                     telegram.LOG(
                         f" 🟢 [[{RYBKA_MODE}]] Rybka's weight:\n[[{k.replace('_',' ')}]]\n\n⇢ updated from [[{WEIGHTS_DICT_OUTDATED[k]}]] to [[{WEIGHTS_DICT_UPDATED[k]}]]!",
                     )
-                    log.INFO(" ")
                     WEIGHTS_DICT_OUTDATED.update({k: WEIGHTS_DICT_UPDATED[k]})
 
         TELEGRAM_WEIGHTS = WEIGHTS_DICT_UPDATED.copy()

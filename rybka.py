@@ -74,12 +74,10 @@ def main(version, mode):
 
     with open("TEMP/pid_rybkaTmp", "w", encoding="utf8") as z:
         z.write(str(process_pid))
-    time.sleep(1)
 
     core_runs = 0
     with open("TEMP/core_runsTmp", "w", encoding="utf8") as y:
         y.write(str(core_runs))
-    time.sleep(1)
 
     if not version and not mode:
         click.echo(click.get_current_context().get_help())
@@ -100,8 +98,6 @@ def main(version, mode):
             with open("TEMP/core_runsTmp", "w", encoding="utf8") as x:
                 x.write(str(core_runs))
             log.CYAN("\n\n 📡 RybkaCore bot is being started...\n\n")
-
-            time.sleep(1)
 
             ### POP-UP Implementation START ###
             try:
