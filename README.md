@@ -28,7 +28,7 @@
 
 <br><br>
 
-📌 It uses 🔌 socket connection to Binance via the `unicorn-binance-suite` lib <br><br>
+📌 It uses 🔌 socket connection to Binance via the `unicorn-binance-suite` lib and does orders via `python-binance` lib<br><br>
 
 📌 It is a cross-OS software that has been tested on: <br><br>
 &emsp;&emsp;✅ Ubuntu 18.04 (`Bionic Beaver`) <br>

@@ -189,7 +189,6 @@ class Rybka_py_env_bootstrap:
         validate_and_split_trading_pair(self.TRADE_SYMBOL)
 
 
-        self.SOCKET = f"wss://stream.binance.com:9443/ws/{self.TRADE_SYMBOL.lower()}@kline_1m"
         self.RSI_PERIOD = int(
             config.get(
                 "Rybka Binance Configuration. For LIVE and DEMO modes",

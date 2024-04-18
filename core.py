@@ -76,39 +76,6 @@ def user_initial_config():
         )
 
 
-def binance_system_status():
-    global client
-    binance_status = client.get_system_status()
-    if binance_status["status"] == 0:
-        log.INFO_BOLD(
-            f" ✅ Binance servers status -  {bcolors.PURPLE}{binance_status['msg'].upper()}"
-        )
-    else:
-        log.FATAL_7(f"Binance servers status -  {binance_status['msg'].upper()}")
-
-
-def binance_account_status():
-    global client
-    acc_status = client.get_account_status()
-    if acc_status["data"].upper() == "NORMAL":
-        log.INFO_BOLD(f" ✅ Binance acc. status    -  {bcolors.PURPLE}{acc_status['data'].upper()}")
-    else:
-        log.FATAL_7(f"Binance acc. status    -  {acc_status['data'].upper()}")
-
-
-def binance_api_account_status():
-    global client
-    acc_api_status = client.get_account_api_trading_status()
-    if acc_api_status["data"]["isLocked"] is False:
-        log.INFO_BOLD(
-            f" ✅ API acc. locked status -  {bcolors.PURPLE}{str(acc_api_status['data']['isLocked']).upper()}"
-        )
-    else:
-        log.FATAL_7(
-            f"API acc. locked status -  {str(acc_api_status['data']['isLocked']).upper()}\nLocked status duration is - {acc_api_status['data']['plannedRecoverTime']}"
-        )
-
-
 def account_balance_update():
     global client
     global balance_stablecoin
@@ -186,7 +153,6 @@ def log_files_creation(direct_call="1"):
             f.write(f"RYBKA_MODE      set to: {RYBKA_MODE:>50}\n")
             if DEBUG_LVL:
                 f.write(f"DEBUG_LVL       set to: {DEBUG_LVL:>50}")
-            f.write(f"SOCKET          set to: {SOCKET:>50}\n")
             f.write(f"TRADE SYMBOL    set to: {TRADE_SYMBOL:>50}\n")
             f.write(f"TRADE QUANTITY  set to: {str(TRADE_QUANTITY):>50} coins per transaction\n")
             f.write(f"MIN PROFIT      set to: {str(MIN_PROFIT):>50} {bootstrap.STABLECOIN_SYMBOL} per transaction\n")
@@ -591,7 +557,6 @@ def software_config_params():
     log.INFO_BOLD(f" 🔘 RYBKA_MODE      set to: {bcolors.PURPLE}{RYBKA_MODE:>50}")
     if DEBUG_LVL:
         log.INFO_BOLD(f"{bcolors.OKCYAN} 🔘 DEBUG_LVL       set to: {DEBUG_LVL:>50}{bcolors.ENDC}")
-    log.INFO_BOLD(f" 🔘 SOCKET          set to: {bcolors.PURPLE}{SOCKET:>50}")
     log.INFO_BOLD(f" 🔘 TRADE SYMBOL    set to: {bcolors.PURPLE}{TRADE_SYMBOL:>50}")
     log.INFO_BOLD(
         f" 🔘 TRADE QUANTITY  set to: {bcolors.PURPLE}{str(TRADE_QUANTITY):>50}{bcolors.DARKGRAY} coins per transaction"
@@ -1111,7 +1076,6 @@ def main(version, mode, head):
 
     software_config_params()
     user_initial_config()
-    binance_system_status()
     telegram_engine_switch()
     email_engine_params()
 
@@ -1131,8 +1095,6 @@ def main(version, mode, head):
     if RYBKA_MODE == "LIVE":
         for i in range(1, 6):
             try:
-                binance_account_status()
-                binance_api_account_status()
                 account_balance_update()
                 ktbr_integrity()
                 break
@@ -1329,14 +1291,6 @@ def main(version, mode, head):
 
                     with open("TEMP/uptimeTmp", "w", encoding="utf8") as f:
                         f.write(str(bot_uptime_and_current_price(candle_close_price, "Telegram")))
-
-                    for i in range(0, 10):
-                        try:
-                            client.ping()
-                            break
-                        except Exception as e:
-                            log.WARN(f"Binance server ping failed with error:\n{e}")
-                            time.sleep(3)
 
                     with open(
                         f"{current_export_dir}/{TRADE_SYMBOL}_historical_prices",
@@ -3309,7 +3263,6 @@ if __name__ == "__main__":
     ###############################################
 
     TRADE_SYMBOL = bootstrap.TRADE_SYMBOL
-    SOCKET = bootstrap.SOCKET
     RSI_PERIOD = bootstrap.RSI_PERIOD
     RYBKA_EMAIL_SENDER_DEVICE_PASSWORD = bootstrap.RYBKA_EMAIL_SENDER_DEVICE_PASSWORD
 
