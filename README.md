@@ -108,41 +108,34 @@ As `rybka` is not a standalone executable software yet, for any of the aforement
 &emsp;&emsp;✅ Python 3.9 <br>
 &emsp;&emsp;✅ Python 3.10 <br><br><br>
 
-Hence, at the moment, you will need 🐍 `python` in your OS to run the software. Via `pip`, some modules would then come on top of your on-prem python installation: <br><br>
-&emsp;&emsp;✅ python-binance <br>
-&emsp;&emsp;✅ websocket-client <br>
-&emsp;&emsp;✅ colored <br>
-&emsp;&emsp;✅ click <br>
-&emsp;&emsp;✅ requests <br>
-&emsp;&emsp;✅ matplotlib <br>
-&emsp;&emsp;✅ numpy <br>
-&emsp;&emsp;✅ GPUtil <br>
-&emsp;&emsp;✅ psutil <br>
-&emsp;&emsp;✅ telepot <br>
-&emsp;&emsp;✅ termcolor <br>
-&emsp;&emsp;✅ python-telegram-bot==13.14 <br>
-&emsp;&emsp;✅ unicorn-binance-suite (via `python3 -m pip install unicorn-binance-suite --upgrade --force-reinstall`) <br>
-&emsp;&emsp;✅ TA-Lib <br><br><br>
+Hence, at the moment, you will need 🐍 `python` in your OS to run the software. Via `pip`, some modules would then come on top of your on-prem python installation. Follow these steps: <br><br>
 
-❗️ `Note:` while via `pip3` you are able to install the first modules, `TA-Lib` is not currently available to be installed from the official `pypi` list, hence you can download the `wheel` file that matches your `python` version and then install it via `pip`.
+1. Install the majority of needed libs via:
+```
+pip install -r requirements.txt
+```
+
+2. Downsgrade subdeps of `unicorn-binance-suite`, to respect the `MIT License` of that version:
+```
+pip install unicorn-binance-trailing-stop-loss==1.1.0 unicorn-binance-websocket-api==1.43.3 unicorn-binance-local-depth-cache==1.0.0 unicorn-binance-rest-api==1.6.0
+```
+- And don't worry if you see something like this during the process, as long as it says it completed the installations successfully in the end:
+
+<div align="center">
+  <img src="MEDIA/unicorn_versioning_deps.png">
+</div>
 <br>
 
- 📁 Grab the file from 📦 [HERE](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib); <br>
- 📁 For example: `TA_Lib‑0.4.24‑cp310‑cp310‑win_amd64.whl` will apply to Win's python v.3.10.x envs;<br> 
- 📁 Then you can go in the dir where the `.whl` file downloaded, and `pip install <TA_Lib_file_name_you_downloaded>.whl` using `pip` under the required python version you need or within the `pyenv` / etc. you will use for the bot;<br><br>
-OR <br><br>
-📦 Build it from source via Linux / Windows's `WSL` with these commands and then install it in the same way, via `pip`. Commands:
-```
-wget https://artiya4u.keybase.pub/TA-lib/ta-lib-0.4.0-src.tar.gz
-tar -xvf ta-lib-0.4.0-src.tar.gz
-cd ta-lib/ && \
-ls -alH && \
-chmod +x configure && \
-./configure --build=x86_64-unknown-linux-gnu && \
-make && \
-sudo make install
-```
+
+3. While via `pip3` you are able to install almost all of the modules, `TA-Lib` is not currently available to be installed from the official `pypi` list, hence you can download the `wheel` file that matches your `python` version and then install it via `pip`.
 <br>
+
+ 📁 Grab the file from 📦 [HERE](https://github.com/cgohlke/talib-build/releases); <br>
+ 📁 For example: `TA_Lib-0.4.28-cp311-cp311-win_amd64.whl` will apply to Win's python v.3.11.x envs;<br> 
+ 📁 Then you can go in the dir where the `.whl` file downloaded, and `pip install <TA_Lib_file_name_you_downloaded>.whl` using `pip3` under the required python you previously used to install the other modules or within the `pyenv`'s py ver. / etc. you use for the bot
+ 
+ <br>
+
 
 ❗️ `Note:` Bot currently requires admin-level access on Windows in order to run, for it to be able to constantly synchronize the time with NIST's `time.nist.gov` server. This is NOT applicable for Linux-based distributions, where the de-sync issue has not been noticed
 
@@ -163,6 +156,7 @@ choco install pyenv-win
 
 &emsp;&emsp;&emsp;🔹`Python` installation via `Pyenv` versioning manager:
 ```
+pyenv install --list       (to see the available py versions, run `pyenv update` for an updated DB)
 pyenv install 3.<X>.<X>
 pyenv global 3.<X>.<X>
 ```
