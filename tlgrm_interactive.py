@@ -120,7 +120,7 @@ def help_command(update, context):
     {'/deposits':20}    - Deposit History
     {'/withdrawals':20} - Withdrawal H.
     {'/balances':20}    - Acc. Balances
-    {'/current_price':20}  - $/cryptocoin
+    {'/current_price':20}  - $ per cryptocoin
 
 🟣 FUNd handling history of RybkaCore:
     {'/current_buys':20} - Tracked Buys
