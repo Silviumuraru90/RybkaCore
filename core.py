@@ -656,10 +656,10 @@ def telegram_engine_switch(direct_call="1"):
     if RYBKA_TELEGRAM_SWITCH.upper() == "TRUE":
         if bootstrap.TELE_KEY and bootstrap.TELE_CHAT_ID:
             if direct_call == "1":
-                log.INFO_BOLD(f" ✅ Telegram params in ENV -  {bcolors.PURPLE}SET\n")
+                log.INFO_BOLD(f" ✅ Telegram params in ENV -  {bcolors.PURPLE}SET")
         else:
             log.FATAL_7(
-                "Telegram params in ENV -  NOT SET\nAs long as you have [RYBKA_TELEGRAM_SWITCH] set as [True], make sure you also set up the [RYBKA_TELEGRAM_API_KEY, RYBKA_TELEGRAM_CHAT_ID] vars in your ENV!\n"
+                "Telegram params in ENV -  NOT SET\nAs long as you have [RYBKA_TELEGRAM_SWITCH] set as [True], make sure you also set up the [RYBKA_TELEGRAM_API_KEY, RYBKA_TELEGRAM_CHAT_ID] vars in your ENV!"
             )
     else:
         if direct_call == "1":
