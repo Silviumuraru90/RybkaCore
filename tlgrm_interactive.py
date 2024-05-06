@@ -11,6 +11,7 @@ import string as string_str
 import subprocess
 import sys
 import time
+import warnings
 from datetime import datetime, timedelta
 from os.path import exists
 
@@ -33,6 +34,10 @@ try:
     from custom_modules.graph_engine.graph import generate_graph
 except:
     pass
+
+
+# Suppress especially matpotlib-related warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 
 ####################################################
