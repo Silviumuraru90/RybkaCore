@@ -1330,6 +1330,9 @@ def main(version, mode, head):
 
                         latest_rsi = round(rsi[-1], 2)
 
+                        if random.randint(1, 10) == 1:
+                            re_sync_time()
+
                         log.DEBUG(f"Bot's [latest_rsi] is {latest_rsi}")
 
                         log.VERBOSE(f"Latest RSI indicates {latest_rsi}")
@@ -2249,8 +2252,6 @@ def main(version, mode, head):
 
                                                             if len(ktbr_config) > 4:
                                                                 subsequent_valid_rsi_counter = 3
-
-                                                            re_sync_time()
                                                         else:
                                                             with open(
                                                                 f"{current_export_dir}/{TRADE_SYMBOL}_DEBUG",
@@ -3015,7 +3016,6 @@ def main(version, mode, head):
                                                 log.FATAL_7(
                                                     f"Make sure the [RYBKA_BIN_KEY] and [RYBKA_BIN_SECRET] ENV vars have valid values and time server is synced with NIST's!\nOrder could NOT be placed due to an error:\n{e}"
                                                 )
-                                        re_sync_time()
                                     else:
                                         log.INFO(
                                             "No buy transactions are eligible to be sold at this moment!\n"
