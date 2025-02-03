@@ -14,8 +14,9 @@
 <br>
 📌 `RybkaCore` bot is a scalping crypto-trading-bot that currently supports the following pair(s):<br><br>
 
-&emsp;&emsp;✅ `EGLD` - `USDT` (tested, `default`) <br>
-&emsp;&emsp;✅ `?` - `<stablecoin>` (experimental) 
+&emsp;&emsp;✅ `EGLD` - `USDT` (tested, `used to be default, until USDT got no license in EU - 1st of Jan 2025`) <br>
+&emsp;&emsp;✅ `LINK` - `USDC` (tested, `default`) <br>
+&emsp;&emsp;✅ `?` - `<stablecoin>` (experimental) Mind that you have to use another `ktbr` file, if you used another trading pair and then switched it. Rename the current `ktbr` into `ktbr_<trading_pair_used_for_this_file>` in order to make the bot ignore it and create a new one for the trading pair in use
 
 <br>
 
@@ -89,7 +90,6 @@
 ✅ Controls the resulted `output files`' size
 ✅ Implementation of an `always buy` policy in which it will always buy when the price goes up and has nothing / close to nothing to sell for a better profitability over the same timeframe & graph positioning of the currency-to-stable-coin raport <br>
 ✅ `Safety net` implementation for the preferred stablecoin <br>
-✅ Various `graphs` generated on the spot and provided via Telegram <br>
 ✅ When it remains without too much currency for trade fees (BNB) - it will automatically convert between 10 and 15 stablecoins into BNB. This, of course, doesn't take from the safety net of the stablecoin <br>
 ✅ Added a submode to allow only BUYs and no SELLs. Can be controlled via a weight and of course - remotely, via Telegram <br>
 ✅ Added a submode to allow only SELLs and no BUYs. Can be controlled via a weight and of course - remotely, via Telegram <br>
@@ -253,9 +253,6 @@ bnb_min_order_quantity = round(float(1 / bnb_min_buy_share), 3)
 &emsp;Hence:<br>
 `import ujson as json` becomes `import json`<br>
 `import ujson` becomes `import json`
-<br><br><br>
-🔴 There is, unfortunately, a `known issue` in regards to the `graph module`, making the Telegram commands unusable for some users. Tracked via [this ticket](https://gitlab.com/Silviu_space/rybka/-/issues/350);
-
 <br><br><br>
 
 ### &emsp;&emsp;<b> 🟡 Notes </b>
