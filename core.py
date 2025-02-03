@@ -838,27 +838,6 @@ def previous_runs_sanitation(target_folder):
     else:
         log.VERBOSE(" ✅ Current dir is already sanitized.")
 
-    graphs_subdir_path = "custom_modules/telegram/data/pics"
-
-    if not os.path.exists(graphs_subdir_path):
-        os.makedirs(graphs_subdir_path)
-        log.VERBOSE(f"\n ✅ Created subdirectory: {graphs_subdir_path}")
-    else:
-        log.VERBOSE(f"\n ✅ Subdirectory already exists: [{graphs_subdir_path}]")
-
-    graphs_list = os.listdir(graphs_subdir_path)
-    if graphs_list != []:
-        log.VERBOSE("\n ⚠️  Residual graph files found. Deleting them:")
-    else:
-        log.VERBOSE("\n ✅ No residual graph files found.")
-
-    for graph_name in graphs_list:
-        graph_path = os.path.join(graphs_subdir_path, graph_name)
-        if os.path.isfile(graph_path):
-            os.remove(graph_path)
-            log.BLUE(f"\n\t ✅ Deleted file: {graphs_subdir_path} --> {graph_name}")
-
-
 def move_and_replace(target_folder, path=None):
     original_dir = os.getcwd()
 

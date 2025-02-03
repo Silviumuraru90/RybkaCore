@@ -174,13 +174,13 @@ class Rybka_py_env_bootstrap:
         )
 
         def validate_and_split_trading_pair(trading_pair):
-            if trading_pair.endswith("USDT"):
+            if len(trading_pair) == 8:
                 self.CRYPTOCOIN_SYMBOL = trading_pair[:-4]
-                self.STABLECOIN_SYMBOL = "USDT"
+                self.STABLECOIN_SYMBOL = trading_pair[4:]
             else:
                 print(
                     colored(
-                        "🔴 [FATAL] Invalid trading pair. Trading pair must end with [USDT]!",
+                        f"🔴 [FATAL] Invalid trading pair. Bot only currently supports 8-char length trading pairs. Examples: EGLDUSDT, LINKUSDC etc. Yours, [{str(trading_pair)}] has [{len(trading_pair)}] in length",
                         "red",
                     )
                 )
